@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaign — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0b0f; --surface: #111318; --surface2: #191c24; --surface3: #1e2230;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      --blue: #3b82f6; --blue-dim: rgba(59,130,246,0.12); --blue-glow: rgba(59,130,246,0.25);
+      --cyan: #06b6d4; --green: #22c55e; --amber: #f59e0b; --red: #ef4444;
+      --text: #f0f2f8; --text2: #8b92a5; --text3: #555d70;
+      --radius: 14px; --radius-sm: 8px;
+    }
+    body.light {
+      --bg: #f4f6fb; --surface: #ffffff; --surface2: #eef1f8; --surface3: #e3e8f5;
+      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
+      --blue-dim: rgba(59,130,246,0.08);
+      --text: #0d1117; --text2: #374151; --text3: #6b7a8d;
+    }
+    body.light nav { background: rgba(244,246,251,0.92); }
+    body.light select option { background: #fff; color: #0d1117; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
+      background: rgba(10,11,15,0.9); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100; transition: background 0.3s ease;
+    }
+    body.light nav { background: rgba(244,246,251,0.95); border-bottom-color: rgba(0,0,0,0.08); }
+    .nav-left { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text2); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; color: var(--text); text-decoration: none; }
+    .nav-logo-icon { height: 44px; width: auto; display: flex; align-items: center; }
+    .nav-logo-icon img { height: 100%; width: auto; object-fit: contain; }
+    .breadcrumb-sep { color: var(--text3); }
+    .breadcrumb-link { color: var(--text2); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb-link:hover { color: var(--text); }
+    .breadcrumb-current { color: var(--text); font-weight: 500; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); padding: 6px 13px; border-radius: var(--radius-sm); font-size: 0.8rem; font-family: inherit; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 5px; }
+    .nav-btn:hover { background: var(--surface3); color: var(--text); }
+    .btn-theme-toggle { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); width: 32px; height: 32px; border-radius: 7px; font-size: 14px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-theme-toggle:hover { background: var(--surface3); }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#6366f1,var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* CAMPAIGN HERO */
+    .campaign-hero {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem;
+      margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border);
+    }
+    .hero-left { flex: 1; }
+    .hero-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 0.6rem; }
+    .obj-badge {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 12px; background: var(--blue-dim); color: var(--blue); letter-spacing: 0.02em;
+    }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 12px;
+    }
+    .sb-live { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .sb-draft { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .sb-paused { background: rgba(139,146,165,0.12); color: var(--text2); }
+    .campaign-title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; line-height: 1.2; }
+    .campaign-meta { font-size: 0.8rem; color: var(--text3); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .campaign-meta a { color: var(--text3); text-decoration: none; }
+    .campaign-meta a:hover { color: var(--blue); }
+    .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+
+    /* STATS STRIP */
+    .stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 2rem; }
+    .strip-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem;
+    }
+    .strip-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 0.35rem; }
+    .strip-value { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+    .strip-sub { font-size: 0.7rem; color: var(--text3); margin-top: 0.2rem; }
+    .strip-live { color: #22c55e; }
+
+    /* CAMPAIGN OVERVIEW */
+    .campaign-overview {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.75rem;
+    }
+    .co-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .co-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+    .co-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media(max-width:700px) { .co-grid { grid-template-columns: 1fr 1fr; } }
+    .co-field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .co-field-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); }
+    .co-field-value { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
+    .co-field-value.highlight { color: var(--text); font-weight: 600; }
+
+    /* EDIT MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; width: 100%; max-width: 520px; }
+    .modal-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label { font-size: 0.73rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); display: block; margin-bottom: 0.4rem; }
+    .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.88rem; color: var(--text); font-family: inherit; box-sizing: border-box; }
+    .form-input:focus { outline: none; border-color: var(--blue); }
+    .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--text2); padding: 0.55rem 1.2rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.85rem; }
+    .btn-save { background: var(--blue); color: #fff; border: none; padding: 0.55rem 1.4rem; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 600; }
+    body.light .form-input { background: var(--bg); }
+
+    /* TABS */
+    .tab-bar { display: flex; gap: 0; margin-bottom: 1.75rem; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: 0.65rem 1.25rem; font-size: 0.85rem; font-weight: 500; font-family: inherit;
+      background: transparent; border: none; color: var(--text3); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.18s;
+    }
+    .tab-btn:hover { color: var(--text2); }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+    /* TAB CONTENT */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* PLANS TAB HEADER */
+    .plans-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+    .plans-desc { font-size: 0.82rem; color: var(--text3); max-width: 520px; line-height: 1.55; }
+    .plans-actions { display: flex; gap: 0.6rem; }
+    .btn-plan-create {
+      display: flex; align-items: center; gap: 6px; padding: 7px 14px;
+      border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.18s; border: 1px solid var(--border2);
+    }
+    .btn-plan-quick { background: var(--blue-dim); border-color: rgba(59,130,246,0.25); color: var(--blue); }
+    .btn-plan-quick:hover { background: rgba(59,130,246,0.2); }
+    .btn-plan-detailed { background: var(--surface2); color: var(--text2); }
+    .btn-plan-detailed:hover { background: var(--surface3); color: var(--text); }
+
+    /* PLAN CARD */
+    .plan-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.4rem; margin-bottom: 0.85rem; transition: all 0.2s;
+    }
+    .plan-card:hover { border-color: var(--border2); }
+    .plan-card-approved { border-left: 3px solid #22c55e; }
+    .plan-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
+    .plan-version-tag { display: flex; align-items: center; gap: 8px; }
+    .plan-version { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .plan-mode-tag {
+      font-size: 0.68rem; font-weight: 500; padding: 2px 8px; border-radius: 8px;
+      background: var(--surface2); color: var(--text3); border: 1px solid var(--border);
+    }
+    .plan-status-tag { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+    .ps-approved { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .ps-draft { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .ps-review { background: rgba(99,102,241,0.12); color: #818cf8; }
+    .plan-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text); }
+    .plan-progress-note { font-size: 0.75rem; color: var(--text3); margin-bottom: 0.5rem; }
+    .plan-detail-row {
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+      font-size: 0.78rem; color: var(--text3); margin-bottom: 0.6rem;
+    }
+    .plan-detail-row .pill { color: var(--text2); font-weight: 600; }
+    .ch-mix-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .ch-mini { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; }
+    .ch-mini-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ch-mini-label { color: var(--text3); }
+    .ch-mini-pct { color: var(--text2); font-weight: 600; margin-left: 2px; }
+    .plan-metrics { display: flex; gap: 2rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+    .plan-metric { font-size: 0.78rem; }
+    .plan-metric-val { font-size: 0.95rem; font-weight: 700; color: var(--text); display: block; }
+    .plan-metric-label { color: var(--text3); display: block; }
+    .plan-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 0.8rem; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;
+    }
+    .plan-created { font-size: 0.72rem; color: var(--text3); }
+    .plan-btn-group { display: flex; gap: 0.5rem; }
+    .plan-btn {
+      font-size: 0.78rem; font-weight: 500; padding: 5px 12px; border-radius: 7px;
+      cursor: pointer; transition: all 0.18s; font-family: inherit; border: 1px solid var(--border2);
+      background: var(--surface2); color: var(--text2);
+    }
+    .plan-btn:hover { background: var(--surface3); color: var(--text); }
+    .plan-btn-accept {
+      background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.25); color: #22c55e; font-weight: 600;
+    }
+    .plan-btn-accept:hover { background: rgba(34,197,94,0.2); }
+
+    /* EXECUTIONS TAB */
+    .exec-header-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .exec-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.55; max-width: 540px; }
+    .exec-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.4rem; margin-bottom: 0.85rem;
+    }
+    .exec-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .exec-identity { display: flex; align-items: center; gap: 10px; }
+    .exec-num { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .exec-source { font-size: 0.78rem; color: var(--text3); }
+    .exec-live-badge { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; color: #22c55e; }
+    .exec-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .exec-dates { font-size: 0.78rem; color: var(--text3); margin-bottom: 1rem; }
+    .exec-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    .exec-metric-val { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .exec-metric-label { font-size: 0.7rem; color: var(--text3); margin-top: 1px; }
+    .exec-spend-section { margin-bottom: 1rem; }
+    .exec-spend-header { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem; }
+    .exec-spend-label { color: var(--text3); }
+    .exec-spend-pct { font-weight: 600; color: var(--text); }
+    .spend-bar { height: 6px; background: var(--surface2); border-radius: 10px; overflow: hidden; }
+    .spend-bar-fill { height: 100%; background: linear-gradient(90deg,var(--blue),var(--cyan)); border-radius: 10px; }
+    .exec-card-footer { display: flex; gap: 0.6rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+    .exec-btn {
+      font-size: 0.8rem; font-weight: 500; padding: 6px 14px; border-radius: 7px;
+      cursor: pointer; font-family: inherit; border: 1px solid var(--border2);
+      background: var(--surface2); color: var(--text2); transition: all 0.18s;
+    }
+    .exec-btn:hover { background: var(--surface3); color: var(--text); }
+    .exec-btn-analytics { background: var(--blue-dim); border-color: rgba(59,130,246,0.25); color: var(--blue); font-weight: 600; }
+    .exec-btn-analytics:hover { background: rgba(59,130,246,0.2); }
+    .exec-btn-pause { color: #f59e0b; background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+    .exec-btn-pause:hover { background: rgba(245,158,11,0.15); }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="agency.html" class="breadcrumb-link">Pinnacle Media</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#" class="breadcrumb-link" id="navBrandLink">Brand</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current" id="navCampaignName">Campaign</span>
+  </div>
+  <div class="nav-right">
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="avatar">JD</div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Campaign Hero -->
+  <div class="campaign-hero">
+    <div class="hero-left">
+      <div class="hero-badges">
+        <span class="obj-badge" id="objBadge">🎯 Conversions</span>
+        <span class="status-badge sb-live" id="statusBadge">● Active</span>
+      </div>
+      <div class="campaign-title" id="campaignTitleEl">BrewHaven — Monsoon Collection Launch</div>
+      <div class="campaign-meta">
+        <span>🔗 <a href="#" id="brandMetaLink">BrewHaven Coffee</a></span>
+        <span>📅 May 5 – May 18, 2026</span>
+        <span>🎯 KPI: CPA ₹90</span>
+        <span>⏱ 14 days</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <button class="nav-btn">✎ Edit Campaign</button>
+    </div>
+  </div>
+
+  <!-- Stats Strip -->
+  <div class="stats-strip">
+    <div class="strip-card">
+      <div class="strip-label">Plans</div>
+      <div class="strip-value">2</div>
+      <div class="strip-sub">1 approved · 1 draft</div>
+    </div>
+    <div class="strip-card">
+      <div class="strip-label">Executions</div>
+      <div class="strip-value">1</div>
+      <div class="strip-sub strip-live">● 1 live</div>
+    </div>
+    <div class="strip-card">
+      <div class="strip-label">Total Budget</div>
+      <div class="strip-value">₹5,00,000</div>
+      <div class="strip-sub">From Plan v1</div>
+    </div>
+    <div class="strip-card">
+      <div class="strip-label">Live Spend</div>
+      <div class="strip-value">₹2.14L</div>
+      <div class="strip-sub strip-live">43% of budget</div>
+    </div>
+  </div>
+
+  <!-- Campaign Overview (editable summary) -->
+  <div class="campaign-overview">
+    <div class="co-header">
+      <div class="co-label">Campaign Details</div>
+      <button class="nav-btn" onclick="openEditModal()">✏ Edit Campaign</button>
+    </div>
+    <div class="co-grid">
+      <div class="co-field">
+        <div class="co-field-label">Objective</div>
+        <div class="co-field-value highlight" id="coObjective">🎯 Conversions</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Primary KPI</div>
+        <div class="co-field-value highlight" id="coKpi">CPA ₹90</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Flight Dates</div>
+        <div class="co-field-value" id="coFlightDates">May 5 – May 18, 2026</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Duration</div>
+        <div class="co-field-value" id="coDuration">14 days</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Budget</div>
+        <div class="co-field-value highlight" id="coBudget">₹5,00,000</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Conversion Event</div>
+        <div class="co-field-value" id="coConvEvent">Purchase — Order Confirmation</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Target Geo</div>
+        <div class="co-field-value" id="coGeo">Mumbai, Delhi, Bengaluru, Pune</div>
+      </div>
+      <div class="co-field">
+        <div class="co-field-label">Notes</div>
+        <div class="co-field-value" id="coNotes" style="font-size:0.78rem;color:var(--text3)">Monsoon collection launch, drive D2C subscriptions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Campaign Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title">Edit Campaign</div>
+      <div class="form-group">
+        <label class="form-label" for="editName">Campaign Name</label>
+        <input class="form-input" id="editName" type="text" value="BrewHaven — Monsoon Collection Launch">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editObjective">Objective</label>
+        <select class="form-input" id="editObjective">
+          <option>Conversions</option><option>Awareness</option><option>Traffic</option><option>Leads</option><option>App Installs</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editKpi">Primary KPI</label>
+        <input class="form-input" id="editKpi" type="text" value="CPA ₹90">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+        <div class="form-group">
+          <label class="form-label" for="editStart">Start Date</label>
+          <input class="form-input" id="editStart" type="date" value="2026-05-05">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editEnd">End Date</label>
+          <input class="form-input" id="editEnd" type="date" value="2026-05-18">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editBudget">Budget</label>
+        <input class="form-input" id="editBudget" type="text" value="₹5,00,000">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editConvEvent">Conversion Event</label>
+        <input class="form-input" id="editConvEvent" type="text" value="Purchase — Order Confirmation">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editGeo">Target Geo</label>
+        <input class="form-input" id="editGeo" type="text" value="Mumbai, Delhi, Bengaluru, Pune">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="editNotes">Notes</label>
+        <input class="form-input" id="editNotes" type="text" value="Monsoon collection launch, drive D2C subscriptions">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        <button class="btn-save" onclick="saveCampaignEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('plans', this)">📋 Plans (2)</button>
+    <button class="tab-btn" onclick="switchTab('executions', this)">🚀 Executions (1)</button>
+  </div>
+
+  <!-- ===== PLANS TAB ===== -->
+  <div class="tab-content active" id="tab-plans">
+    <div class="plans-header">
+      <div class="plans-desc">
+        Plans are media strategy proposals for this campaign. Compare versions, request reviews, and approve the one you want to run.
+      </div>
+      <div class="plans-actions">
+        <button class="btn-plan-create btn-plan-quick" onclick="newQuickPlan()">⚡ New Quick Plan</button>
+        <button class="btn-plan-create btn-plan-detailed" onclick="newDetailedPlan()">✎ New Detailed Plan</button>
+      </div>
+    </div>
+
+    <!-- Plan v1 — Approved -->
+    <div class="plan-card plan-card-approved">
+      <div class="plan-card-top">
+        <div class="plan-version-tag">
+          <span class="plan-version">Plan v1</span>
+          <span class="plan-mode-tag">⚡ Quick Mode</span>
+        </div>
+        <span class="plan-status-tag ps-approved">✓ Approved</span>
+      </div>
+      <div class="plan-name">Monsoon Collection Launch — May 2026</div>
+      <div class="plan-detail-row">
+        <span class="pill">₹5,00,000</span>
+        <span>4 channels</span>
+        <span>May 5 – May 18, 2026</span>
+      </div>
+      <div class="ch-mix-row">
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#3b82f6;"></div><span class="ch-mini-label">Mobile</span><span class="ch-mini-pct">30%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#06b6d4;"></div><span class="ch-mini-label">Web</span><span class="ch-mini-pct">30%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#8b5cf6;"></div><span class="ch-mini-label">DOOH</span><span class="ch-mini-pct">25%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#f59e0b;"></div><span class="ch-mini-label">CTV</span><span class="ch-mini-pct">15%</span></div>
+      </div>
+      <div class="plan-metrics">
+        <div class="plan-metric"><span class="plan-metric-val">6.4M</span><span class="plan-metric-label">Est. Impressions</span></div>
+        <div class="plan-metric"><span class="plan-metric-val">1.8M</span><span class="plan-metric-label">Est. Reach</span></div>
+        <div class="plan-metric"><span class="plan-metric-val">~5,500</span><span class="plan-metric-label">Est. Conversions</span></div>
+        <div class="plan-metric"><span class="plan-metric-val">₹91</span><span class="plan-metric-label">Est. CPA</span></div>
+      </div>
+      <div class="plan-card-footer">
+        <span class="plan-created">Created May 4, 2026 · by JD</span>
+        <div class="plan-btn-group">
+          <button class="plan-btn" onclick="viewPlan('quick')">View Plan</button>
+          <button class="plan-btn">Edit</button>
+          <button class="plan-btn">Compare</button>
+          <button class="plan-btn plan-btn-accept" onclick="acceptPlan()">→ Create Execution</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plan v2 — Draft -->
+    <div class="plan-card">
+      <div class="plan-card-top">
+        <div class="plan-version-tag">
+          <span class="plan-version">Plan v2</span>
+          <span class="plan-mode-tag">✎ Detailed Mode</span>
+        </div>
+        <span class="plan-status-tag ps-draft">◎ Draft</span>
+      </div>
+      <div class="plan-name">Monsoon Collection Launch — Alternate Mix</div>
+      <div class="plan-progress-note">In progress — 8 of 13 sections complete</div>
+      <div class="plan-detail-row">
+        <span class="pill">₹5,00,000</span>
+        <span>5 channels</span>
+        <span>May 5 – May 18, 2026</span>
+      </div>
+      <div class="ch-mix-row">
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#3b82f6;"></div><span class="ch-mini-label">Mobile</span><span class="ch-mini-pct">25%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#06b6d4;"></div><span class="ch-mini-label">Web</span><span class="ch-mini-pct">20%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#8b5cf6;"></div><span class="ch-mini-label">DOOH</span><span class="ch-mini-pct">30%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#f59e0b;"></div><span class="ch-mini-label">CTV</span><span class="ch-mini-pct">15%</span></div>
+        <div class="ch-mini"><div class="ch-mini-dot" style="background:#22c55e;"></div><span class="ch-mini-label">Audio</span><span class="ch-mini-pct">10%</span></div>
+      </div>
+      <div class="plan-card-footer">
+        <span class="plan-created">Started May 5, 2026 · by JD</span>
+        <div class="plan-btn-group">
+          <button class="plan-btn" onclick="viewPlan('detailed')">Continue Editing</button>
+          <button class="plan-btn">Request Review</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-plans -->
+
+  <!-- ===== EXECUTIONS TAB ===== -->
+  <div class="tab-content" id="tab-executions">
+    <div class="exec-header-bar">
+      <div class="exec-desc">Executions are approved plans that are live, scheduled, or completed. Each execution is a locked snapshot of its source plan.</div>
+    </div>
+
+    <!-- Execution #1 — Live -->
+    <div class="exec-card">
+      <div class="exec-card-top">
+        <div class="exec-identity">
+          <div class="exec-num">Execution #1</div>
+          <div class="exec-source">from Plan v1 · Quick Mode</div>
+        </div>
+        <div class="exec-live-badge">
+          <div class="exec-live-dot"></div>
+          Live
+        </div>
+      </div>
+
+      <div class="exec-dates">📅 Started May 5, 2026 · Ends May 18, 2026 · 8 days remaining</div>
+
+      <!-- Spend progress -->
+      <div class="exec-spend-section">
+        <div class="exec-spend-header">
+          <span class="exec-spend-label">Budget Utilisation</span>
+          <span class="exec-spend-pct">₹2,14,500 of ₹5,00,000 · 43%</span>
+        </div>
+        <div class="spend-bar">
+          <div class="spend-bar-fill" style="width:43%;"></div>
+        </div>
+      </div>
+
+      <!-- Live metrics -->
+      <div class="exec-metrics-grid">
+        <div>
+          <div class="exec-metric-val">2.8M</div>
+          <div class="exec-metric-label">Impressions</div>
+        </div>
+        <div>
+          <div class="exec-metric-val">2,340</div>
+          <div class="exec-metric-label">Conversions</div>
+        </div>
+        <div>
+          <div class="exec-metric-val">₹91.7</div>
+          <div class="exec-metric-label">CPA</div>
+        </div>
+        <div>
+          <div class="exec-metric-val">3.1×</div>
+          <div class="exec-metric-label">ROAS</div>
+        </div>
+      </div>
+
+      <div class="exec-card-footer">
+        <button class="exec-btn exec-btn-analytics">View Analytics</button>
+        <button class="exec-btn exec-btn-pause">⏸ Pause</button>
+        <button class="exec-btn">Export Report</button>
+      </div>
+    </div>
+
+  </div><!-- /tab-executions -->
+
+</main>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const brandId = params.get('brand') || 'brewhaven';
+  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const campaignId = params.get('campaign') || 'monsoon-launch';
+  const campaignName = decodeURIComponent(params.get('cname') || 'BrewHaven — Monsoon Collection Launch');
+
+  // Update page elements with URL context
+  document.getElementById('navCampaignName').textContent = campaignName;
+  document.getElementById('navBrandLink').textContent = brandName;
+  document.getElementById('navBrandLink').href = `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  document.getElementById('campaignTitleEl').textContent = campaignName;
+  document.getElementById('brandMetaLink').textContent = brandName;
+  document.getElementById('brandMetaLink').href = `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  document.title = `${campaignName} — 360 Platform`;
+
+  // Objective badge from URL
+  const objMap = {
+    conversions: '🎯 Conversions', awareness: '📣 Awareness',
+    traffic: '🌐 Traffic', engagement: '✨ Engagement',
+    app_installs: '📱 App Installs', store_visits: '🏪 Store Visits'
+  };
+  const objParam = params.get('obj');
+  if (objParam && objMap[objParam]) {
+    document.getElementById('objBadge').textContent = objMap[objParam];
+  }
+
+  // Tab switching
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Auto-switch to executions tab if URL param says so
+  if (params.get('tab') === 'executions') {
+    switchTab('executions', document.querySelectorAll('.tab-btn')[1]);
+  }
+
+  function newQuickPlan() {
+    window.location.href = `campaign-quick.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&campaign=${campaignId}&cname=${encodeURIComponent(campaignName)}&new=1`;
+  }
+
+  function newDetailedPlan() {
+    window.location.href = `campaign-detailed.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&campaign=${campaignId}&cname=${encodeURIComponent(campaignName)}&new=1`;
+  }
+
+  // Edit Campaign Modal
+  function openEditModal() {
+    document.getElementById('editModal').classList.add('show');
+  }
+  function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
+  }
+  function saveCampaignEdit() {
+    const objective = document.getElementById('editObjective').value;
+    const kpi = document.getElementById('editKpi').value;
+    const start = document.getElementById('editStart').value;
+    const end = document.getElementById('editEnd').value;
+    const budget = document.getElementById('editBudget').value;
+    const convEvent = document.getElementById('editConvEvent').value;
+    const geo = document.getElementById('editGeo').value;
+    const notes = document.getElementById('editNotes').value;
+    const name = document.getElementById('editName').value;
+
+    document.getElementById('coObjective').textContent = '🎯 ' + objective;
+    document.getElementById('coKpi').textContent = kpi;
+    document.getElementById('coBudget').textContent = budget;
+    document.getElementById('coConvEvent').textContent = convEvent;
+    document.getElementById('coGeo').textContent = geo;
+    document.getElementById('coNotes').textContent = notes;
+
+    const titleEl = document.getElementById('campaignTitleEl');
+    if (titleEl) titleEl.textContent = name;
+    const objBadge = document.getElementById('objBadge');
+    if (objBadge) objBadge.textContent = '🎯 ' + objective;
+
+    if (start && end) {
+      const fmt = d => new Date(d).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+      const diff = Math.round((new Date(end) - new Date(start)) / 86400000);
+      document.getElementById('coFlightDates').textContent = fmt(start) + ' – ' + fmt(end);
+      document.getElementById('coDuration').textContent = diff + ' days';
+    }
+
+    closeEditModal();
+  }
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+  });
+
+  function viewPlan(mode) {
+    if (mode === 'quick') {
+      window.location.href = `plan-output.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&campaign=${campaignId}&cname=${encodeURIComponent(campaignName)}&v=1`;
+    } else {
+      window.location.href = `campaign-detailed.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&campaign=${campaignId}&cname=${encodeURIComponent(campaignName)}`;
+    }
+  }
+
+  function acceptPlan() {
+    switchTab('executions', document.querySelectorAll('.tab-btn')[1]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

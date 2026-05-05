@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency — Mission Phoenix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    /* ─── AGENCY PAGE SPECIFIC STYLES ────────────────────── */
+
+    /* ─── AGENCY HEADER ──────────────────────────── */
+    .agency-header {
+      margin-bottom: 3rem;
+    }
+
+    .agency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(59,130,246,0.25);
+      color: var(--blue);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .agency-name {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--text) 40%, var(--text2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+    }
+
+    .agency-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      color: var(--text3);
+      font-size: 0.83rem;
+    }
+
+    .agency-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .agency-meta-item span.dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: inline-block;
+    }
+
+    /* ─── SECTION HEADER ─────────────────────────── */
+    /* ─── SECTION HEADER ─────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+
+    /* ─── AGENCY SETTINGS SECTION ────────────────── */
+    .settings-section { margin-top: 3rem; }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .settings-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .settings-pill:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      color: var(--text);
+    }
+    .settings-pill-icon {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    /* ─── BRAND GRID ─────────────────────────────── */
+    .brands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .brand-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+    }
+
+    .brand-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+
+    .brand-card:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(59,130,246,0.1);
+    }
+    .brand-card:hover::before { opacity: 1; }
+
+    .brand-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .brand-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    .brand-status.active { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .brand-status.draft { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .brand-status.new { background: var(--blue-dim); color: var(--blue); }
+
+    .brand-status .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+    }
+
+    .brand-category {
+      font-size: 0.78rem;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    .brand-stats {
+      display: flex;
+      gap: 1.2rem;
+    }
+
+    .brand-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-stat-val {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    .brand-stat-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+    }
+
+    /* ─── ADD BRAND CARD ─────────────────────────── */
+    .add-brand-card {
+      background: transparent;
+      border: 1px dashed rgba(59,130,246,0.3);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.22s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 160px;
+      color: var(--text3);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    .add-brand-card:hover {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+      color: var(--blue);
+    }
+
+    .add-brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px dashed currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: all 0.2s;
+    }
+
+    .add-brand-card:hover .add-brand-icon {
+      background: rgba(59,130,246,0.1);
+    }
+
+    /* ─── AGENCY SETTINGS SECTION ────────────────── */
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="avatar">JD</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- Agency Header -->
+  <div class="agency-header">
+    <div class="agency-badge">🏢 Agency Workspace</div>
+    <h1 class="agency-name">Pinnacle Media Group</h1>
+    <div class="agency-meta">
+      <div class="agency-meta-item"><span class="dot"></span> Active</div>
+      <div class="agency-meta-item">📍 Mumbai, India</div>
+      <div class="agency-meta-item">👥 12 members</div>
+      <div class="agency-meta-item">📅 Since Jan 2024</div>
+    </div>
+  </div>
+
+  <!-- Brands -->
+  <div class="section-header">
+    <div class="section-title">Brands (4)</div>
+    <button class="nav-btn" onclick="openModal()">
+      <span>＋</span> Add Brand
+    </button>
+  </div>
+
+  <div class="brands-grid">
+
+    <!-- Brand Cards -->
+    <a href="brand-detail.html?brand=brewhaven&name=BrewHaven%20Coffee" class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-logo" style="background: linear-gradient(135deg,#f59e0b22,#f59e0b44); color:#f59e0b;">☕</div>
+        <div class="brand-status active"><span class="status-dot"></span> Active</div>
+      </div>
+      <div class="brand-name">BrewHaven Coffee</div>
+      <div class="brand-category">Food & Beverage · D2C</div>
+      <div class="brand-stats">
+        <div class="brand-stat">
+          <div class="brand-stat-val">3</div>
+          <div class="brand-stat-label">Campaigns</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">₹4.2L</div>
+          <div class="brand-stat-label">Budget</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">2 Personas</div>
+          <div class="brand-stat-label">Audience</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="brand-detail.html?brand=zenlux&name=ZenLux%20Skincare" class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-logo" style="background: linear-gradient(135deg,#6366f122,#6366f144); color:#818cf8;">💎</div>
+        <div class="brand-status active"><span class="status-dot"></span> Active</div>
+      </div>
+      <div class="brand-name">ZenLux Skincare</div>
+      <div class="brand-category">Beauty & Personal Care</div>
+      <div class="brand-stats">
+        <div class="brand-stat">
+          <div class="brand-stat-val">5</div>
+          <div class="brand-stat-label">Campaigns</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">₹8.5L</div>
+          <div class="brand-stat-label">Budget</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">3 Personas</div>
+          <div class="brand-stat-label">Audience</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="brand-detail.html?brand=velocit&name=Velocit%20EV" class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-logo" style="background: linear-gradient(135deg,#06b6d422,#06b6d444); color:#06b6d4;">⚡</div>
+        <div class="brand-status draft"><span class="status-dot"></span> Draft</div>
+      </div>
+      <div class="brand-name">Velocit EV</div>
+      <div class="brand-category">Automotive · EV</div>
+      <div class="brand-stats">
+        <div class="brand-stat">
+          <div class="brand-stat-val">1</div>
+          <div class="brand-stat-label">Campaigns</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">₹12L</div>
+          <div class="brand-stat-label">Budget</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">2 Personas</div>
+          <div class="brand-stat-label">Audience</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="brand-detail.html?brand=novafit&name=NovaFit%20Health" class="brand-card">
+      <div class="brand-card-top">
+        <div class="brand-logo" style="background: linear-gradient(135deg,#22c55e22,#22c55e44); color:#22c55e;">🏋</div>
+        <div class="brand-status new"><span class="status-dot"></span> New</div>
+      </div>
+      <div class="brand-name">NovaFit Health</div>
+      <div class="brand-category">Health & Fitness · App</div>
+      <div class="brand-stats">
+        <div class="brand-stat">
+          <div class="brand-stat-val">0</div>
+          <div class="brand-stat-label">Campaigns</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">—</div>
+          <div class="brand-stat-label">Budget</div>
+        </div>
+        <div class="brand-stat">
+          <div class="brand-stat-val">Setup</div>
+          <div class="brand-stat-label">Audience</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Add brand -->
+    <div class="add-brand-card" onclick="openModal()">
+      <div class="add-brand-icon">＋</div>
+      <div>Add a new brand</div>
+    </div>
+
+  </div>
+
+  <!-- Agency Settings -->
+  <div class="settings-section">
+    <div class="section-header" style="margin-bottom:1rem;">
+      <div class="section-title">Agency Settings</div>
+    </div>
+    <div class="settings-grid">
+      <div class="settings-pill">
+        <div class="settings-pill-icon">✅</div>
+        Approval Workflows
+      </div>
+      <div class="settings-pill">
+        <div class="settings-pill-icon">👥</div>
+        Members & Roles
+      </div>
+      <div class="settings-pill">
+        <div class="settings-pill-icon">🚫</div>
+        Shared Blocklists
+      </div>
+      <div class="settings-pill">
+        <div class="settings-pill-icon">🏪</div>
+        Preferred Vendors
+      </div>
+      <div class="settings-pill">
+        <div class="settings-pill-icon">💰</div>
+        Budget Philosophy
+      </div>
+      <div class="settings-pill">
+        <div class="settings-pill-icon">📋</div>
+        Custom Policies
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD BRAND MODAL -->
+<div class="modal-overlay" id="addBrandModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Add a new brand</div>
+    <div class="modal-sub">Enter a brand name and website — we'll research and auto-fill everything else for you.</div>
+
+    <div class="modal-field">
+      <label class="modal-label">Brand Name <span style="color:#ef4444">*</span></label>
+      <input class="modal-input" id="newBrandName" type="text" placeholder="e.g. BrewHaven Coffee" />
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Website URL</label>
+      <input class="modal-input" id="newBrandUrl" type="url" placeholder="https://yourbrand.com" />
+      <div class="modal-hint">✨ We'll auto-fill brand basics, competitors & audience personas</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="startOnboarding()">✦ Build Brand Profile →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('addBrandModal').classList.add('open');
+    setTimeout(() => document.getElementById('newBrandName').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('addBrandModal').classList.remove('open');
+  }
+
+  function startOnboarding() {
+    const name = document.getElementById('newBrandName').value.trim();
+    const url = document.getElementById('newBrandUrl').value.trim();
+    if (!name) {
+      document.getElementById('newBrandName').style.borderColor = '#ef4444';
+      document.getElementById('newBrandName').focus();
+      return;
+    }
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    window.location.href = `brand-onboarding-flow.html?brand=${slug}&name=${encodeURIComponent(name)}&url=${encodeURIComponent(url)}&new=1`;
+  }
+
+  document.getElementById('addBrandModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

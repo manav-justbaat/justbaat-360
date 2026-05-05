@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Campaign — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0b0f; --surface: #111318; --surface2: #191c24; --surface3: #1e2230;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      --blue: #3b82f6; --blue-dim: rgba(59,130,246,0.12); --blue-glow: rgba(59,130,246,0.25);
+      --cyan: #06b6d4; --green: #22c55e;
+      --text: #f0f2f8; --text2: #8b92a5; --text3: #555d70;
+      --radius: 12px; --radius-sm: 8px;
+    }
+    body.light {
+      --bg: #f4f6fb; --surface: #ffffff; --surface2: #eef1f8; --surface3: #e3e8f5;
+      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
+      --blue-dim: rgba(59,130,246,0.08);
+      --text: #0d1117; --text2: #374151; --text3: #6b7a8d;
+    }
+    body.light nav { background: rgba(244,246,251,0.92); }
+    body.light select option { background: #fff; color: #0d1117; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; height: 56px; border-bottom: 1px solid var(--border); background: var(--bg); flex-shrink: 0; z-index: 50; }
+    .nav-left { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text2); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; color: var(--text); text-decoration: none; }
+    .nav-logo-icon { height: 44px; width: auto; display: flex; align-items: center; }
+    .nav-logo-icon img { height: 100%; width: auto; object-fit: contain; }
+    .breadcrumb-sep { color: var(--text3); }
+    .breadcrumb-link { color: var(--text2); text-decoration: none; }
+    .breadcrumb-link:hover { color: var(--text); }
+    .breadcrumb-current { color: var(--text); font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-badge { font-size: 0.72rem; padding: 3px 9px; border-radius: 10px; background: rgba(59,130,246,0.12); color: var(--blue); font-weight: 500; border: 1px solid rgba(59,130,246,0.2); }
+    .btn-sm { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); padding: 6px 12px; border-radius: 7px; font-family: inherit; font-size: 0.78rem; cursor: pointer; transition: all 0.18s; }
+    .btn-sm:hover { background: var(--surface3); color: var(--text); }
+    .btn-theme-toggle { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); width: 32px; height: 32px; border-radius: 7px; font-size: 14px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-theme-toggle:hover { background: var(--surface3); }
+
+    /* WORKSPACE */
+    .workspace { display: flex; flex: 1; overflow: hidden; }
+
+    /* MAIN AREA */
+    .main-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+
+    /* ── PHASE 1: PROMPT ──────────────────────── */
+    #phase-prompt { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+
+    .prompt-hero { max-width: 620px; width: 100%; text-align: center; margin-bottom: 2rem; }
+    .prompt-hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-dim); border: 1px solid rgba(59,130,246,0.2); color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .prompt-hero-title { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+    .prompt-hero-sub { font-size: 0.85rem; color: var(--text3); line-height: 1.6; }
+
+    .prompt-box { max-width: 620px; width: 100%; }
+    .prompt-textarea-wrap {
+      background: var(--surface); border: 1px solid var(--border2); border-radius: 14px;
+      padding: 1rem 1rem 0.7rem; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .prompt-textarea-wrap:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    .prompt-textarea {
+      width: 100%; background: transparent; border: none; color: var(--text);
+      font-family: inherit; font-size: 0.92rem; line-height: 1.6; resize: none; outline: none;
+      min-height: 80px; max-height: 200px;
+    }
+    .prompt-textarea::placeholder { color: var(--text3); }
+    .prompt-actions { display: flex; align-items: center; justify-content: space-between; padding-top: 0.6rem; border-top: 1px solid var(--border); margin-top: 0.6rem; }
+    .prompt-hint { font-size: 0.73rem; color: var(--text3); }
+    .prompt-send {
+      background: var(--blue); border: none; color: #fff; padding: 7px 16px;
+      border-radius: 8px; font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 6px;
+    }
+    .prompt-send:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+
+    .prompt-suggestions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; max-width: 620px; width: 100%; }
+    .suggestion-chip {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 5px 12px; font-size: 0.75rem; color: var(--text3); cursor: pointer; transition: all 0.18s;
+    }
+    .suggestion-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+    /* ── PHASE 2: FORM + PLAN ─────────────────── */
+    #phase-form { display: none; flex: 1; flex-direction: column; }
+    #phase-form.active { display: flex; }
+
+    .phase-inner { padding: 1.5rem 2rem 2rem; flex: 1; overflow-y: auto; }
+
+    /* AI Processing bar */
+    .ai-processing {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.85rem 1.1rem; display: flex; align-items: center; gap: 10px;
+      margin-bottom: 1.5rem; font-size: 0.8rem; color: var(--text2);
+    }
+    .ai-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    .ai-progress-bar { flex: 1; height: 3px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
+    .ai-progress-fill { height: 100%; background: linear-gradient(90deg,var(--blue),var(--cyan)); border-radius: 10px; animation: fillBar 2s ease forwards; }
+    @keyframes fillBar { from{width:0} to{width:100%} }
+
+    /* Prompt preview */
+    .prompt-preview {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.85rem 1.1rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--text2);
+      line-height: 1.5;
+    }
+    .prompt-preview-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+
+    /* FORM */
+    .quick-form-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+    .quick-form-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .form-grid { display: grid; gap: 0.85rem; }
+    .form-grid-2 { grid-template-columns: 1fr 1fr; }
+    .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+    label { font-size: 0.75rem; font-weight: 500; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+    .conf-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .conf-green { background: #22c55e; }
+    .conf-yellow { background: #f59e0b; }
+    .conf-red { background: #ef4444; }
+
+    input[type=text], input[type=url], input[type=number], select, textarea {
+      background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+      padding: 8px 11px; color: var(--text); font-family: inherit; font-size: 0.83rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    input::placeholder, textarea::placeholder { color: var(--text3); }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%238b92a5' viewBox='0 0 20 20'%3E%3Cpath d='M7 7l3-3 3 3M7 13l3 3 3-3'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 9px center; background-size:15px; padding-right:28px; cursor:pointer; }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; line-height: 1.5; min-height: 60px; }
+
+    .tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag { background: var(--surface3); border: 1px solid var(--border2); border-radius: 20px; padding: 3px 9px; font-size: 0.73rem; color: var(--text2); display: flex; align-items: center; gap: 3px; }
+    .tag .x { cursor: pointer; color: var(--text3); font-size: 10px; }
+    .tag .x:hover { color: #ef4444; }
+    .tag-add-btn { background: transparent; border: 1px dashed var(--border2); border-radius: 20px; padding: 3px 9px; font-size: 0.73rem; color: var(--text3); cursor: pointer; }
+    .tag-add-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* AI CLARIFICATION */
+    .ai-clarify {
+      background: var(--surface2); border: 1px solid rgba(59,130,246,0.2);
+      border-left: 3px solid var(--blue); border-radius: 10px;
+      padding: 1rem 1.1rem; margin-top: 1.25rem; font-size: 0.82rem; color: var(--text2); line-height: 1.6;
+    }
+    .ai-clarify-icon { color: var(--blue); font-weight: 600; margin-bottom: 0.4rem; display: block; font-size: 0.8rem; }
+    .ai-clarify-question { margin-bottom: 0.4rem; }
+    .ai-clarify-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border2); border-radius: 7px;
+      padding: 7px 10px; color: var(--text); font-family: inherit; font-size: 0.82rem; outline: none;
+      margin-top: 0.4rem; transition: border-color 0.2s;
+    }
+    .ai-clarify-input:focus { border-color: var(--blue); }
+    .ai-clarify-input::placeholder { color: var(--text3); }
+
+    /* GENERATE BUTTON */
+    .generate-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+    .btn-generate {
+      background: var(--blue); border: none; color: #fff; padding: 10px 24px;
+      border-radius: var(--radius-sm); font-family: inherit; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+    }
+    .btn-generate:hover { background: #2563eb; box-shadow: 0 6px 20px rgba(59,130,246,0.3); }
+    .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); padding: 9px 18px; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: all 0.18s; }
+    .btn-outline:hover { background: var(--surface2); color: var(--text); }
+
+    /* ── PLAN OUTPUT ──────────────────────────── */
+    #phase-plan { display: none; flex: 1; flex-direction: column; }
+    #phase-plan.active { display: flex; }
+
+    .plan-header {
+      padding: 1.25rem 2rem 0; flex-shrink: 0;
+    }
+    .plan-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem; }
+    .plan-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+    .plan-ready-badge { font-size: 0.72rem; background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); padding: 3px 9px; border-radius: 10px; font-weight: 600; }
+    .plan-meta-row { font-size: 0.78rem; color: var(--text3); display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+
+    .plan-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; padding: 0 2rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .plan-btn { display: flex; align-items: center; gap: 5px; padding: 8px 14px; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.18s; }
+    .plan-btn-primary { background: var(--green); border: none; color: #fff; }
+    .plan-btn-primary:hover { background: #16a34a; box-shadow: 0 4px 14px rgba(34,197,94,0.25); }
+    .plan-btn-blue { background: var(--blue); border: none; color: #fff; }
+    .plan-btn-blue:hover { background: #2563eb; box-shadow: 0 4px 14px rgba(59,130,246,0.25); }
+    .plan-btn-ghost { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); }
+    .plan-btn-ghost:hover { background: var(--surface3); color: var(--text); }
+
+    .plan-body { flex: 1; overflow-y: auto; padding: 1.25rem 2rem 2rem; display: grid; gap: 1rem; }
+
+    /* Plan cards */
+    .plan-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem 1.4rem; }
+    .plan-card-title { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 1rem; display: flex; align-items: center; gap: 7px; }
+
+    /* Summary grid */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+    .summary-item { display: flex; flex-direction: column; gap: 3px; }
+    .summary-item-label { font-size: 0.68rem; color: var(--text3); }
+    .summary-item-val { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
+
+    /* Channel mix */
+    .channel-mix { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .channel-donut { flex-shrink: 0; position: relative; width: 130px; height: 130px; }
+    .donut-svg { width: 130px; height: 130px; transform: rotate(-90deg); }
+    .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.72rem; color: var(--text3); text-align: center; line-height: 1.3; }
+    .donut-center strong { font-size: 1rem; color: var(--text); font-weight: 700; }
+    .channel-table { flex: 1; display: flex; flex-direction: column; gap: 0.55rem; }
+    .channel-row { display: flex; align-items: center; gap: 10px; }
+    .ch-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ch-name { font-size: 0.82rem; font-weight: 500; flex: 1; }
+    .ch-bar-wrap { width: 100px; height: 5px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
+    .ch-bar { height: 100%; border-radius: 10px; }
+    .ch-pct { font-size: 0.78rem; font-weight: 600; color: var(--text2); width: 36px; text-align: right; }
+    .ch-amt { font-size: 0.75rem; color: var(--text3); width: 60px; text-align: right; }
+    .ch-impr { font-size: 0.75rem; color: var(--text3); width: 55px; text-align: right; }
+
+    /* Metrics row */
+    .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .metric-tile { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+    .metric-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+    .metric-val { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+    .metric-sub { font-size: 0.7rem; color: var(--text3); margin-top: 2px; }
+
+    /* Assumption log */
+    .assumption-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .assumption-item { display: flex; align-items: flex-start; gap: 8px; font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+    .assumption-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text3); flex-shrink: 0; margin-top: 6px; }
+
+    /* Pacing chart */
+    .pacing-bars { display: flex; align-items: flex-end; gap: 3px; height: 60px; }
+    .pacing-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--blue); opacity: 0.7; transition: opacity 0.15s; min-height: 4px; }
+    .pacing-bar:hover { opacity: 1; }
+    .pacing-labels { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text3); margin-top: 4px; }
+
+    /* Geo split */
+    .geo-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .geo-row { display: flex; align-items: center; gap: 10px; }
+    .geo-name { font-size: 0.82rem; flex: 1; }
+    .geo-bar-wrap { width: 120px; height: 5px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
+    .geo-bar { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .geo-pct { font-size: 0.75rem; color: var(--text2); font-weight: 500; }
+
+    /* ── CHAT ─────────────────────────────────── */
+    .chat-panel { width: 300px; border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; background: var(--surface); }
+    .chat-header { padding: 0.85rem 1.1rem 0.7rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-header-title { font-size: 0.83rem; font-weight: 600; display: flex; align-items: center; gap: 7px; margin-bottom: 0.15rem; }
+    .ai-badge { width: 19px; height: 19px; background: linear-gradient(135deg,var(--blue),var(--cyan)); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    .chat-header-sub { font-size: 0.7rem; color: var(--text3); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .chat-msg { display: flex; gap: 7px; align-items: flex-start; }
+    .chat-msg.user { flex-direction: row-reverse; }
+    .chat-msg-avatar { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+    .chat-msg.ai .chat-msg-avatar { background: linear-gradient(135deg,var(--blue),var(--cyan)); }
+    .chat-msg.user .chat-msg-avatar { background: #6366f1; font-weight: 600; }
+    .chat-bubble { max-width: 88%; padding: 8px 11px; border-radius: 11px; font-size: 0.77rem; line-height: 1.5; }
+    .chat-msg.ai .chat-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-top-left-radius: 3px; }
+    .chat-msg.user .chat-bubble { background: var(--blue); color: #fff; border-top-right-radius: 3px; }
+    .chat-bubble strong { color: var(--text); font-weight: 600; }
+    .chat-msg.user .chat-bubble strong { color: #fff; }
+    .chat-suggestion { display: block; background: var(--surface3); border: 1px solid var(--border2); border-radius: 7px; padding: 5px 9px; font-size: 0.72rem; color: var(--text2); cursor: pointer; transition: all 0.15s; margin-top: 3px; }
+    .chat-suggestion:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+    .chat-input-area { padding: 0.65rem 0.9rem; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .chat-input-row { display: flex; gap: 6px; align-items: flex-end; background: var(--surface2); border: 1px solid var(--border2); border-radius: 9px; padding: 7px 9px; }
+    .chat-input-row:focus-within { border-color: var(--blue); }
+    .chat-textarea { flex: 1; background: transparent; border: none; color: var(--text); font-family: inherit; font-size: 0.77rem; resize: none; outline: none; min-height: 18px; max-height: 70px; line-height: 1.4; }
+    .chat-textarea::placeholder { color: var(--text3); }
+    .chat-send-btn { width: 26px; height: 26px; background: var(--blue); border: none; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .chat-send-btn:hover { background: #2563eb; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+    @media (max-width: 860px) { .chat-panel { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo"><div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div></a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="agency.html" class="breadcrumb-link">Pinnacle</a>
+    <span class="breadcrumb-sep">›</span>
+    <a class="breadcrumb-link" id="navBrandLink" href="#">Brand</a>
+    <span class="breadcrumb-sep">›</span>
+    <a class="breadcrumb-link" id="navCampaignLink" href="#">Campaign</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">New Plan</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-badge">⚡ Quick Mode</div>
+    <button class="btn-sm" onclick="switchToDetailed()">Switch to Detailed →</button>
+    <button class="btn-sm" onclick="goBack()">✕ Exit</button>
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<div class="workspace">
+  <!-- MAIN AREA -->
+  <div class="main-area" id="mainArea">
+
+    <!-- PHASE 1: PROMPT ENTRY -->
+    <div id="phase-prompt">
+      <div class="prompt-hero">
+        <div class="prompt-hero-badge">⚡ Quick Mode</div>
+        <div class="prompt-hero-title">Describe your campaign</div>
+        <div class="prompt-hero-sub">Tell us your goal, audience, budget and timeline in plain language. AI will extract and fill the plan form for you.</div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-textarea-wrap">
+          <textarea class="prompt-textarea" id="promptInput" placeholder="e.g. I want a video campaign for BrewHaven Coffee targeting urban coffee lovers in Mumbai and Bengaluru, age 24–38. Budget ₹5 lakh. Duration 2 weeks. Goal is conversions — drive purchases for our monsoon collection launch." rows="4"></textarea>
+          <div class="prompt-actions">
+            <span class="prompt-hint">Press Shift+Enter for new line</span>
+            <button class="prompt-send" onclick="runExtract()">✦ Extract & Fill →</button>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-suggestions">
+        <div class="suggestion-chip" onclick="fillSuggestion(0)">☕ Coffee brand launch</div>
+        <div class="suggestion-chip" onclick="fillSuggestion(1)">📱 App install campaign</div>
+        <div class="suggestion-chip" onclick="fillSuggestion(2)">🛍 E-commerce conversions</div>
+        <div class="suggestion-chip" onclick="fillSuggestion(3)">📣 Brand awareness push</div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: AUTO-FILLED FORM -->
+    <div id="phase-form">
+      <div class="phase-inner">
+
+        <div class="ai-processing" id="aiProcessing">
+          <div class="ai-pulse"></div>
+          <span style="flex:1">Extracting campaign details from your prompt…</span>
+          <div class="ai-progress-bar"><div class="ai-progress-fill"></div></div>
+        </div>
+
+        <div id="promptPreviewEl" class="prompt-preview" style="display:none">
+          <div class="prompt-preview-label">Your Prompt</div>
+          <div id="promptPreviewText"></div>
+        </div>
+
+        <div id="formBody" style="display:none">
+          <!-- Campaign Basics -->
+          <div class="quick-form-title">📋 Campaign Basics</div>
+          <div class="form-grid form-grid-2" style="margin-bottom:1rem">
+            <div class="field" style="grid-column:span 2">
+              <label><span class="conf-dot conf-green"></span> Campaign Name</label>
+              <input type="text" id="f_name" value="BrewHaven — Monsoon Collection Launch — May 2026" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Objective</label>
+              <select id="f_objective">
+                <option>Conversions / Sales</option>
+                <option>Brand Awareness & Reach</option>
+                <option>Traffic / Website Visits</option>
+                <option>Lead Generation</option>
+                <option>App Installs</option>
+                <option>Video Views</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> KPI</label>
+              <select id="f_kpi">
+                <option>CPA — Cost per Acquisition</option>
+                <option>ROAS — Return on Ad Spend</option>
+                <option>CPM — Cost per Thousand Impressions</option>
+                <option>CPC — Cost per Click</option>
+                <option>CPV — Cost per View</option>
+                <option>CPL — Cost per Lead</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Budget & Timing -->
+          <div class="quick-form-title">💰 Budget & Timing</div>
+          <div class="form-grid form-grid-3" style="margin-bottom:1rem">
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Total Budget</label>
+              <input type="text" id="f_budget" value="₹5,00,000" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Start Date</label>
+              <input type="text" id="f_startdate" value="May 5, 2026" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> End Date</label>
+              <input type="text" id="f_enddate" value="May 18, 2026 (14 days)" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Pacing</label>
+              <select id="f_pacing">
+                <option>Even</option>
+                <option>Front-Loaded</option>
+                <option>Back-Loaded</option>
+                <option>ASAP</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-yellow"></span> Bid Strategy</label>
+              <select id="f_bid">
+                <option>Max Conversions</option>
+                <option>Target CPA</option>
+                <option>Max Impressions (CPM)</option>
+                <option>Max Clicks (CPC)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-yellow"></span> KPI Target</label>
+              <input type="text" id="f_kpitarget" value="₹90 CPA" />
+            </div>
+          </div>
+
+          <!-- Geography -->
+          <div class="quick-form-title">📍 Geography</div>
+          <div class="form-grid form-grid-2" style="margin-bottom:1rem">
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Target Cities</label>
+              <div class="tag-row" id="geoTags">
+                <div class="tag">Mumbai <span class="x" onclick="removeTag(this)">✕</span></div>
+                <div class="tag">Bengaluru <span class="x" onclick="removeTag(this)">✕</span></div>
+                <div class="tag">Pune <span class="x" onclick="removeTag(this)">✕</span></div>
+                <button class="tag-add-btn" onclick="addTag('geoTags')">＋</button>
+              </div>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Location Relationship</label>
+              <select>
+                <option>People who LIVE here</option>
+                <option>People CURRENTLY here (real-time)</option>
+                <option>People who recently visited</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Audience -->
+          <div class="quick-form-title">🎯 Audience</div>
+          <div class="form-grid form-grid-3" style="margin-bottom:1rem">
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Age Range</label>
+              <input type="text" id="f_age" value="24 – 38" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Gender</label>
+              <select>
+                <option>All Genders</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Household Income</label>
+              <select>
+                <option>Upper Middle (25%)</option>
+                <option>Top 10%</option>
+                <option>Middle</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:span 2">
+              <label><span class="conf-dot conf-green"></span> Interest Categories</label>
+              <div class="tag-row" id="interestTags">
+                <div class="tag">Coffee & Tea <span class="x" onclick="removeTag(this)">✕</span></div>
+                <div class="tag">Food & Beverage <span class="x" onclick="removeTag(this)">✕</span></div>
+                <div class="tag">Sustainability <span class="x" onclick="removeTag(this)">✕</span></div>
+                <div class="tag">Health & Wellness <span class="x" onclick="removeTag(this)">✕</span></div>
+                <button class="tag-add-btn" onclick="addTag('interestTags')">＋</button>
+              </div>
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-yellow"></span> Audience Personas</label>
+              <select>
+                <option>Urban Coffee Connoisseur</option>
+                <option>WFH Professional</option>
+                <option>Sustainability Buyer</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Creative & Tracking -->
+          <div class="quick-form-title">🔗 Landing Page & Creative</div>
+          <div class="form-grid form-grid-2" style="margin-bottom:1rem">
+            <div class="field">
+              <label><span class="conf-dot conf-yellow"></span> Landing Page URL</label>
+              <input type="url" id="f_url" value="https://brewhaven.com/monsoon-collection" />
+            </div>
+            <div class="field">
+              <label><span class="conf-dot conf-green"></span> Primary Creative Format</label>
+              <select>
+                <option>Video (15s)</option>
+                <option>Video (30s)</option>
+                <option>Carousel</option>
+                <option>Static Display</option>
+                <option>Native</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- AI Clarification block -->
+          <div class="ai-clarify">
+            <span class="ai-clarify-icon">✦ AI has a quick question:</span>
+            <div class="ai-clarify-question">1. Should I include DOOH (outdoor screens) in this plan? BrewHaven's brand profile suggests it works well for product launches in Mumbai's retail corridors.</div>
+            <input class="ai-clarify-input" type="text" placeholder="Yes, include DOOH / No, skip DOOH / Up to you…" value="Yes, include DOOH with ~20% budget" />
+            <div class="ai-clarify-question" style="margin-top:0.75rem">2. Do you want to retarget existing site visitors as part of this campaign?</div>
+            <input class="ai-clarify-input" type="text" placeholder="Yes / No / Include as a sub-segment…" value="Yes, layer retargeting on top" />
+          </div>
+
+          <div class="generate-row">
+            <button class="btn-generate" onclick="generatePlan()">✦ Generate Plan →</button>
+            <button class="btn-outline" onclick="resetToPrompt()">← Back to Prompt</button>
+            <span style="font-size:0.75rem;color:var(--text3);margin-left:auto">Confidence: <span style="color:#22c55e;font-weight:600">High (9/10 fields filled)</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PHASE 3: PLAN OUTPUT -->
+    <div id="phase-plan">
+
+      <div class="plan-header">
+        <div class="plan-header-row">
+          <div class="plan-title">
+            <span id="planTitleEl">Campaign Plan</span>
+            <div class="plan-ready-badge">✓ Plan Ready</div>
+          </div>
+        </div>
+        <div class="plan-meta-row">
+          <span>📅 May 5 – May 18, 2026 · 14 days</span>
+          <span>💰 ₹5,00,000</span>
+          <span>🎯 Conversions</span>
+          <span>📍 Mumbai, Bengaluru, Pune</span>
+        </div>
+      </div>
+
+      <div class="plan-actions">
+        <button class="plan-btn plan-btn-primary">✓ Accept & Launch</button>
+        <button class="plan-btn plan-btn-blue" onclick="switchToDetailed()">✎ Edit in Detailed Mode</button>
+        <button class="plan-btn plan-btn-ghost">📅 Schedule for Later</button>
+        <button class="plan-btn plan-btn-ghost" onclick="showAlternate()">↺ Request Alternate Plan</button>
+        <button class="plan-btn plan-btn-ghost">⬇ Export PDF</button>
+      </div>
+
+      <div class="plan-body">
+
+        <!-- Key Metrics -->
+        <div class="plan-card">
+          <div class="plan-card-title">📊 Estimated Campaign Performance</div>
+          <div class="metrics-row">
+            <div class="metric-tile">
+              <div class="metric-label">Total Impressions</div>
+              <div class="metric-val">6.4M</div>
+              <div class="metric-sub">Across all channels</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-label">Unique Reach</div>
+              <div class="metric-val">1.8M</div>
+              <div class="metric-sub">Est. unique users</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-label">Est. Conversions</div>
+              <div class="metric-val">5,500</div>
+              <div class="metric-sub">At ₹90 target CPA</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-label">Est. ROAS</div>
+              <div class="metric-val">3.8×</div>
+              <div class="metric-sub">Based on avg. order ₹340</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel Mix -->
+        <div class="plan-card">
+          <div class="plan-card-title">📡 Recommended Channel Mix</div>
+          <div class="channel-mix">
+            <div class="channel-donut">
+              <svg class="donut-svg" viewBox="0 0 100 100">
+                <!-- Mobile 30% → 108° -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#3b82f6" stroke-width="14" stroke-dasharray="71.6 167.6" stroke-dashoffset="0"/>
+                <!-- Web 30% → 108° -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#06b6d4" stroke-width="14" stroke-dasharray="71.6 167.6" stroke-dashoffset="-71.6"/>
+                <!-- DOOH 25% → 90° -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#8b5cf6" stroke-width="14" stroke-dasharray="59.7 179.5" stroke-dashoffset="-143.2"/>
+                <!-- CTV 15% → 54° -->
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#22c55e" stroke-width="14" stroke-dasharray="35.8 203.4" stroke-dashoffset="-202.9"/>
+              </svg>
+              <div class="donut-center"><strong>₹5L</strong>4 channels</div>
+            </div>
+            <div class="channel-table">
+              <div style="display:flex;gap:8px;font-size:0.68rem;color:var(--text3);margin-bottom:4px;padding-left:18px">
+                <span style="flex:1"></span>
+                <span style="width:100px">Allocation</span>
+                <span style="width:36px;text-align:right">%</span>
+                <span style="width:60px;text-align:right">Amount</span>
+                <span style="width:55px;text-align:right">Impressions</span>
+              </div>
+              <div class="channel-row">
+                <div class="ch-dot" style="background:#3b82f6"></div>
+                <div class="ch-name">Mobile & Apps</div>
+                <div class="ch-bar-wrap"><div class="ch-bar" style="width:30%;background:#3b82f6"></div></div>
+                <div class="ch-pct">30%</div>
+                <div class="ch-amt">₹1.5L</div>
+                <div class="ch-impr">2.1M</div>
+              </div>
+              <div class="channel-row">
+                <div class="ch-dot" style="background:#06b6d4"></div>
+                <div class="ch-name">Web Display</div>
+                <div class="ch-bar-wrap"><div class="ch-bar" style="width:30%;background:#06b6d4"></div></div>
+                <div class="ch-pct">30%</div>
+                <div class="ch-amt">₹1.5L</div>
+                <div class="ch-impr">2.4M</div>
+              </div>
+              <div class="channel-row">
+                <div class="ch-dot" style="background:#8b5cf6"></div>
+                <div class="ch-name">DOOH</div>
+                <div class="ch-bar-wrap"><div class="ch-bar" style="width:25%;background:#8b5cf6"></div></div>
+                <div class="ch-pct">25%</div>
+                <div class="ch-amt">₹1.25L</div>
+                <div class="ch-impr">1.4M</div>
+              </div>
+              <div class="channel-row">
+                <div class="ch-dot" style="background:#22c55e"></div>
+                <div class="ch-name">CTV</div>
+                <div class="ch-bar-wrap"><div class="ch-bar" style="width:15%;background:#22c55e"></div></div>
+                <div class="ch-pct">15%</div>
+                <div class="ch-amt">₹0.75L</div>
+                <div class="ch-impr">0.5M</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pacing + Geo (side by side) -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+
+          <div class="plan-card">
+            <div class="plan-card-title">📈 Spend Pacing (14 days)</div>
+            <div class="pacing-bars" id="pacingChart"></div>
+            <div class="pacing-labels"><span>Day 1</span><span>Day 7</span><span>Day 14</span></div>
+            <div style="font-size:0.73rem;color:var(--text3);margin-top:0.6rem">Even pacing · ≈ ₹35,700/day avg</div>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card-title">📍 Geographic Allocation</div>
+            <div class="geo-list">
+              <div class="geo-row">
+                <div class="geo-name">Mumbai</div>
+                <div class="geo-bar-wrap"><div class="geo-bar" style="width:45%"></div></div>
+                <div class="geo-pct">45%</div>
+              </div>
+              <div class="geo-row">
+                <div class="geo-name">Bengaluru</div>
+                <div class="geo-bar-wrap"><div class="geo-bar" style="width:35%"></div></div>
+                <div class="geo-pct">35%</div>
+              </div>
+              <div class="geo-row">
+                <div class="geo-name">Pune</div>
+                <div class="geo-bar-wrap"><div class="geo-bar" style="width:20%"></div></div>
+                <div class="geo-pct">20%</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- AI Rationale -->
+        <div class="plan-card">
+          <div class="plan-card-title">🧠 AI Recommendation Rationale</div>
+          <div style="display:flex;flex-direction:column;gap:0.7rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem">
+              <div style="font-size:0.75rem;font-weight:600;color:#3b82f6;margin-bottom:0.3rem">📱 Mobile & Apps (30%)</div>
+              <div style="font-size:0.78rem;color:var(--text3);line-height:1.5">Largest addressable inventory. Fashion and food/beverage shopping apps have the highest conversion correlation for the 24–38 urban demographic. Includes Instagram, YouTube, and shopping apps.</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem">
+              <div style="font-size:0.75rem;font-weight:600;color:#06b6d4;margin-bottom:0.3rem">🌐 Web Display (30%)</div>
+              <div style="font-size:0.78rem;color:var(--text3);line-height:1.5">Covers premium publisher placements on lifestyle, food & beverage, and news sites. Includes retargeting layer for cart abandoners — high efficiency for a D2C brand.</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem">
+              <div style="font-size:0.75rem;font-weight:600;color:#8b5cf6;margin-bottom:0.3rem">🖥 DOOH (25%)</div>
+              <div style="font-size:0.78rem;color:var(--text3);line-height:1.5">High-footfall malls and transit in Mumbai and Bengaluru's retail corridors. DOOH drives product launch recall. Paired with mobile geo-sync to retarget users near screens.</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem">
+              <div style="font-size:0.75rem;font-weight:600;color:#22c55e;margin-bottom:0.3rem">📺 CTV (15%)</div>
+              <div style="font-size:0.78rem;color:var(--text3);line-height:1.5">Awareness booster. Target 24–38 audience on Hotstar and JioCinema during primetime. Non-skippable 15s format for maximum recall. Small but high-quality reach.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assumptions -->
+        <div class="plan-card">
+          <div class="plan-card-title">⚠ Assumption Log</div>
+          <div class="assumption-list">
+            <div class="assumption-item"><div class="assumption-dot"></div>Landing page URL set to brewhaven.com/monsoon-collection — assumed from brand profile (update if different)</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Even pacing applied — change to front-loaded if stock is limited at launch</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Frequency cap defaulted to 3 impressions/day per user (brand profile default)</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Brand safety level set to Enhanced — inherited from BrewHaven brand profile</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Average order value assumed ₹340 based on BrewHaven's typical AOV — used for ROAS estimate</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>No first-party audience uploaded — retargeting pool will build as campaign runs (seed audience from website pixel)</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /main-area -->
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-header-title"><div class="ai-badge">✦</div> Campaign AI</div>
+      <div class="chat-header-sub">Ask anything about the plan</div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg ai">
+        <div class="chat-msg-avatar">✦</div>
+        <div class="chat-bubble">Hi! Describe your campaign below and I'll extract all the details and build your plan.</div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chatInput" rows="1" placeholder="Ask or refine…" onkeydown="chatKeydown(event)"></textarea>
+        <button class="chat-send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
+  </div>
+</div><!-- /workspace -->
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const brandId = params.get('brand') || 'brewhaven';
+  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const campaignName = decodeURIComponent(params.get('cname') || 'New Campaign');
+  const isNew = params.get('new') === '1';
+
+  document.getElementById('navBrandLink').textContent = brandName;
+  document.getElementById('navBrandLink').href = `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  const campaignId = params.get('campaign') || '';
+  document.getElementById('navCampaignLink').textContent = campaignName;
+  document.getElementById('navCampaignLink').href = `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`;
+  document.title = `New Plan — ${campaignName} — 360 Platform`;
+
+  // Pre-fill prompt if new
+  if (isNew) {
+    document.getElementById('promptInput').value = `I need a campaign for ${brandName}. We want to drive conversions for our monsoon coffee collection launch. Target audience: urban coffee lovers aged 24–38 in Mumbai, Bengaluru, and Pune. Budget: ₹5 lakh. Duration: 14 days starting this week.`;
+  } else {
+    // existing campaign — jump straight to plan
+    setTimeout(() => showPlan(), 100);
+  }
+
+  const suggestions = [
+    `I want a video campaign for ${brandName} targeting urban coffee lovers in Mumbai and Bengaluru, age 24–38. Budget ₹5 lakh. Duration 2 weeks. Goal is conversions — drive purchases for the monsoon collection launch.`,
+    `Launch an app install campaign for ${brandName}. Target young urban professionals 22–32 across Tier-1 cities. Budget ₹3 lakh, 10 days. Optimize for CPI.`,
+    `E-commerce conversions campaign for ${brandName}. Retarget website visitors and cart abandoners. Budget ₹2 lakh, always-on. ROAS target 4x.`,
+    `Brand awareness push for ${brandName} across India. OTT + programmatic display. Budget ₹8 lakh, 30 days. Maximize unique reach across 25–45 age group.`
+  ];
+
+  function fillSuggestion(idx) {
+    document.getElementById('promptInput').value = suggestions[idx];
+    document.getElementById('promptInput').focus();
+  }
+
+  function runExtract() {
+    const txt = document.getElementById('promptInput').value.trim();
+    if (!txt) return;
+    document.getElementById('phase-prompt').style.display = 'none';
+    document.getElementById('phase-form').classList.add('active');
+
+    // Show prompt preview
+    document.getElementById('promptPreviewText').textContent = txt;
+    document.getElementById('promptPreviewEl').style.display = 'block';
+
+    // Simulate AI extraction delay
+    setTimeout(() => {
+      document.getElementById('aiProcessing').style.display = 'none';
+      document.getElementById('formBody').style.display = 'block';
+      addChatMsg('ai', `Got it! I've extracted <strong>10 key campaign parameters</strong> from your prompt. Review the form on the left — green dots mean high confidence, yellow means I made an assumption. Two quick questions added below the form.`);
+    }, 2100);
+
+    addChatMsg('user', txt.length > 80 ? txt.slice(0, 80) + '…' : txt);
+    addChatMsg('ai', 'Extracting campaign details from your prompt…');
+  }
+
+  function generatePlan() {
+    document.getElementById('phase-form').classList.remove('active');
+    document.getElementById('phase-plan').classList.add('active');
+    document.getElementById('planTitleEl').textContent = document.getElementById('f_name').value || campaignName;
+    buildPacingChart();
+    addChatMsg('ai', `✓ Plan generated for <strong>${document.getElementById('f_name').value || campaignName}</strong>. Total est. 6.4M impressions, 1.8M reach, ~5,500 conversions at ₹90 CPA. Review the plan and click Accept & Launch, or ask me to adjust anything.`);
+    addChatMsg('ai', `<button class="chat-suggestion" onclick="useSuggestion(this)">Increase DOOH budget to 35%</button><button class="chat-suggestion" onclick="useSuggestion(this)">What if I change to front-loaded pacing?</button><button class="chat-suggestion" onclick="useSuggestion(this)">Show me a more conservative plan</button>`);
+  }
+
+  function buildPacingChart() {
+    const container = document.getElementById('pacingChart');
+    const heights = [45, 48, 52, 55, 58, 60, 60, 60, 58, 56, 55, 52, 50, 48];
+    container.innerHTML = heights.map(h => `<div class="pacing-bar" style="height:${h}px"></div>`).join('');
+  }
+
+  function resetToPrompt() {
+    document.getElementById('phase-form').classList.remove('active');
+    document.getElementById('phase-prompt').style.display = '';
+    document.getElementById('aiProcessing').style.display = '';
+    document.getElementById('formBody').style.display = 'none';
+    document.getElementById('promptPreviewEl').style.display = 'none';
+  }
+
+  function showPlan() {
+    document.getElementById('phase-prompt').style.display = 'none';
+    document.getElementById('phase-plan').classList.add('active');
+    buildPacingChart();
+    document.getElementById('planTitleEl').textContent = campaignName;
+  }
+
+  function showAlternate() {
+    addChatMsg('ai', `Generating an alternate plan with more emphasis on digital (less DOOH)… <br><br>Alternate mix: Mobile 40%, Web 35%, CTV 25%, DOOH 0%. Est. impressions: 5.9M, reach: 2.1M, conversions: ~5,200 at ₹95 CPA. Would you like to switch to this plan?`);
+    document.querySelector('.chat-messages').scrollTop = 9999;
+  }
+
+  function switchToDetailed() {
+    window.location.href = `campaign-detailed.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}&campaign=${campaignId}`;
+  }
+
+  function goBack() {
+    window.location.href = campaignId
+      ? `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`
+      : `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  }
+
+  // Tag helpers
+  function removeTag(btn) { btn.parentElement.remove(); }
+  function addTag(id) {
+    const val = prompt('Add:');
+    if (!val) return;
+    const container = document.getElementById(id);
+    const t = document.createElement('div');
+    t.className = 'tag';
+    t.innerHTML = `${val} <span class="x" onclick="removeTag(this)">✕</span>`;
+    container.insertBefore(t, container.lastElementChild);
+  }
+
+  // Chat
+  const aiReplies = {
+    'dooh': `Increasing DOOH to 35% means reducing Mobile to 25% and Web to 25%, CTV stays at 15%. New est. impressions: 6.1M. DOOH gives excellent brand recall for a launch — good call for a product with strong visual appeal.`,
+    'front': `Switching to front-loaded pacing means ~50% of budget in the first 5 days (₹35K+/day), tapering down. Works well if your collection has limited stock or you want to build buzz before day 7.`,
+    'conserv': `Conservative plan: Mobile 35%, Web 40%, CTV 25%, no DOOH. Lower CPM channels, wider reach, est. 7.2M impressions at same ₹5L budget. ROAS estimate drops slightly to 3.4× (less targeted placement mix).`,
+    'budget': `With ₹5L budget and 14-day flight, you're looking at ₹35.7K/day average. I'd recommend a minimum of ₹25K/day to maintain frequency across 3 cities. Your current budget is well within range.`,
+    'persona': `The Urban Coffee Connoisseur persona (26–35, Instagram/YouTube heavy) aligns best with the monsoon collection launch. I've set this as the primary persona in the plan with WFH Professional as secondary reach extension.`,
+  };
+
+  function addChatMsg(role, html) {
+    const msgs = document.getElementById('chatMessages');
+    const el = document.createElement('div');
+    el.className = `chat-msg ${role}`;
+    const avatar = role === 'ai' ? '✦' : 'JD';
+    el.innerHTML = `<div class="chat-msg-avatar">${avatar}</div><div class="chat-bubble">${html}</div>`;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+    // re-bind suggestion buttons
+    el.querySelectorAll('.chat-suggestion').forEach(btn => btn.onclick = () => useSuggestion(btn));
+  }
+
+  function useSuggestion(btn) {
+    const txt = btn.textContent;
+    addChatMsg('user', txt);
+    setTimeout(() => {
+      const lower = txt.toLowerCase();
+      let reply = `I've applied that adjustment to the plan. Review the updated allocations in the plan panel.`;
+      for (const [k, v] of Object.entries(aiReplies)) {
+        if (lower.includes(k)) { reply = v; break; }
+      }
+      addChatMsg('ai', reply);
+    }, 800);
+  }
+
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    addChatMsg('user', msg);
+    setTimeout(() => {
+      const lower = msg.toLowerCase();
+      let reply = `Got it. I've noted that. You can also edit the form fields directly on the left and regenerate the plan, or switch to Detailed Mode for full control.`;
+      for (const [k, v] of Object.entries(aiReplies)) {
+        if (lower.includes(k)) { reply = v; break; }
+      }
+      addChatMsg('ai', reply);
+    }, 800);
+  }
+
+  function chatKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+  }
+
+
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

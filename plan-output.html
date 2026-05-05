@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Output — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    /* Plan-Output Specific Styles */
+    
+    .plan-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 1.1rem 2rem 1rem; position: sticky; top: 60px; z-index: 90;
+    }
+    .plan-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.65rem; }
+    .plan-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .plan-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
+    .version-badge { font-size: 0.7rem; font-weight: 600; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 2px 8px; color: var(--text3); }
+    .status-badge { font-size: 0.7rem; font-weight: 600; padding: 3px 9px; border-radius: 10px; }
+    .sb-draft { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .sb-approved { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .sb-review { background: rgba(59,130,246,0.12); color: #3b82f6; }
+    .plan-meta-chips { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+    .meta-chip { font-size: 0.75rem; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+    .meta-chip strong { color: var(--text2); font-weight: 500; }
+    .plan-actions-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.85rem; }
+    .plan-act-btn { padding: 6px 14px; border-radius: 8px; font-family: inherit; font-size: 0.78rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.18s; border: none; }
+    .btn-accept { background: var(--green); color: #fff; }
+    .btn-accept:hover { background: #16a34a; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
+    .btn-edit { background: var(--blue); color: #fff; }
+    .btn-edit:hover { background: #2563eb; box-shadow: 0 4px 14px rgba(59,130,246,0.3); }
+    .btn-ghost-sm { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); }
+    .btn-ghost-sm:hover { background: var(--surface3); color: var(--text); }
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 5rem; }
+    .section-block { margin-bottom: 1.5rem; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.85rem; cursor: default; }
+    .section-heading.clickable { cursor: pointer; }
+    .section-heading.clickable:hover .sh-label { color: var(--text2); }
+    .sh-toggle { font-size: 0.7rem; color: var(--text3); transition: transform 0.2s; }
+    .sh-toggle.open { transform: rotate(180deg); }
+    .forecast-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.75rem; }
+    @media(max-width:900px) { .forecast-strip { grid-template-columns: repeat(2,1fr); } }
+    .forecast-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.15rem; cursor: pointer; transition: border-color 0.18s; }
+    .forecast-card:hover { border-color: var(--border2); }
+    .fc-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.4rem; }
+    .fc-value { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+    .fc-sub { font-size: 0.7rem; color: var(--text3); margin-top: 3px; }
+    .fc-conf { display: inline-block; font-size: 0.62rem; font-weight: 600; padding: 1px 6px; border-radius: 6px; margin-top: 5px; }
+    .conf-high { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .conf-med { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .channel-mix-wrap { display: flex; gap: 1.5rem; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.5rem; }
+    .donut-wrap { flex-shrink: 0; position: relative; width: 130px; height: 130px; }
+    .donut-svg { width: 130px; height: 130px; transform: rotate(-90deg); }
+    .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--text3); text-align: center; line-height: 1.4; }
+    .donut-center strong { font-size: 1rem; color: var(--text); font-weight: 700; display: block; }
+    .channel-tiles { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ch-tile { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.18s; user-select: none; }
+    .ch-tile:hover { border-color: var(--border2); background: var(--surface3); }
+    .ch-tile.active { border-color: var(--blue); background: var(--blue-dim); }
+    .ch-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .ch-name { font-size: 0.84rem; font-weight: 500; flex: 1; }
+    .ch-platform { font-size: 0.66rem; color: var(--text3); border: 1px solid var(--border2); border-radius: 5px; padding: 1px 6px; flex-shrink: 0; }
+    .ch-pct-label { font-size: 0.78rem; font-weight: 600; color: var(--text2); width: 36px; text-align: right; }
+    .ch-amt-label { font-size: 0.75rem; color: var(--text3); width: 56px; text-align: right; }
+    .ch-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .ch-expand-arrow { font-size: 0.7rem; color: var(--text3); margin-left: 4px; transition: transform 0.2s; }
+    .ch-tile.active .ch-expand-arrow { transform: rotate(180deg); color: var(--blue); }
+    .channel-panel { display: none; margin-top: 0.5rem; }
+    .channel-panel.open { display: block; }
+    .cp-inner { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1.1rem; }
+    .cp-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.85rem; }
+    .cp-field { display: flex; flex-direction: column; gap: 3px; }
+    .cp-field-label { font-size: 0.66rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); }
+    .cp-field-value { font-size: 0.83rem; color: var(--text2); }
+    .cp-field-value.strong { color: var(--text); font-weight: 600; }
+    .cp-divider { height: 1px; background: var(--border); }
+    .cp-sub-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.65rem; }
+    .cp-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .cp-table th { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); text-align: left; padding: 0 0.75rem 0.5rem 0; border-bottom: 1px solid var(--border2); }
+    .cp-table td { padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+    .cp-table tr:last-child td { border-bottom: none; }
+    .cp-table td:first-child { color: var(--text); font-weight: 500; }
+    .perf-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.65rem; }
+    .perf-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.85rem; }
+    .perf-tile-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 3px; }
+    .perf-tile-val { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .adset-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    @media(max-width:800px) { .adset-cards { grid-template-columns: 1fr; } }
+    .adset-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+    .adset-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+    .adset-row { display: flex; justify-content: space-between; font-size: 0.74rem; margin-bottom: 0.3rem; }
+    .adset-row span:first-child { color: var(--text3); }
+    .adset-row span:last-child { color: var(--text2); font-weight: 500; }
+    .screen-table-wrap { overflow-x: auto; }
+    .screen-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; white-space: nowrap; }
+    .screen-table th { font-size: 0.64rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); text-align: left; padding: 0.4rem 0.85rem 0.4rem 0; border-bottom: 1px solid var(--border2); }
+    .screen-table td { padding: 0.5rem 0.85rem 0.5rem 0; border-bottom: 1px solid var(--border); color: var(--text2); }
+    .screen-table td:first-child { color: var(--text3); font-size: 0.7rem; }
+    .screen-table tr:last-child td { border-bottom: none; }
+    .screen-check { width: 15px; height: 15px; accent-color: var(--blue); cursor: pointer; }
+    .dooh-summary-bar { display: flex; gap: 1.5rem; background: var(--blue-dim); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 0.65rem 1rem; font-size: 0.78rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .dooh-summary-bar span strong { color: var(--blue); }
+    .collapsible-body { overflow: hidden; transition: max-height 0.3s ease; }
+    .collapsible-body.collapsed { max-height: 0; }
+    .collapsible-body.expanded { max-height: 9999px; }
+    .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.15rem 1.4rem; }
+    .seg-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .seg-table th { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); text-align: left; padding: 0 0.85rem 0.5rem 0; border-bottom: 1px solid var(--border2); }
+    .seg-table td { padding: 0.6rem 0.85rem 0.6rem 0; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+    .seg-table tr:last-child td { border-bottom: none; }
+    .seg-table td:first-child { color: var(--text); font-weight: 500; font-size: 0.82rem; }
+    .seg-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 500; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); margin: 1px; }
+    .pixel-row { display: flex; align-items: center; gap: 10px; padding: 0.55rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+    .pixel-row:last-child { border-bottom: none; }
+    .pixel-status { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; }
+    .dot-green { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+    .dot-red { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; }
+    .pixel-name { flex: 1; color: var(--text); font-weight: 500; }
+    .pixel-events { font-size: 0.72rem; color: var(--text3); }
+    .creative-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .creative-table th { font-size: 0.64rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); text-align: left; padding: 0.4rem 0.75rem 0.4rem 0; border-bottom: 1px solid var(--border2); }
+    .creative-table td { padding: 0.55rem 0.75rem 0.55rem 0; border-bottom: 1px solid var(--border); color: var(--text2); }
+    .creative-table tr:last-child td { border-bottom: none; }
+    .creative-table td:first-child { color: var(--text); font-weight: 500; }
+    .cr-uploaded { font-size: 0.7rem; font-weight: 600; color: #22c55e; }
+    .cr-missing { font-size: 0.7rem; font-weight: 600; color: #ef4444; }
+    .btn-upload { font-size: 0.68rem; padding: 2px 9px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 5px; color: var(--text3); cursor: pointer; font-family: inherit; }
+    .btn-upload:hover { border-color: var(--blue); color: var(--blue); }
+    .assumption-rows { display: flex; flex-direction: column; gap: 0; }
+    .assumption-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border); font-size: 0.79rem; }
+    .assumption-row:last-child { border-bottom: none; }
+    .assumption-text { flex: 1; color: var(--text2); line-height: 1.5; }
+    .assumption-source { font-size: 0.7rem; color: var(--text3); width: 160px; flex-shrink: 0; }
+    .conf-pill { font-size: 0.65rem; font-weight: 600; padding: 2px 7px; border-radius: 6px; flex-shrink: 0; }
+    .safety-toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+    .safety-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.79rem; color: var(--text2); padding: 0.5rem 0.75rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; }
+    .safety-check { font-size: 1rem; }
+    .safety-check.on { color: #22c55e; }
+    .safety-check.off { color: var(--text3); }
+    .progress-bar-wrap { height: 5px; background: var(--surface3); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+    .progress-bar { height: 100%; border-radius: 10px; }
+    body.light .plan-header { background: #ffffff; }
+    body.light select option { background: #fff; color: #0d1117; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="agency.html" class="breadcrumb-link">Pinnacle Media</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#" class="breadcrumb-link" id="navBrandLink">Brand</a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="#" class="breadcrumb-link" id="navCampaignLink">Campaign</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current" id="navPlanName">Plan v1</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" data-action="exit" title="Back">← Back</button>
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="avatar">JD</div>
+  </div>
+</nav>
+
+<!-- STICKY PLAN HEADER -->
+<div class="plan-header">
+  <div class="plan-header-top">
+    <div>
+      <div class="plan-title-row">
+        <span class="plan-title" id="planTitle">BrewHaven Monsoon Launch — Q2 Plan</span>
+        <span class="version-badge">v1</span>
+        <span class="status-badge sb-draft">● Draft</span>
+      </div>
+    </div>
+  </div>
+  <div class="plan-meta-chips">
+    <span class="meta-chip">📁 Campaign: <strong id="metaCampaign">Monsoon Collection Launch</strong></span>
+    <span class="meta-chip">🏷 Brand: <strong id="metaBrand">BrewHaven Coffee</strong></span>
+    <span class="meta-chip">🎯 <strong>Conversions</strong></span>
+    <span class="meta-chip">KPI: <strong>CPA ₹90</strong></span>
+    <span class="meta-chip">📅 <strong>May 5 – May 18, 2026 · 14 days</strong></span>
+    <span class="meta-chip">💰 <strong>₹5,00,000</strong></span>
+    <span class="meta-chip" style="font-size:0.7rem;color:var(--text3)">⚡ Quick Mode · JD · Modified just now</span>
+  </div>
+  <div class="plan-actions-row">
+    <button class="plan-act-btn btn-accept">✓ Accept &amp; Execute</button>
+    <button class="plan-act-btn btn-edit" onclick="goBackToBuilder()">✎ Edit Plan</button>
+    <button class="plan-act-btn btn-ghost-sm">📤 Request Review</button>
+    <button class="plan-act-btn btn-ghost-sm">⬇ Export PDF</button>
+    <button class="plan-act-btn btn-ghost-sm">🔗 Share Link</button>
+    <button class="plan-act-btn btn-ghost-sm">⊕ Duplicate</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- PART 2: FORECAST KPIs -->
+  <div class="section-block" style="margin-top:1.5rem">
+    <div class="section-heading">
+      <span class="sh-label">📊 Performance Forecast</span>
+      <span style="font-size:0.68rem;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">AI estimates · click any card for methodology</span>
+    </div>
+    <div class="forecast-strip">
+      <div class="forecast-card">
+        <div class="fc-label">Total Impressions</div>
+        <div class="fc-value">6.4M</div>
+        <div class="fc-sub">Across all 5 channels</div>
+        <span class="fc-conf conf-high">High confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Unique Reach</div>
+        <div class="fc-value">1.8M</div>
+        <div class="fc-sub">Est. unique individuals</div>
+        <span class="fc-conf conf-high">High confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Est. Conversions</div>
+        <div class="fc-value">5,500</div>
+        <div class="fc-sub">At ₹90 CPA target</div>
+        <span class="fc-conf conf-med">Medium confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Est. CPA</div>
+        <div class="fc-value">₹90</div>
+        <div class="fc-sub">Budget ÷ est. conversions</div>
+        <span class="fc-conf conf-high">High confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Est. ROAS</div>
+        <div class="fc-value">3.8×</div>
+        <div class="fc-sub">AOV ₹340 × 5,500 conv.</div>
+        <span class="fc-conf conf-med">Medium confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Avg. Frequency</div>
+        <div class="fc-value">3.6×</div>
+        <div class="fc-sub">6.4M impr ÷ 1.8M reach</div>
+        <span class="fc-conf conf-high">High confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Viewability Rate</div>
+        <div class="fc-value">74%</div>
+        <div class="fc-sub">MRC standard (50% for 2s)</div>
+        <span class="fc-conf conf-med">Medium confidence</span>
+      </div>
+      <div class="forecast-card">
+        <div class="fc-label">Brand Safety Score</div>
+        <div class="fc-value">98%</div>
+        <div class="fc-sub">Enhanced settings applied</div>
+        <span class="fc-conf conf-high">High confidence</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 3: CHANNEL MIX OVERVIEW -->
+  <div class="section-block">
+    <div class="section-heading"><span class="sh-label">📡 Channel Mix &amp; Detail</span></div>
+    <div class="channel-mix-wrap">
+      <div class="donut-wrap">
+        <!-- Circumference r=38 ≈ 238.76. Segments: Search 25%, Meta 30%, YouTube 20%, DOOH 15%, CTV 10% -->
+        <svg class="donut-svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#4285f4" stroke-width="13" stroke-dasharray="59.7 179.1" stroke-dashoffset="0"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#1877f2" stroke-width="13" stroke-dasharray="71.6 167.2" stroke-dashoffset="-59.7"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#ef4444" stroke-width="13" stroke-dasharray="47.75 191" stroke-dashoffset="-131.3"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#8b5cf6" stroke-width="13" stroke-dasharray="35.8 203" stroke-dashoffset="-179.1"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#22c55e" stroke-width="13" stroke-dasharray="23.9 214.9" stroke-dashoffset="-214.9"/>
+        </svg>
+        <div class="donut-center"><strong>₹5L</strong>5 channels</div>
+      </div>
+      <div class="channel-tiles">
+        <!-- Channel tile header row -->
+        <div style="display:flex;gap:0.75rem;padding:0 0.9rem;font-size:0.65rem;color:var(--text3);font-weight:600;letter-spacing:0.06em;text-transform:uppercase">
+          <span style="flex:1">Channel</span>
+          <span>Platform</span>
+          <span style="width:36px;text-align:right">%</span>
+          <span style="width:56px;text-align:right">Budget</span>
+          <span style="width:10px"></span>
+        </div>
+
+        <!-- Google Search tile -->
+        <div class="ch-tile" onclick="toggleChannel('search')">
+          <div class="ch-dot" style="background:#4285f4"></div>
+          <div class="ch-name">Google Search</div>
+          <div class="ch-status-dot"></div>
+          <span class="ch-platform">via Google Ads</span>
+          <div class="ch-pct-label">25%</div>
+          <div class="ch-amt-label">₹1.25L</div>
+          <span class="ch-expand-arrow" id="arrow-search">▼</span>
+        </div>
+        <div class="channel-panel" id="panel-search">
+          <div class="cp-inner">
+            <div class="cp-sub-title">Bidding &amp; Configuration</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Bidding Strategy</div><div class="cp-field-value strong">Target CPA</div></div>
+              <div class="cp-field"><div class="cp-field-label">CPA Target</div><div class="cp-field-value strong">₹90</div></div>
+              <div class="cp-field"><div class="cp-field-label">Ad Schedule</div><div class="cp-field-value">All hours</div></div>
+              <div class="cp-field"><div class="cp-field-label">Locations</div><div class="cp-field-value">Mumbai, Bengaluru, Pune</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">AI-Suggested Keyword Themes</div>
+            <table class="cp-table">
+              <tr><th>Keyword Theme</th><th>Match Type</th><th>Monthly Searches</th><th>Competition</th></tr>
+              <tr><td>premium coffee india</td><td>Phrase</td><td>10K–100K</td><td>Medium</td></tr>
+              <tr><td>buy coffee beans online</td><td>Exact</td><td>1K–10K</td><td>High</td></tr>
+              <tr><td>coffee subscription india</td><td>Phrase</td><td>1K–10K</td><td>Medium</td></tr>
+              <tr><td>single origin coffee</td><td>Broad</td><td>1K–10K</td><td>Low</td></tr>
+              <tr><td>monsoon coffee collection</td><td>Exact</td><td>&lt;1K</td><td>Low</td></tr>
+            </table>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Ad Groups</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Ad Group 1</div><div class="cp-field-value">Brand Keywords (8 keywords)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Ad Group 2</div><div class="cp-field-value">Category Keywords (12 keywords)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Negative Keywords</div><div class="cp-field-value">free, cheap, instant, nescafe, bru</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Ad Copy (Responsive Search Ad)</div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem">
+              <div style="font-size:0.72rem;color:var(--text3);margin-bottom:0.5rem">HEADLINES (up to 15 · 30 chars each)</div>
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:0.75rem">
+                <span style="background:var(--blue-dim);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:3px 9px;font-size:0.75rem;color:var(--text2)">Premium Coffee, Delivered</span>
+                <span style="background:var(--blue-dim);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:3px 9px;font-size:0.75rem;color:var(--text2)">Single-Origin Beans India</span>
+                <span style="background:var(--blue-dim);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:3px 9px;font-size:0.75rem;color:var(--text2)">Monsoon Harvest — Now Live</span>
+                <span style="background:var(--blue-dim);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:3px 9px;font-size:0.75rem;color:var(--text2)">Order Fresh. Ship in 2 Days</span>
+                <span style="background:var(--surface2);border:1px dashed var(--border2);border-radius:6px;padding:3px 9px;font-size:0.75rem;color:var(--text3)">+ Add headline</span>
+              </div>
+              <div style="font-size:0.72rem;color:var(--text3);margin-bottom:0.5rem">DESCRIPTIONS (up to 4 · 90 chars each)</div>
+              <div style="font-size:0.79rem;color:var(--text2);line-height:1.6">
+                Discover BrewHaven's Monsoon Collection — 3 single-origin coffees harvested during peak monsoon season.<br>
+                Free shipping above ₹499. Coffee sourced directly from farms across Coorg, Wayanad &amp; Araku Valley.
+              </div>
+              <div style="margin-top:0.75rem;font-size:0.73rem;color:var(--text3)">Display URL: <span style="color:var(--text2)">brewhaven.com/monsoon-collection</span></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Estimated Performance</div>
+            <div class="perf-row">
+              <div class="perf-tile"><div class="perf-tile-label">Impressions</div><div class="perf-tile-val">120K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Clicks</div><div class="perf-tile-val">8,400</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Avg. CTR</div><div class="perf-tile-val">7.0%</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Avg. CPC</div><div class="perf-tile-val">₹14.9</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Conversions</div><div class="perf-tile-val">1,390</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPA</div><div class="perf-tile-val">₹90</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meta Ads tile -->
+        <div class="ch-tile" onclick="toggleChannel('meta')">
+          <div class="ch-dot" style="background:#1877f2"></div>
+          <div class="ch-name">Meta Ads <span style="font-size:0.72rem;color:var(--text3)">(Facebook + Instagram)</span></div>
+          <div class="ch-status-dot"></div>
+          <span class="ch-platform">via Meta Ads Manager</span>
+          <div class="ch-pct-label">30%</div>
+          <div class="ch-amt-label">₹1.5L</div>
+          <span class="ch-expand-arrow" id="arrow-meta">▼</span>
+        </div>
+        <div class="channel-panel" id="panel-meta">
+          <div class="cp-inner">
+            <div class="cp-sub-title">Campaign Config</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Meta Objective</div><div class="cp-field-value strong">Sales (Conversions)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Budget Type</div><div class="cp-field-value">Campaign Budget Optimization (CBO)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Total Budget</div><div class="cp-field-value strong">₹1,50,000</div></div>
+              <div class="cp-field"><div class="cp-field-label">Attribution</div><div class="cp-field-value">7-day click + 1-day view</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Ad Sets Breakdown (3 ad sets)</div>
+            <div class="adset-cards">
+              <div class="adset-card">
+                <div class="adset-name">Ad Set 1 — Core Audience</div>
+                <div class="adset-row"><span>Budget share</span><span>40% · ₹60,000</span></div>
+                <div class="adset-row"><span>Audience type</span><span>Core (Interest + Demo)</span></div>
+                <div class="adset-row"><span>Age</span><span>25–44</span></div>
+                <div class="adset-row"><span>Interests</span><span>Coffee, Specialty Food, D2C</span></div>
+                <div class="adset-row"><span>Placements</span><span>Advantage+</span></div>
+                <div class="adset-row"><span>Bid strategy</span><span>Lowest cost</span></div>
+              </div>
+              <div class="adset-card">
+                <div class="adset-name">Ad Set 2 — Lookalike 1%</div>
+                <div class="adset-row"><span>Budget share</span><span>35% · ₹52,500</span></div>
+                <div class="adset-row"><span>Audience type</span><span>Lookalike — 1%</span></div>
+                <div class="adset-row"><span>Source</span><span>Existing customers</span></div>
+                <div class="adset-row"><span>Placements</span><span>Feed + Stories + Reels</span></div>
+                <div class="adset-row"><span>Bid strategy</span><span>Cost cap ₹90</span></div>
+              </div>
+              <div class="adset-card">
+                <div class="adset-name">Ad Set 3 — Retargeting</div>
+                <div class="adset-row"><span>Budget share</span><span>25% · ₹37,500</span></div>
+                <div class="adset-row"><span>Audience type</span><span>Custom — Site visitors 30d</span></div>
+                <div class="adset-row"><span>Source</span><span>Meta Pixel + CAPI</span></div>
+                <div class="adset-row"><span>Placements</span><span>Feed + Reels</span></div>
+                <div class="adset-row"><span>Bid strategy</span><span>Lowest cost</span></div>
+              </div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Ad Formats Selected</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Primary Format</div><div class="cp-field-value strong">Single Image + Video</div></div>
+              <div class="cp-field"><div class="cp-field-label">Feed Image</div><div class="cp-field-value">1200×628 · JPG · ≤30MB</div></div>
+              <div class="cp-field"><div class="cp-field-label">Stories / Reels</div><div class="cp-field-value">1080×1920 · MP4 · 9:16</div></div>
+              <div class="cp-field"><div class="cp-field-label">CTA Button</div><div class="cp-field-value strong">Shop Now</div></div>
+              <div class="cp-field"><div class="cp-field-label">Destination</div><div class="cp-field-value">brewhaven.com/monsoon-collection</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Pixel &amp; Tracking</div>
+            <div class="pixel-row"><span class="pixel-name">Meta Pixel</span><div class="pixel-status"><div class="dot-green"></div>Connected</div><span class="pixel-events">Purchase · ViewContent · AddToCart · InitiateCheckout</span></div>
+            <div class="pixel-row"><span class="pixel-name">Conversions API</span><div class="pixel-status"><div class="dot-green"></div>Connected</div><span class="pixel-events">Server-side events active</span></div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Estimated Performance</div>
+            <div class="perf-row">
+              <div class="perf-tile"><div class="perf-tile-label">Reach</div><div class="perf-tile-val">820K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Impressions</div><div class="perf-tile-val">2.9M</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Frequency</div><div class="perf-tile-val">3.5×</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Link Clicks</div><div class="perf-tile-val">18K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPM</div><div class="perf-tile-val">₹51</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Conversions</div><div class="perf-tile-val">2,100</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPA</div><div class="perf-tile-val">₹71</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">ROAS</div><div class="perf-tile-val">4.8×</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- YouTube tile -->
+        <div class="ch-tile" onclick="toggleChannel('youtube')">
+          <div class="ch-dot" style="background:#ef4444"></div>
+          <div class="ch-name">YouTube &amp; Video</div>
+          <div class="ch-status-dot" style="background:#f59e0b"></div>
+          <span class="ch-platform">via DV360</span>
+          <div class="ch-pct-label">20%</div>
+          <div class="ch-amt-label">₹1.0L</div>
+          <span class="ch-expand-arrow" id="arrow-youtube">▼</span>
+        </div>
+        <div class="channel-panel" id="panel-youtube">
+          <div class="cp-inner">
+            <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:0.6rem 1rem;font-size:0.76rem;color:#f59e0b;margin-bottom:0.75rem">⚠ Creative not uploaded — 15s TrueView video and 6s bumper ad required before execution</div>
+            <div class="cp-sub-title">DV360 Line Item Config</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Line Item Type</div><div class="cp-field-value">YouTube &amp; Partners — Video</div></div>
+              <div class="cp-field"><div class="cp-field-label">Pacing</div><div class="cp-field-value strong">Even</div></div>
+              <div class="cp-field"><div class="cp-field-label">Bid Strategy</div><div class="cp-field-value strong">Target CPV</div></div>
+              <div class="cp-field"><div class="cp-field-label">CPV Bid</div><div class="cp-field-value strong">₹0.45 per view</div></div>
+              <div class="cp-field"><div class="cp-field-label">Frequency Cap</div><div class="cp-field-value">5 views/user/week</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Ad Group Structure</div>
+            <table class="cp-table">
+              <tr><th>Ad Group</th><th>Format</th><th>Length</th><th>Bidding</th></tr>
+              <tr><td>Awareness — Skippable</td><td>TrueView In-Stream</td><td>30s</td><td>CPV ₹0.45</td></tr>
+              <tr><td>Product — Non-Skip</td><td>Non-Skippable In-Stream</td><td>15s max</td><td>CPM ₹220</td></tr>
+              <tr><td>Reminder — Bumper</td><td>Bumper Ad</td><td>6s max</td><td>CPM ₹180</td></tr>
+            </table>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Targeting</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Affinity</div><div class="cp-field-value">Food &amp; Dining Enthusiasts, Foodies</div></div>
+              <div class="cp-field"><div class="cp-field-label">In-Market</div><div class="cp-field-value">Food &amp; Grocery, Beverages</div></div>
+              <div class="cp-field"><div class="cp-field-label">Demographics</div><div class="cp-field-value">25–44, All genders</div></div>
+              <div class="cp-field"><div class="cp-field-label">Remarketing</div><div class="cp-field-value">Site visitors (30d), Cart abandoners</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Estimated Performance</div>
+            <div class="perf-row">
+              <div class="perf-tile"><div class="perf-tile-label">Impressions</div><div class="perf-tile-val">1.8M</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Views</div><div class="perf-tile-val">55K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">VTR</div><div class="perf-tile-val">38%</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPV</div><div class="perf-tile-val">₹0.48</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPM</div><div class="perf-tile-val">₹55</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Unique Reach</div><div class="perf-tile-val">620K</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOOH tile -->
+        <div class="ch-tile" onclick="toggleChannel('dooh')">
+          <div class="ch-dot" style="background:#8b5cf6"></div>
+          <div class="ch-name">Digital Out-of-Home (DOOH)</div>
+          <div class="ch-status-dot"></div>
+          <span class="ch-platform">via DV360 / JustBaat</span>
+          <div class="ch-pct-label">15%</div>
+          <div class="ch-amt-label">₹0.75L</div>
+          <span class="ch-expand-arrow" id="arrow-dooh">▼</span>
+        </div>
+        <div class="channel-panel" id="panel-dooh">
+          <div class="cp-inner">
+            <div class="cp-sub-title">Line Item Config</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Inventory Source</div><div class="cp-field-value strong">PMP — JustBaat DOOH Network</div></div>
+              <div class="cp-field"><div class="cp-field-label">Bid Type</div><div class="cp-field-value">CPM (per 1000 screen impressions)</div></div>
+              <div class="cp-field"><div class="cp-field-label">CPM Bid</div><div class="cp-field-value strong">₹85 per 1000</div></div>
+              <div class="cp-field"><div class="cp-field-label">Dayparting</div><div class="cp-field-value strong">Evening (5pm–10pm) + Morning (8am–11am)</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Screen Inventory — Selected Screens</div>
+            <div class="screen-table-wrap">
+              <table class="screen-table">
+                <tr>
+                  <th>✓</th><th>Screen ID</th><th>Name / Location</th><th>City</th><th>Type</th><th>Size</th><th>Plays/day</th><th>Est.Imp/day</th><th>Rate/day</th><th>Days</th><th>Total Cost</th>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="screen-check" checked></td>
+                  <td>SCR-001</td><td>MG Road LED Billboard</td><td>Bengaluru</td><td>Roadside</td><td>20×10 ft</td><td>60</td><td>45,000</td><td>₹8,000</td><td>14</td><td>₹1,12,000</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="screen-check" checked></td>
+                  <td>SCR-002</td><td>Phoenix Mall Atrium</td><td>Mumbai</td><td>Mall</td><td>8×4 ft</td><td>120</td><td>22,000</td><td>₹5,500</td><td>14</td><td>₹77,000</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="screen-check"></td>
+                  <td>SCR-003</td><td>T2 Arrival Hall</td><td>Mumbai</td><td>Airport</td><td>6×3 ft</td><td>80</td><td>18,000</td><td>₹9,000</td><td>14</td><td>₹1,26,000</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="screen-check" checked></td>
+                  <td>SCR-004</td><td>BMTC Bus Shelter MG Rd</td><td>Bengaluru</td><td>Transit</td><td>4×2 ft</td><td>180</td><td>12,000</td><td>₹1,200</td><td>14</td><td>₹16,800</td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" class="screen-check"></td>
+                  <td>SCR-005</td><td>Forum Mall Elevator</td><td>Bengaluru</td><td>Mall/Lift</td><td>22″</td><td>240</td><td>6,000</td><td>₹800</td><td>14</td><td>₹11,200</td>
+                </tr>
+              </table>
+            </div>
+            <div class="dooh-summary-bar">
+              <span>3 screens selected</span>
+              <span>Budget: <strong>₹75,000</strong></span>
+              <span>Total plays: <strong>~5,040</strong></span>
+              <span>Est. impressions: <strong>~11.1M</strong></span>
+              <span>Avg. SOV: <strong>~8.3%</strong></span>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Creative Requirements</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Landscape Screens</div><div class="cp-field-value">1920×1080 · MP4 or JPEG · ≤5MB · 10s loop</div></div>
+              <div class="cp-field"><div class="cp-field-label">Portrait Screens</div><div class="cp-field-value">1080×1920 · MP4 or JPEG · ≤5MB · 10s loop</div></div>
+              <div class="cp-field"><div class="cp-field-label">Audio</div><div class="cp-field-value" style="color:#f59e0b">No audio — screens are muted in public venues</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Estimated Performance</div>
+            <div class="perf-row">
+              <div class="perf-tile"><div class="perf-tile-label">Active Screens</div><div class="perf-tile-val">3</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Total Play Slots</div><div class="perf-tile-val">5,040</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Est. Impressions</div><div class="perf-tile-val">11.1M</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Avg. SOV</div><div class="perf-tile-val">8.3%</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPM (OOH)</div><div class="perf-tile-val">₹6.8</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTV tile -->
+        <div class="ch-tile" onclick="toggleChannel('ctv')">
+          <div class="ch-dot" style="background:#22c55e"></div>
+          <div class="ch-name">Connected TV (CTV)</div>
+          <div class="ch-status-dot" style="background:#f59e0b"></div>
+          <span class="ch-platform">via DV360</span>
+          <div class="ch-pct-label">10%</div>
+          <div class="ch-amt-label">₹0.5L</div>
+          <span class="ch-expand-arrow" id="arrow-ctv">▼</span>
+        </div>
+        <div class="channel-panel" id="panel-ctv">
+          <div class="cp-inner">
+            <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:0.6rem 1rem;font-size:0.76rem;color:#f59e0b;margin-bottom:0.75rem">⚠ Creative required — 1920×1080 MP4 video, 15s or 30s. No CTA click on CTV — include landing page URL in end card.</div>
+            <div class="cp-sub-title">DV360 Line Item Config</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Line Item Type</div><div class="cp-field-value">Video → Connected TV</div></div>
+              <div class="cp-field"><div class="cp-field-label">Inventory Source</div><div class="cp-field-value">PMP deals — OTT publishers</div></div>
+              <div class="cp-field"><div class="cp-field-label">Bid Strategy</div><div class="cp-field-value strong">Target CPM</div></div>
+              <div class="cp-field"><div class="cp-field-label">CPM Bid</div><div class="cp-field-value strong">₹280 per 1000</div></div>
+              <div class="cp-field"><div class="cp-field-label">Frequency Cap</div><div class="cp-field-value">3 per household/week</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Publishers (via PMP Deal IDs)</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Confirmed Publishers</div><div class="cp-field-value">JioCinema, Hotstar (Disney+), SonyLIV</div></div>
+              <div class="cp-field"><div class="cp-field-label">Targeting</div><div class="cp-field-value">Lifestyle &amp; Food content genre · Hindi + English</div></div>
+              <div class="cp-field"><div class="cp-field-label">Device</div><div class="cp-field-value">Connected TV only (Smart TV + streaming devices)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Geo</div><div class="cp-field-value">Mumbai, Bengaluru, Pune (IP-based HH targeting)</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Creative Spec</div>
+            <div class="cp-row">
+              <div class="cp-field"><div class="cp-field-label">Format</div><div class="cp-field-value">MP4 or MOV</div></div>
+              <div class="cp-field"><div class="cp-field-label">Resolution</div><div class="cp-field-value strong">1920×1080 Full HD</div></div>
+              <div class="cp-field"><div class="cp-field-label">Aspect Ratio</div><div class="cp-field-value strong">16:9 mandatory</div></div>
+              <div class="cp-field"><div class="cp-field-label">Duration</div><div class="cp-field-value">15s or 30s</div></div>
+              <div class="cp-field"><div class="cp-field-label">Audio</div><div class="cp-field-value">Stereo AAC · Normalized to -14 LUFS</div></div>
+              <div class="cp-field"><div class="cp-field-label">Captions</div><div class="cp-field-value">SRT file recommended</div></div>
+            </div>
+            <div class="cp-divider"></div>
+            <div class="cp-sub-title">Estimated Performance</div>
+            <div class="perf-row">
+              <div class="perf-tile"><div class="perf-tile-label">Impressions</div><div class="perf-tile-val">540K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Unique HH Reach</div><div class="perf-tile-val">180K</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Avg. Frequency</div><div class="perf-tile-val">3.0×</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">CPM</div><div class="perf-tile-val">₹280</div></div>
+              <div class="perf-tile"><div class="perf-tile-label">Completion Rate</div><div class="perf-tile-val">94%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 5: AUDIENCE SEGMENTS -->
+  <div class="section-block">
+    <div class="section-heading clickable" onclick="toggleSection('audience')">
+      <span class="sh-label">👥 Audience Segments</span>
+      <span class="sh-toggle open" id="toggle-audience">▲</span>
+    </div>
+    <div class="collapsible-body expanded" id="body-audience">
+      <div class="info-card">
+        <table class="seg-table">
+          <tr><th>Segment</th><th>Source</th><th>Est. Size</th><th>Channels</th><th>Method</th></tr>
+          <tr>
+            <td>Coffee Enthusiasts — Urban 25–40</td>
+            <td>Google / Meta Platform</td>
+            <td>2.8M (IN)</td>
+            <td><span class="seg-badge">Search</span><span class="seg-badge">Meta</span><span class="seg-badge">YouTube</span></td>
+            <td>Interest + In-market</td>
+          </tr>
+          <tr>
+            <td>WFH Professionals — Bengaluru</td>
+            <td>Meta Platform</td>
+            <td>480K</td>
+            <td><span class="seg-badge">Meta</span></td>
+            <td>Core Demographic + Behavior</td>
+          </tr>
+          <tr>
+            <td>Lookalike — BrewHaven Customers 1%</td>
+            <td>First-party (CRM)</td>
+            <td>1.2M (IN)</td>
+            <td><span class="seg-badge">Meta</span></td>
+            <td>Lookalike</td>
+          </tr>
+          <tr>
+            <td>Site Visitors — Last 30 Days</td>
+            <td>Meta Pixel + Google Tag</td>
+            <td>42K</td>
+            <td><span class="seg-badge">Meta Retargeting</span><span class="seg-badge">Display</span></td>
+            <td>Custom Audience (Pixel)</td>
+          </tr>
+          <tr>
+            <td>In-Market: Food &amp; Grocery</td>
+            <td>Google DV360 Segment</td>
+            <td>3.1M (IN)</td>
+            <td><span class="seg-badge">YouTube</span><span class="seg-badge">CTV</span></td>
+            <td>In-market Segment</td>
+          </tr>
+        </table>
+        <div style="margin-top:1rem;display:flex;gap:2rem;font-size:0.78rem;color:var(--text3);flex-wrap:wrap">
+          <span>Customer list uploaded: <strong style="color:#22c55e">✓ Yes</strong></span>
+          <span>Meta Pixel: <strong style="color:#22c55e">✓ Active</strong></span>
+          <span>Google Tag (GA4): <strong style="color:#22c55e">✓ Active</strong></span>
+          <span>App events: <strong style="color:#ef4444">✗ Not configured</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 6: BRAND SAFETY -->
+  <div class="section-block">
+    <div class="section-heading clickable" onclick="toggleSection('safety')">
+      <span class="sh-label">🛡 Brand Safety &amp; Content Exclusions</span>
+      <span class="sh-toggle open" id="toggle-safety">▲</span>
+    </div>
+    <div class="collapsible-body expanded" id="body-safety">
+      <div class="info-card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.75rem">Content Category Exclusions</div>
+            <div class="safety-toggles">
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Tragedy &amp; Conflict</div>
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Sensitive Social Issues</div>
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Sexually Suggestive</div>
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Profanity &amp; Crude Language</div>
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Crime &amp; Violence</div>
+              <div class="safety-toggle"><span class="safety-check on">✓</span>Drugs &amp; Tobacco</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.75rem">Settings</div>
+            <div class="cp-row" style="gap:0.65rem">
+              <div class="cp-field"><div class="cp-field-label">Safety Level</div><div class="cp-field-value strong" style="color:#22c55e">Enhanced (inherited from brand)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Viewability Min.</div><div class="cp-field-value">70% pixels visible for 2+ seconds</div></div>
+              <div class="cp-field"><div class="cp-field-label">3rd-Party Verification</div><div class="cp-field-value">DoubleVerify (DV)</div></div>
+              <div class="cp-field"><div class="cp-field-label">Publisher Blocklist</div><div class="cp-field-value">Agency default (312 domains) + Brand additions</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 7: TRACKING & MEASUREMENT -->
+  <div class="section-block">
+    <div class="section-heading clickable" onclick="toggleSection('tracking')">
+      <span class="sh-label">📡 Tracking &amp; Measurement</span>
+      <span class="sh-toggle open" id="toggle-tracking">▲</span>
+    </div>
+    <div class="collapsible-body expanded" id="body-tracking">
+      <div class="info-card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.65rem">Pixel / Tag Status</div>
+            <div class="pixel-row"><span class="pixel-name">Meta Pixel</span><div class="pixel-status"><div class="dot-green"></div>Active</div><span class="pixel-events">Purchase · ViewContent · AddToCart · InitiateCheckout</span></div>
+            <div class="pixel-row"><span class="pixel-name">Conversions API (CAPI)</span><div class="pixel-status"><div class="dot-green"></div>Active</div><span class="pixel-events">Server-side events bridging</span></div>
+            <div class="pixel-row"><span class="pixel-name">Google Tag (GA4)</span><div class="pixel-status"><div class="dot-green"></div>Active</div><span class="pixel-events">purchase · add_to_cart · view_item · begin_checkout</span></div>
+            <div class="pixel-row"><span class="pixel-name">DV360 Floodlight</span><div class="pixel-status"><div class="dot-red"></div>Not configured</div><span class="pixel-events" style="color:#ef4444">Required for CTV &amp; YouTube attribution</span></div>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.65rem">Conversion Events</div>
+            <table class="cp-table">
+              <tr><th>Event</th><th>Platform</th><th>Value</th></tr>
+              <tr><td>Purchase</td><td>Meta + Google Ads</td><td>Dynamic (AOV)</td></tr>
+              <tr><td>Add to Cart</td><td>Meta</td><td>Dynamic</td></tr>
+              <tr><td>Lead / Signup</td><td>Meta + Gads</td><td>₹500</td></tr>
+              <tr><td>View Product</td><td>Meta</td><td>—</td></tr>
+            </table>
+            <div style="margin-top:0.85rem;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.45rem">UTM Convention</div>
+            <div style="font-size:0.75rem;color:var(--text3);line-height:1.8">
+              <span style="color:var(--text2)">utm_source:</span> google / meta / dv360 / dooh<br>
+              <span style="color:var(--text2)">utm_medium:</span> cpc / cpm / video / display / social<br>
+              <span style="color:var(--text2)">utm_campaign:</span> brewhaven-monsoon-launch-q2<br>
+              <span style="color:var(--text2)">utm_content:</span> [creative ID auto-filled]
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 8: CREATIVE REQUIREMENTS -->
+  <div class="section-block">
+    <div class="section-heading clickable" onclick="toggleSection('creatives')">
+      <span class="sh-label">🎨 Creative Requirements Summary</span>
+      <span style="font-size:0.7rem;color:#ef4444;font-weight:500;text-transform:none;letter-spacing:0">⚠ 12 of 15 assets missing</span>
+      <span class="sh-toggle open" id="toggle-creatives">▲</span>
+    </div>
+    <div class="collapsible-body expanded" id="body-creatives">
+      <div class="info-card">
+        <div style="overflow-x:auto">
+          <table class="creative-table">
+            <tr><th>Asset</th><th>Channel</th><th>Format</th><th>Size / Spec</th><th>Status</th><th></th></tr>
+            <tr><td>RSA Headlines (15)</td><td>Search</td><td>Text</td><td>30 chars each</td><td><span class="cr-uploaded">✓ 15/15</span></td><td></td></tr>
+            <tr><td>RSA Descriptions (4)</td><td>Search</td><td>Text</td><td>90 chars each</td><td><span class="cr-uploaded">✓ 4/4</span></td><td></td></tr>
+            <tr><td>Feed Image</td><td>Meta</td><td>JPG/PNG</td><td>1200×628 px · ≤30MB</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Square Image</td><td>Meta</td><td>JPG/PNG</td><td>1080×1080 px · ≤30MB</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Stories / Reels Image</td><td>Meta</td><td>JPG/PNG</td><td>1080×1920 px · ≤30MB</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Feed Video (1:1)</td><td>Meta</td><td>MP4/MOV</td><td>1080×1080 · ≤4GB · 15–30s</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Reels Video (9:16)</td><td>Meta</td><td>MP4/MOV</td><td>1080×1920 · ≤4GB · 15–30s</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>TrueView In-Stream 30s</td><td>YouTube</td><td>MP4</td><td>1920×1080 · 16:9 · 30s</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Non-Skippable 15s</td><td>YouTube</td><td>MP4</td><td>1920×1080 · 16:9 · ≤15s</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>Bumper Ad 6s</td><td>YouTube</td><td>MP4</td><td>1920×1080 · 16:9 · ≤6s</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>CTV Pre-roll 30s</td><td>CTV</td><td>MP4</td><td>1920×1080 · 16:9 · 30s · Stereo AAC -14 LUFS</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>DOOH Landscape</td><td>DOOH</td><td>MP4/JPEG</td><td>1920×1080 · ≤5MB · 10s loop · No audio</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+            <tr><td>DOOH Portrait</td><td>DOOH</td><td>MP4/JPEG</td><td>1080×1920 · ≤5MB · 10s loop · No audio</td><td><span class="cr-missing">✗ Not uploaded</span></td><td><button class="btn-upload">Upload</button></td></tr>
+          </table>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button class="plan-act-btn btn-ghost-sm">⬆ Bulk Upload</button>
+          <button class="plan-act-btn btn-ghost-sm">⬇ Download Creative Brief PDF</button>
+          <button class="plan-act-btn btn-ghost-sm">📩 Request from Studio</button>
+        </div>
+        <div style="margin-top:0.85rem">
+          <div style="font-size:0.72rem;color:var(--text3);margin-bottom:5px">Overall completion: 3 / 15 assets</div>
+          <div class="progress-bar-wrap" style="height:6px;max-width:400px">
+            <div class="progress-bar" style="width:20%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 9: ASSUMPTIONS LOG -->
+  <div class="section-block">
+    <div class="section-heading clickable" onclick="toggleSection('assumptions')">
+      <span class="sh-label">⚠ Assumption Log</span>
+      <span class="sh-toggle open" id="toggle-assumptions">▲</span>
+    </div>
+    <div class="collapsible-body expanded" id="body-assumptions">
+      <div class="info-card">
+        <div class="assumption-rows">
+          <div class="assumption-row">
+            <div class="assumption-text">CPA target set to ₹90 based on category benchmark for D2C food &amp; beverage in India. Adjust if brand has historical data showing a different baseline.</div>
+            <div class="assumption-source">Category benchmark</div>
+            <span class="conf-pill conf-med">Medium</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">Average order value assumed ₹340 based on BrewHaven brand profile. Used for ROAS calculation. Update if AOV has changed recently.</div>
+            <div class="assumption-source">Brand profile</div>
+            <span class="conf-pill conf-high">High</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">Even pacing applied across all 14 flight days. Front-loaded pacing recommended if product stock is limited at launch date.</div>
+            <div class="assumption-source">Platform default</div>
+            <span class="conf-pill conf-high">High</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">60% mobile / 40% desktop traffic split assumed based on India D2C market norms for food &amp; beverage category in May 2026.</div>
+            <div class="assumption-source">India market norm</div>
+            <span class="conf-pill conf-high">High</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">Frequency cap set to 3 impressions/user/day based on BrewHaven brand profile default. Can be increased for awareness-heavy campaigns.</div>
+            <div class="assumption-source">Brand profile</div>
+            <span class="conf-pill conf-high">High</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">Meta CPM estimated at ₹51 based on India Q2 2026 benchmarks for Food &amp; Beverage category in the selected geographies.</div>
+            <div class="assumption-source">India Q2 benchmark</div>
+            <span class="conf-pill conf-med">Medium</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">No first-party audience uploaded for DV360. YouTube &amp; CTV targeting will rely on platform affinity and in-market segments until Floodlight is configured.</div>
+            <div class="assumption-source">Derived from plan data</div>
+            <span class="conf-pill conf-med">Medium</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">DV360 Floodlight not yet configured. CTV and YouTube attribution will be incomplete until Floodlight tag is set up. Priority action before accepting plan.</div>
+            <div class="assumption-source">Tracking audit</div>
+            <span class="conf-pill" style="background:rgba(239,68,68,0.1);color:#ef4444">Action needed</span>
+          </div>
+          <div class="assumption-row">
+            <div class="assumption-text">Geo limited to Mumbai, Bengaluru, and Pune based on brand profile city preferences and budget. Budget is insufficient to cover all Tier 1 cities at this CPM level.</div>
+            <div class="assumption-source">Derived from budget</div>
+            <span class="conf-pill conf-high">High</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const brandId = params.get('brand') || 'brewhaven';
+  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const campaignId = params.get('campaign') || '';
+  const campaignName = decodeURIComponent(params.get('cname') || 'Monsoon Collection Launch');
+  const planVersion = params.get('v') || '1';
+  const planName = decodeURIComponent(params.get('plan') || brandName + ' — Campaign Plan v' + planVersion);
+
+  document.getElementById('navBrandLink').textContent = brandName;
+  document.getElementById('navBrandLink').href = `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  document.getElementById('navCampaignLink').textContent = campaignName;
+  document.getElementById('navCampaignLink').href = `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`;
+  document.getElementById('navPlanName').textContent = 'Plan v' + planVersion;
+  document.getElementById('planTitle').textContent = planName;
+  document.getElementById('metaBrand').textContent = brandName;
+  document.getElementById('metaCampaign').textContent = campaignName;
+  document.title = `Plan v${planVersion} — ${campaignName} — 360 Platform`;
+
+  // Channel accordion
+  function toggleChannel(id) {
+    const tile = document.querySelector(`[onclick="toggleChannel('${id}')"]`);
+    const panel = document.getElementById('panel-' + id);
+    const arrow = document.getElementById('arrow-' + id);
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    tile.classList.toggle('active', !isOpen);
+    arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+    arrow.style.color = isOpen ? '' : 'var(--blue)';
+  }
+
+  // Section collapsible
+  function toggleSection(id) {
+    const body = document.getElementById('body-' + id);
+    const toggle = document.getElementById('toggle-' + id);
+    const isExpanded = body.classList.contains('expanded');
+    body.classList.toggle('expanded', !isExpanded);
+    body.classList.toggle('collapsed', isExpanded);
+    toggle.classList.toggle('open', !isExpanded);
+    toggle.textContent = isExpanded ? '▼' : '▲';
+  }
+
+  function goBackToBuilder() {
+    window.location.href = `campaign-quick.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&campaign=${campaignId}&cname=${encodeURIComponent(campaignName)}`;
+  }
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

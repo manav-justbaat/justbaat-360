@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Onboarding - 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+    
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      color: #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step.active .step-number {
+      background: #1976d2;
+      color: #fff;
+    }
+    
+    .step.completed .step-number {
+      background: #4caf50;
+      color: #fff;
+    }
+    
+    .step-label {
+      font-size: 0.85rem;
+      color: #666;
+      text-align: center;
+      max-width: 100px;
+    }
+    
+    .step.active .step-label {
+      color: #1976d2;
+      font-weight: 500;
+    }
+    
+    .step-content {
+      display: none;
+    }
+    
+    .step-content.active {
+      display: block;
+    }
+    
+    .progress-bar {
+      background: #e0e0e0;
+      height: 4px;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      background: #1976d2;
+      height: 100%;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>360 Media Planning Platform</h1>
+    <div class="mode-toggle" id="modeToggle">
+      <button class="mode-btn active" data-mode="demo">🏷️ Demo (Prefilled)</button>
+      <button class="mode-btn" data-mode="empty">🏢 Interactive (Empty)</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+      <a href="index.html" class="btn btn-secondary" style="text-decoration: none;">← Back to Dashboard</a>
+      <span style="color: #666; font-size: 0.9rem;" id="modeLabel">Demo Mode - Sample Brand Profile</span>
+    </div>
+
+    <div style="max-width: 800px; margin: 0 auto;">
+      
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 14%;"></div>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">Brand Basics</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Competitive Context</div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-label">Audience Personas</div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-label">Channel Preferences</div>
+        </div>
+        <div class="step" data-step="5">
+          <div class="step-number">5</div>
+          <div class="step-label">Budget Habits</div>
+        </div>
+        <div class="step" data-step="6">
+          <div class="step-number">6</div>
+          <div class="step-label">Default Exclusions</div>
+        </div>
+        <div class="step" data-step="7">
+          <div class="step-number">7</div>
+          <div class="step-label">Review & Save</div>
+        </div>
+      </div>
+
+      <!-- Step Content -->
+      <div style="background: #fff; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        
+        <!-- Step 1: Brand Basics -->
+        <div class="step-content active" id="step-1">
+          <h2 style="margin-bottom: 1rem;">Step 1: Brand Basics</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Tell us about your brand and how you present it to the world.</p>
+          
+          <form>
+            <div class="form-group">
+              <label>Brand Name</label>
+              <input type="text" id="brandName" placeholder="Your brand name" value="">
+            </div>
+            
+            <div class="form-group">
+              <label>Website URL</label>
+              <input type="url" id="website" placeholder="https://yourbrand.com" value="">
+            </div>
+            
+            <div class="form-group">
+              <label>Industry / Category</label>
+              <select id="industry">
+                <option value="">Select category...</option>
+                <option value="Fashion">Fashion & Apparel</option>
+                <option value="Beauty">Beauty & Cosmetics</option>
+                <option value="Tech">Technology</option>
+                <option value="Food">Food & Beverage</option>
+                <option value="Home">Home & Living</option>
+                <option value="Health">Health & Wellness</option>
+                <option value="Travel">Travel & Hospitality</option>
+                <option value="Finance">Finance & Insurance</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Brand Description (max 500 characters)</label>
+              <textarea id="description" placeholder="What does your brand do? What makes it unique?" style="resize: vertical; height: 100px;"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>Brand Tone (select up to 4)</label>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Professional
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Friendly
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Premium
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Edgy
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Local
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                  <input type="checkbox"> Global
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Market Scope</label>
+              <select id="marketScope">
+                <option value="">Select scope...</option>
+                <option value="Local">Local (Single City)</option>
+                <option value="Regional">Regional (State/Province)</option>
+                <option value="National">National</option>
+                <option value="International">International</option>
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 2: Competitive Context -->
+        <div class="step-content" id="step-2">
+          <h2 style="margin-bottom: 1rem;">Step 2: Competitive Context</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Help us understand your market position and main competitors.</p>
+          
+          <form>
+            <div class="form-group">
+              <label>Primary Competitors (up to 5)</label>
+              <textarea id="competitors" placeholder="List your main competitors, one per line" style="height: 100px;"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>What Makes Your Brand Different?</label>
+              <textarea id="differentiator" placeholder="Your unique value proposition" style="height: 100px;"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>Market Position</label>
+              <select id="position">
+                <option value="">Select position...</option>
+                <option value="Premium">Premium (High-end, exclusive)</option>
+                <option value="MidMarket">Mid-market (Balance of quality & price)</option>
+                <option value="Value">Value (Affordable, good quality)</option>
+                <option value="MassMasket">Mass-market (Budget-friendly)</option>
+              </select>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+              <p style="font-size: 0.9rem; color: #1976d2;">
+                <strong>💡 AI Insight:</strong> Based on competitors in Fashion, brands typically allocate 40% to mobile, 30% web, 20% DOOH, and 10% CTV.
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 3: Audience Personas -->
+        <div class="step-content" id="step-3">
+          <h2 style="margin-bottom: 1rem;">Step 3: Audience Personas (up to 3)</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Define the key audiences you want to reach.</p>
+          
+          <form>
+            <!-- Persona 1 -->
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 6px; margin-bottom: 1rem;">
+              <h4 style="margin-bottom: 1rem;">Persona 1</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Persona Name</label>
+                  <input type="text" placeholder="e.g., Young Professional">
+                </div>
+                <div class="form-group">
+                  <label>Age Range</label>
+                  <input type="text" placeholder="e.g., 18-35">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Key Interests</label>
+                <input type="text" placeholder="Fashion, Sustainability, Travel">
+              </div>
+            </div>
+
+            <!-- Persona 2 -->
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 6px; margin-bottom: 1rem;">
+              <h4 style="margin-bottom: 1rem;">Persona 2 (Optional)</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Persona Name</label>
+                  <input type="text" placeholder="e.g., Conscious Consumer">
+                </div>
+                <div class="form-group">
+                  <label>Age Range</label>
+                  <input type="text" placeholder="e.g., 28-45">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Key Interests</label>
+                <input type="text" placeholder="Sustainability, Quality, Local">
+              </div>
+            </div>
+
+            <!-- Persona 3 -->
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 6px;">
+              <h4 style="margin-bottom: 1rem;">Persona 3 (Optional)</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Persona Name</label>
+                  <input type="text" placeholder="e.g., Gift Buyer">
+                </div>
+                <div class="form-group">
+                  <label>Age Range</label>
+                  <input type="text" placeholder="e.g., 35-55">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Key Interests</label>
+                <input type="text" placeholder="Quality, Gifting, Luxury">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 4: Channel Preferences -->
+        <div class="step-content" id="step-4">
+          <h2 style="margin-bottom: 1rem;">Step 4: Channel Preferences</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Tell us your preferred channels and any you'd like to avoid.</p>
+          
+          <form>
+            <div class="form-group">
+              <label>Preferred Channel Ranking (drag to reorder)</label>
+              <div style="background: #f5f5f5; padding: 1rem; border-radius: 6px; space-y: 0.5rem;">
+                <div style="background: #fff; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; cursor: move;">
+                  📱 Mobile/Apps
+                </div>
+                <div style="background: #fff; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; cursor: move;">
+                  🌐 Web
+                </div>
+                <div style="background: #fff; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 4px; cursor: move;">
+                  🖼️ DOOH
+                </div>
+                <div style="background: #fff; padding: 0.75rem; border-radius: 4px; cursor: move;">
+                  📺 CTV
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Channels to Avoid (if any)</label>
+              <div>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; margin-bottom: 0.5rem;">
+                  <input type="checkbox"> DOOH
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal; margin-bottom: 0.5rem;">
+                  <input type="checkbox"> CTV
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal;">
+                  <input type="checkbox"> Web
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Min/Max Budget Allocation per Channel (%)</label>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div>
+                  <label style="font-size: 0.85rem; color: #666;">Mobile Min/Max</label>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <input type="number" placeholder="Min" style="width: 60px;">
+                    <input type="number" placeholder="Max" style="width: 60px;">
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size: 0.85rem; color: #666;">Web Min/Max</label>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <input type="number" placeholder="Min" style="width: 60px;">
+                    <input type="number" placeholder="Max" style="width: 60px;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 5: Budget Habits -->
+        <div class="step-content" id="step-5">
+          <h2 style="margin-bottom: 1rem;">Step 5: Budget & Spending Habits</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Help us understand your typical budget patterns.</p>
+          
+          <form>
+            <div class="form-group">
+              <label>Typical Campaign Budget</label>
+              <select>
+                <option value="">Select range...</option>
+                <option value="Small">₹1L - ₹10L (Small)</option>
+                <option value="Medium">₹10L - ₹50L (Medium)</option>
+                <option value="Large">₹50L - ₹1Cr (Large)</option>
+                <option value="Enterprise">₹1Cr+ (Enterprise)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Typical Campaign Duration</label>
+              <select>
+                <option value="">Select typical duration...</option>
+                <option value="Short">1-5 days (Flash sales, events)</option>
+                <option value="Medium">6-14 days (Standard campaigns)</option>
+                <option value="Long">15-30 days (Seasonal campaigns)</option>
+                <option value="VeryLong">30+ days (Ongoing/brand campaigns)</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Preferred Pacing Strategy</label>
+              <select>
+                <option value="">Select strategy...</option>
+                <option value="Even">Even (Spread budget evenly)</option>
+                <option value="Front">Front-loaded (Spend more upfront)</option>
+                <option value="Back">Back-loaded (Spend more at end)</option>
+                <option value="ASAP">ASAP (Spend as fast as possible)</option>
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 6: Default Exclusions -->
+        <div class="step-content" id="step-6">
+          <h2 style="margin-bottom: 1rem;">Step 6: Default Exclusions</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Set default brand safety settings and exclusions for all campaigns.</p>
+          
+          <form>
+            <div class="form-group">
+              <label>Brand Safety Level</label>
+              <select>
+                <option value="Standard">Standard</option>
+                <option value="Enhanced">Enhanced</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Content Categories to Avoid</label>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                <label style="display: flex; gap: 0.5rem; font-weight: normal;">
+                  <input type="checkbox"> Violence & Warfare
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal;">
+                  <input type="checkbox"> Adult Content
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal;">
+                  <input type="checkbox"> Controversial Politics
+                </label>
+                <label style="display: flex; gap: 0.5rem; font-weight: normal;">
+                  <input type="checkbox"> Illegal Activities
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Site/App Blocklist</label>
+              <textarea id="blocklist" placeholder="Bad site URLs or app names (one per line)" style="height: 80px;"></textarea>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 7: Review & Save -->
+        <div class="step-content" id="step-7">
+          <h2 style="margin-bottom: 1rem;">Step 7: Review & Save Brand Profile</h2>
+          <p style="color: #666; margin-bottom: 1.5rem;">Review your brand profile before saving.</p>
+          
+          <div style="background: #f0f7ff; padding: 1.5rem; border-radius: 6px; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1rem; margin-bottom: 1rem; color: #1976d2;">Brand Profile Summary</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.95rem;">
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Brand Name</p>
+                <p style="font-weight: 500;">StepRight</p>
+              </div>
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Category</p>
+                <p style="font-weight: 500;">Fashion & Apparel</p>
+              </div>
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Market Position</p>
+                <p style="font-weight: 500;">Premium</p>
+              </div>
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Scope</p>
+                <p style="font-weight: 500;">National</p>
+              </div>
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Primary Channels</p>
+                <p style="font-weight: 500;">Mobile → Web → DOOH → CTV</p>
+              </div>
+              <div>
+                <p style="color: #666; margin-bottom: 0.25rem;">Typical Budget</p>
+                <p style="font-weight: 500;">₹10L - ₹50L</p>
+              </div>
+            </div>
+          </div>
+          
+          <div style="background: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #4caf50;">
+            <p style="color: #2e7d32; font-size: 0.95rem;">
+              ✓ <strong>Profile Complete!</strong> This profile will be used to personalize all future campaigns for StepRight, making planning faster and smarter.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="btn-group" style="margin-top: 2rem; justify-content: space-between;">
+        <button class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">← Previous</button>
+        <button class="btn btn-secondary" id="skipBtn" onclick="skipOnboarding()">Skip for Now</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next →</button>
+        <button class="btn btn-success" id="saveBtn" onclick="saveProfile()" style="display: none;">✓ Save Profile</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentMode = urlParams.get('mode') || 'demo';
+    let currentStep = 1;
+
+    function init() {
+      setupModeToggle();
+      if (currentMode === 'demo') {
+        loadDemoData();
+      }
+    }
+
+    function setupModeToggle() {
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const mode = this.dataset.mode;
+          window.location.href = `brand-onboarding.html?mode=${mode}`;
+        });
+      });
+      
+      if (currentMode === 'demo') {
+        document.getElementById('modeLabel').textContent = '🏷️ Demo Mode - Sample Brand Profile';
+        document.querySelector('[data-mode="demo"]').classList.add('active');
+      } else {
+        document.getElementById('modeLabel').textContent = '🏢 Interactive Mode - Create Your Brand Profile';
+        document.querySelector('[data-mode="empty"]').classList.add('active');
+      }
+    }
+
+    function loadDemoData() {
+      // Populate demo values
+      document.getElementById('brandName').value = 'StepRight';
+      document.getElementById('website').value = 'https://stepright.com';
+      document.getElementById('industry').value = 'Fashion';
+      document.getElementById('description').value = 'Premium handmade sustainable footwear brand targeting fashion-conscious consumers who value quality and ethical production.';
+      document.getElementById('marketScope').value = 'National';
+    }
+
+    function updateProgress() {
+      const progress = (currentStep / 7) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function updateStepperUI() {
+      document.querySelectorAll('.step').forEach((step, idx) => {
+        const stepNum = idx + 1;
+        step.classList.remove('active', 'completed');
+        if (stepNum === currentStep) {
+          step.classList.add('active');
+        } else if (stepNum < currentStep) {
+          step.classList.add('completed');
+        }
+      });
+      
+      document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`step-${currentStep}`).classList.add('active');
+      
+      // Update button visibility
+      document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+      document.getElementById('nextBtn').style.display = currentStep < 7 ? 'block' : 'none';
+      document.getElementById('saveBtn').style.display = currentStep === 7 ? 'block' : 'none';
+      
+      updateProgress();
+    }
+
+    function nextStep() {
+      if (currentStep < 7) {
+        currentStep++;
+        updateStepperUI();
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepperUI();
+      }
+    }
+
+    function skipOnboarding() {
+      if (confirm('Skip brand onboarding? You can always complete it later.')) {
+        window.location.href = 'index.html';
+      }
+    }
+
+    function saveProfile() {
+      alert('✓ Brand profile saved! You can now create campaigns for this brand with personalized recommendations.');
+      window.location.href = 'index.html';
+    }
+
+    // Initialize
+    init();
+    updateStepperUI();
+  </script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

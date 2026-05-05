@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    /* Brand Detail Specific Styles */
+    main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+    .brand-header { display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .brand-header-logo { width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .brand-header-info { flex: 1; }
+    .brand-header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 0.3rem; }
+    .brand-header-name { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.025em; }
+    .brand-status-badge { font-size: 0.7rem; font-weight: 500; padding: 3px 9px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
+    .badge-active { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .badge-draft { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .brand-header-meta { font-size: 0.8rem; color: var(--text3); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .brand-header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 2.5rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.2rem; }
+    .stat-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.4rem; font-weight: 600; }
+    .stat-value { font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 0.2rem; }
+    .stat-sub { font-size: 0.72rem; color: var(--text3); }
+    .stat-up { color: #22c55e; }
+    .stat-down { color: #ef4444; }
+    .section-header { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; margin-top: 2rem; }
+    .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+    .profile-card-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--text); }
+    .profile-detail-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border2); font-size: 0.8rem; }
+    .profile-detail-row:last-child { border-bottom: none; }
+    .profile-detail-label { color: var(--text3); }
+    .profile-detail-value { color: var(--text2); font-weight: 500; }
+    .campaigns-table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    .campaigns-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .campaigns-table th { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); text-align: left; padding: 0.9rem 1rem 0.9rem 1rem; border-bottom: 1px solid var(--border2); background: var(--surface2); }
+    .campaigns-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border2); color: var(--text2); }
+    .campaigns-table tr:last-child td { border-bottom: none; }
+    .campaigns-table td:first-child { color: var(--text); font-weight: 500; }
+    .campaign-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 14px; margin-right: 8px; }
+    .campaign-meta { font-size: 0.7rem; color: var(--text3); }
+    .campaign-row-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .badge-sm { font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; display: inline-block; }
+    .badge-info { background: rgba(59,130,246,0.12); color: var(--blue); }
+    .badge-success { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .badge-warning { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+    /* ─── BRAND PROFILE GRID ───────────────────── */
+    .brand-profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+    .bp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+    .bp-card-label { font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border2); padding-bottom: 0.8rem; }
+    .bp-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.6rem 0; font-size: 0.82rem; gap: 1rem; }
+    .bp-row:not(:last-child) { border-bottom: 1px solid var(--border2); }
+    .bp-key { color: var(--text3); font-weight: 500; flex: 0 0 40%; }
+    .bp-val { color: var(--text2); font-weight: 600; flex: 0 0 60%; text-align: right; }
+    .persona-pill { display: inline-block; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); padding: 5px 11px; border-radius: 14px; font-size: 0.74rem; margin: 6px 6px 6px 0; line-height: 1.4; }
+    .channel-badge { display: inline-block; background: var(--blue-dim); border: 1px solid rgba(59,130,246,0.2); color: var(--blue); padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; margin: 4px 6px 4px 0; }
+
+    /* ─── CAMPAIGNS LIST ─────────────────────── */
+    .campaigns-list { display: flex; flex-direction: column; gap: 0.9rem; }
+    .campaign-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 1.5rem; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem 1.4rem; text-decoration: none; color: inherit; transition: all 0.22s; cursor: pointer; }
+    .campaign-row:hover { border-color: var(--border2); background: var(--surface2); }
+    .campaign-main { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+    .campaign-name { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .campaign-meta { font-size: 0.75rem; color: var(--text3); display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .campaign-badge { font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; white-space: nowrap; }
+    .s-live { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .s-completed { background: rgba(59,130,246,0.12); color: var(--blue); }
+    .s-paused { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .s-draft { background: rgba(100,116,139,0.1); color: var(--text3); }
+    .campaign-stats { display: flex; gap: 1.2rem; text-align: right; }
+    .campaign-stat { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
+    .campaign-stat-val { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+    .campaign-stat-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-up { color: #22c55e; font-weight: 600; }
+    .stat-down { color: #ef4444; font-weight: 600; }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 1024px) {
+      .brand-profile-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .campaign-row { grid-template-columns: 1fr auto; gap: 1rem; }
+      .campaign-stats { grid-column: 1 / -1; justify-content: flex-start; }
+    }
+    @media (max-width: 768px) {
+      .brand-header { flex-direction: column; gap: 1rem; }
+      .brand-profile-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+      .campaign-row { grid-template-columns: 1fr; gap: 0.8rem; padding: 1rem; }
+      .campaign-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+      .campaign-stat-val { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="agency.html" class="breadcrumb-link">Pinnacle Media</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current" id="navBrandName">Brand</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="openOnboarding()">⚙ Edit Profile</button>
+    <button class="nav-btn" style="background:var(--blue);border-color:var(--blue);color:#fff;" onclick="openModal()">＋ New Campaign</button>
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="avatar">JD</div>
+  </div>
+</nav>
+
+<main>
+
+  <!-- Brand Header -->
+  <div class="brand-header">
+    <div class="brand-header-logo" id="brandLogoEl" style="background:linear-gradient(135deg,#f59e0b22,#f59e0b44);color:#f59e0b;">☕</div>
+    <div class="brand-header-info">
+      <div class="brand-header-row">
+        <div class="brand-header-name" id="brandNameEl">BrewHaven Coffee</div>
+        <div class="brand-status-badge badge-active"><span class="badge-dot"></span> Active</div>
+      </div>
+      <div class="brand-header-meta">
+        <span id="brandCategoryEl">Food & Beverage · D2C</span>
+        <span>🌐 brewhaven.com</span>
+        <span>📍 National — India</span>
+        <span>Tone: Warm & Authentic</span>
+      </div>
+    </div>
+    <div class="brand-header-actions">
+      <button class="nav-btn" onclick="openOnboarding()">Edit Profile →</button>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Campaigns</div>
+      <div class="stat-value">3</div>
+      <div class="stat-sub stat-up">↑ 1 this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Budget</div>
+      <div class="stat-value">₹14.7L</div>
+      <div class="stat-sub">Across all campaigns</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Impressions (30d)</div>
+      <div class="stat-value">4.2M</div>
+      <div class="stat-sub stat-up">↑ 12% vs prev month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg. CPA</div>
+      <div class="stat-value">₹84</div>
+      <div class="stat-sub stat-down">↓ 8% vs target</div>
+    </div>
+  </div>
+
+  <!-- Brand Profile Overview -->
+  <div class="section-header" style="margin-bottom:0.85rem;">
+    <div class="section-title">Brand Profile</div>
+    <button class="nav-btn" onclick="openOnboarding()">✏ Edit Profile</button>
+  </div>
+  <div class="brand-profile-grid" id="brandProfileGrid">
+    <div class="bp-card">
+      <div class="bp-card-label">Brand Basics</div>
+      <div class="bp-row"><span class="bp-key">Category</span><span class="bp-val" id="bpCategory">Food & Beverage · D2C</span></div>
+      <div class="bp-row"><span class="bp-key">Website</span><span class="bp-val" id="bpWebsite">brewhaven.com</span></div>
+      <div class="bp-row"><span class="bp-key">Tone</span><span class="bp-val" id="bpTone">Warm & Authentic</span></div>
+      <div class="bp-row"><span class="bp-key">Markets</span><span class="bp-val" id="bpMarkets">National — India</span></div>
+      <div class="bp-row"><span class="bp-key">USP</span><span class="bp-val" id="bpUsp">Single-origin specialty coffee, direct from farms</span></div>
+    </div>
+    <div class="bp-card">
+      <div class="bp-card-label">Audience Personas</div>
+      <div id="bpPersonas">
+        <span class="persona-pill">☕ Urban Coffee Enthusiast · 28–40</span>
+        <span class="persona-pill">💼 WFH Professional · 25–35</span>
+        <span class="persona-pill">🌿 Health-Conscious Millennial</span>
+      </div>
+      <div style="margin-top:0.75rem;">
+        <div class="bp-row"><span class="bp-key">Age Range</span><span class="bp-val">25–44</span></div>
+        <div class="bp-row"><span class="bp-key">HH Income</span><span class="bp-val">₹8L+ per annum</span></div>
+        <div class="bp-row"><span class="bp-key">Cities</span><span class="bp-val">Mumbai, Bengaluru, Delhi, Pune</span></div>
+      </div>
+    </div>
+    <div class="bp-card">
+      <div class="bp-card-label">Channel & Budget Preferences</div>
+      <div class="bp-row"><span class="bp-key">Preferred</span>
+        <span class="bp-val" id="bpChannels">
+          <span class="channel-badge">Meta</span>
+          <span class="channel-badge">Google Search</span>
+          <span class="channel-badge">YouTube</span>
+        </span>
+      </div>
+      <div class="bp-row"><span class="bp-key">Budget Range</span><span class="bp-val" id="bpBudget">₹5L – ₹15L per campaign</span></div>
+      <div class="bp-row"><span class="bp-key">Competitors</span><span class="bp-val" id="bpCompetitors">Blue Tokai, Third Wave Coffee, Sleepy Owl</span></div>
+      <div class="bp-row"><span class="bp-key">Exclusions</span><span class="bp-val" id="bpExclusions">Alcohol, Tobacco, Competitor keywords</span></div>
+    </div>
+  </div>
+
+  <!-- Campaigns -->
+  <div class="section-header">
+    <div class="section-title">Campaigns (3)</div>
+    <button class="nav-btn" onclick="openModal()">＋ New Campaign</button>
+  </div>
+
+  <div class="campaigns-list">
+
+    <a href="campaign-detail.html?campaign=monsoon-launch&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Monsoon%20Collection%20Launch" class="campaign-row">
+      <div class="campaign-icon" style="background:rgba(59,130,246,0.12);color:var(--blue);">🚀</div>
+      <div class="campaign-main">
+        <div class="campaign-name">BrewHaven — Monsoon Collection Launch</div>
+        <div class="campaign-meta">
+          <span>📅 Apr 26 – May 10, 2026</span>
+          <span>🎯 Conversions</span>
+          <span>📍 Mumbai, Bengaluru, Pune</span>
+        </div>
+      </div>
+      <div class="campaign-badge s-live">● Live</div>
+      <div class="campaign-stats">
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">₹5L</div>
+          <div class="campaign-stat-label">Budget</div>
+        </div>
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">1.4M</div>
+          <div class="campaign-stat-label">Impressions</div>
+        </div>
+      </div>
+      <div class="campaign-arrow">›</div>
+    </a>
+
+    <a href="campaign-detail.html?campaign=awareness-q2&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Brand%20Awareness%20Q2" class="campaign-row">
+      <div class="campaign-icon" style="background:rgba(6,182,212,0.12);color:var(--cyan);">📣</div>
+      <div class="campaign-main">
+        <div class="campaign-name">BrewHaven — Brand Awareness Q2</div>
+        <div class="campaign-meta">
+          <span>📅 Mar 1 – Mar 31, 2026</span>
+          <span>🎯 Awareness</span>
+          <span>📍 Pan India</span>
+        </div>
+      </div>
+      <div class="campaign-badge s-completed">✓ Completed</div>
+      <div class="campaign-stats">
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">₹6.5L</div>
+          <div class="campaign-stat-label">Budget</div>
+        </div>
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">2.8M</div>
+          <div class="campaign-stat-label">Impressions</div>
+        </div>
+      </div>
+      <div class="campaign-arrow">›</div>
+    </a>
+
+    <a href="campaign-detail.html?campaign=retargeting&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Cart%20Retargeting" class="campaign-row">
+      <div class="campaign-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">🎯</div>
+      <div class="campaign-main">
+        <div class="campaign-name">BrewHaven — Cart Retargeting</div>
+        <div class="campaign-meta">
+          <span>📅 Ongoing · Always-on</span>
+          <span>🎯 Conversions</span>
+          <span>📍 All geo</span>
+        </div>
+      </div>
+      <div class="campaign-badge s-paused">⏸ Paused</div>
+      <div class="campaign-stats">
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">₹3.2L</div>
+          <div class="campaign-stat-label">Budget</div>
+        </div>
+        <div class="campaign-stat">
+          <div class="campaign-stat-val">420K</div>
+          <div class="campaign-stat-label">Impressions</div>
+        </div>
+      </div>
+      <div class="campaign-arrow">›</div>
+    </a>
+
+  </div>
+
+</main>
+
+<!-- ADD CAMPAIGN MODAL -->
+<div class="modal-overlay" id="addCampaignModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">New Campaign</div>
+    <div class="modal-sub">Set the objective and basics. Channel mix and budget are configured in your plan.</div>
+
+    <div class="name-field">
+      <label class="name-label">Campaign Name <span style="color:#ef4444">*</span></label>
+      <input class="name-input" id="campaignNameInput" type="text" placeholder="e.g. BrewHaven — Monsoon Launch May 2026" />
+    </div>
+
+    <div class="field-block">
+      <label class="name-label">Objective</label>
+      <div class="obj-grid" id="objGrid">
+        <div class="obj-tile on" data-obj="conversions" onclick="pickObj(this)"><span class="obj-icon">💰</span> Conversions</div>
+        <div class="obj-tile" data-obj="awareness" onclick="pickObj(this)"><span class="obj-icon">📣</span> Awareness</div>
+        <div class="obj-tile" data-obj="traffic" onclick="pickObj(this)"><span class="obj-icon">🌐</span> Traffic</div>
+        <div class="obj-tile" data-obj="engagement" onclick="pickObj(this)"><span class="obj-icon">✨</span> Engagement</div>
+        <div class="obj-tile" data-obj="app_installs" onclick="pickObj(this)"><span class="obj-icon">📱</span> App Installs</div>
+        <div class="obj-tile" data-obj="store_visits" onclick="pickObj(this)"><span class="obj-icon">🏪</span> Store Visits</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="name-label">Primary KPI <span class="auto-tag">Auto</span></label>
+        <select class="name-input" id="campaignKpi">
+          <option value="cpa">CPA (Cost per Acquisition)</option>
+          <option value="roas">ROAS (Return on Ad Spend)</option>
+        </select>
+      </div>
+      <div>
+        <label class="name-label">Conversion Event</label>
+        <select class="name-input" id="campaignConversion">
+          <option>Purchase / Sale</option>
+          <option>Lead / Form Submit</option>
+          <option>App Install</option>
+          <option>Add to Cart</option>
+          <option>Sign Up / Register</option>
+          <option>Custom</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="name-label">Start Date</label>
+        <input class="name-input" id="campaignStart" type="date" />
+      </div>
+      <div>
+        <label class="name-label">End Date</label>
+        <input class="name-input" id="campaignEnd" type="date" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="createCampaign()">Create Campaign →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const brandId = params.get('brand') || 'brewhaven';
+  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+
+  // Brand configs
+  const brandConfigs = {
+    brewhaven: { icon: '☕', bg: 'linear-gradient(135deg,#f59e0b22,#f59e0b44)', color: '#f59e0b', category: 'Food & Beverage · D2C', web: 'brewhaven.com' },
+    zenlux:    { icon: '💎', bg: 'linear-gradient(135deg,#6366f122,#6366f144)', color: '#818cf8', category: 'Beauty & Personal Care', web: 'zenlux.in' },
+    velocit:   { icon: '⚡', bg: 'linear-gradient(135deg,#06b6d422,#06b6d444)', color: '#06b6d4', category: 'Automotive · EV', web: 'velocit.in' },
+    novafit:   { icon: '🏋', bg: 'linear-gradient(135deg,#22c55e22,#22c55e44)', color: '#22c55e', category: 'Health & Fitness · App', web: 'novafit.app' },
+  };
+
+  const cfg = brandConfigs[brandId] || brandConfigs.brewhaven;
+
+  document.getElementById('navBrandName').textContent = brandName;
+  document.getElementById('brandNameEl').textContent = brandName;
+  document.getElementById('brandLogoEl').textContent = cfg.icon;
+  document.getElementById('brandLogoEl').style.background = cfg.bg;
+  document.getElementById('brandLogoEl').style.color = cfg.color;
+  document.getElementById('brandCategoryEl').textContent = cfg.category;
+
+  // Objective selection
+  let selectedObjective = 'conversions';
+  const kpiByObj = {
+    conversions:  [['cpa','CPA (Cost per Acquisition)'],['roas','ROAS (Return on Ad Spend)']],
+    awareness:    [['cpm','CPM (Cost per Thousand)'],['reach','Unique Reach']],
+    traffic:      [['ctr','CTR (Click-through Rate)'],['cpc','CPC (Cost per Click)']],
+    engagement:   [['er','Engagement Rate'],['vcr','Video Completion Rate']],
+    app_installs: [['cpi','CPI (Cost per Install)'],['cvr','Conversion Rate']],
+    store_visits: [['cpsv','Cost per Store Visit'],['cpm','CPM']],
+  };
+
+  function pickObj(el) {
+    document.querySelectorAll('#objGrid .obj-tile').forEach(t => t.classList.remove('on'));
+    el.classList.add('on');
+    selectedObjective = el.dataset.obj;
+    const kpiSel = document.getElementById('campaignKpi');
+    kpiSel.innerHTML = '';
+    (kpiByObj[selectedObjective] || kpiByObj.conversions).forEach(([v,l]) => {
+      const o = document.createElement('option'); o.value = v; o.textContent = l; kpiSel.appendChild(o);
+    });
+  }
+
+  function openModal() {
+    document.getElementById('addCampaignModal').classList.add('open');
+    document.getElementById('campaignNameInput').value = `${brandName} — `;
+    const startDate = new Date(); startDate.setDate(startDate.getDate() + 7);
+    const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + 14);
+    document.getElementById('campaignStart').value = startDate.toISOString().split('T')[0];
+    document.getElementById('campaignEnd').value = endDate.toISOString().split('T')[0];
+    setTimeout(() => {
+      const inp = document.getElementById('campaignNameInput');
+      inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+    }, 100);
+  }
+
+  function closeModal() { document.getElementById('addCampaignModal').classList.remove('open'); }
+
+  function createCampaign() {
+    const name = document.getElementById('campaignNameInput').value.trim();
+    if (!name) {
+      document.getElementById('campaignNameInput').style.borderColor = '#ef4444';
+      document.getElementById('campaignNameInput').focus();
+      return;
+    }
+    const slug = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,40);
+    window.location.href = `campaign-detail.html?campaign=${slug}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(name)}&obj=${selectedObjective}`;
+  }
+
+  function openOnboarding() {
+    window.location.href = `brand-onboarding-flow.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  }
+
+  document.getElementById('addCampaignModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

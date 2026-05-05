@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detailed Campaign Creator — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0b0f; --surface: #111318; --surface2: #191c24; --surface3: #1e2230;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      --blue: #3b82f6; --blue-dim: rgba(59,130,246,0.12); --blue-glow: rgba(59,130,246,0.25);
+      --cyan: #06b6d4; --green: #22c55e; --purple: #8b5cf6;
+      --text: #f0f2f8; --text2: #8b92a5; --text3: #555d70;
+      --radius: 12px; --radius-sm: 8px;
+      --nav-h: 56px; --side-w: 220px; --chat-w: 290px;
+    }
+    body.light {
+      --bg: #f4f6fb; --surface: #ffffff; --surface2: #eef1f8; --surface3: #e3e8f5;
+      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
+      --blue-dim: rgba(59,130,246,0.08);
+      --text: #0d1117; --text2: #374151; --text3: #6b7a8d;
+    }
+    body.light nav { background: rgba(244,246,251,0.92); }
+    body.light select option { background: #fff; color: #0d1117; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; height: var(--nav-h); border-bottom: 1px solid var(--border); background: var(--bg); flex-shrink: 0; z-index: 50; }
+    .nav-left { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text2); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; color: var(--text); text-decoration: none; }
+    .nav-logo-icon { height: 44px; width: auto; display: flex; align-items: center; }
+    .nav-logo-icon img { height: 100%; width: auto; object-fit: contain; }
+    .breadcrumb-sep { color: var(--text3); }
+    .breadcrumb-link { color: var(--text2); text-decoration: none; }
+    .breadcrumb-link:hover { color: var(--text); }
+    .breadcrumb-current { color: var(--text); font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-badge-detail { font-size: 0.72rem; padding: 3px 9px; border-radius: 10px; background: rgba(139,92,246,0.12); color: var(--purple); font-weight: 500; border: 1px solid rgba(139,92,246,0.2); }
+    .btn-nav { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); padding: 6px 12px; border-radius: 7px; font-family: inherit; font-size: 0.78rem; cursor: pointer; transition: all 0.18s; }
+    .btn-nav:hover { background: var(--surface3); color: var(--text); }
+    .btn-nav-primary { background: var(--blue); border: none; color: #fff; padding: 7px 14px; border-radius: 7px; font-family: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+    .btn-nav-primary:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .btn-theme-toggle { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); width: 32px; height: 32px; border-radius: 7px; font-size: 14px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-theme-toggle:hover { background: var(--surface3); }
+
+    /* LAYOUT */
+    .workspace { display: flex; flex: 1; overflow: hidden; }
+
+    /* LEFT NAV */
+    .side-nav { width: var(--side-w); border-right: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+    .side-nav-header { padding: 1rem 1rem 0.7rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .side-nav-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 0.5rem; }
+    .progress-wrap { height: 3px; background: var(--surface3); border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: 10px; transition: width 0.4s ease; }
+    .progress-txt { font-size: 0.68rem; color: var(--text3); margin-top: 0.35rem; }
+    .side-nav-sections { padding: 0.5rem 0 1rem; }
+    .side-section-item {
+      display: flex; align-items: center; gap: 8px; padding: 7px 1rem;
+      font-size: 0.78rem; color: var(--text3); cursor: pointer; transition: all 0.15s;
+      border-left: 2px solid transparent; user-select: none;
+    }
+    .side-section-item:hover { color: var(--text2); background: rgba(255,255,255,0.03); }
+    .side-section-item.active { color: var(--blue); background: var(--blue-dim); border-left-color: var(--blue); font-weight: 500; }
+    .side-section-item.complete { color: var(--green); }
+    .side-section-item.complete .section-check { display: inline; }
+    .section-check { display: none; font-size: 9px; margin-left: auto; }
+    .side-section-num { font-size: 0.65rem; font-weight: 600; width: 16px; flex-shrink: 0; text-align: center; color: inherit; opacity: 0.7; }
+    .side-section-icon { font-size: 14px; flex-shrink: 0; }
+    .side-divider { height: 1px; background: var(--border); margin: 4px 1rem; }
+
+    /* FORM AREA */
+    .form-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+    .section-view { display: none; padding: 1.75rem 2rem 3rem; max-width: 740px; }
+    .section-view.active { display: block; }
+    .section-heading { margin-bottom: 1.5rem; }
+    .section-heading-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.3rem; }
+    .section-icon-big { font-size: 1.4rem; }
+    .section-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+    .section-sub { font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+    .section-sub a { color: var(--blue); text-decoration: none; }
+
+    /* Form elements */
+    .form-row { display: grid; gap: 0.85rem; margin-bottom: 1rem; }
+    .form-row-2 { grid-template-columns: 1fr 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+    label { font-size: 0.73rem; font-weight: 500; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+    .label-hint { font-size: 0.65rem; color: var(--text3); font-weight: 400; margin-left: auto; }
+    input[type=text],input[type=url],input[type=number],input[type=email],select,textarea {
+      background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+      padding: 8px 11px; color: var(--text); font-family: inherit; font-size: 0.82rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+    }
+    input:focus,select:focus,textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    input::placeholder,textarea::placeholder { color: var(--text3); }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%238b92a5' viewBox='0 0 20 20'%3E%3Cpath d='M7 7l3-3 3 3M7 13l3 3 3-3'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 9px center; background-size:14px; padding-right:28px; cursor:pointer; }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; line-height: 1.5; min-height: 60px; }
+    .field-note { font-size: 0.7rem; color: var(--text3); margin-top: 2px; }
+
+    /* Toggle / Radio pills */
+    .toggle-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .toggle-pill {
+      padding: 5px 13px; border-radius: 20px; font-size: 0.76rem; font-weight: 500;
+      border: 1px solid var(--border2); background: var(--surface2); color: var(--text3);
+      cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .toggle-pill:hover { border-color: var(--blue); color: var(--text2); }
+    .toggle-pill.on { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+    .toggle-pill.multi.on { background: rgba(139,92,246,0.1); border-color: var(--purple); color: var(--purple); }
+
+    /* Tags */
+    .tag-row { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+    .tag { background: var(--surface3); border: 1px solid var(--border2); border-radius: 20px; padding: 3px 9px; font-size: 0.72rem; color: var(--text2); display: flex; align-items: center; gap: 4px; }
+    .tag-x { cursor: pointer; color: var(--text3); font-size: 10px; }
+    .tag-x:hover { color: #ef4444; }
+    .tag-add { background: transparent; border: 1px dashed var(--border2); border-radius: 20px; padding: 3px 9px; font-size: 0.72rem; color: var(--text3); cursor: pointer; }
+    .tag-add:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* Section divider */
+    .sub-heading { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin: 1.25rem 0 0.75rem; display: flex; align-items: center; gap: 8px; }
+    .sub-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Range slider */
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    input[type=range] { flex: 1; height: 4px; cursor: pointer; accent-color: var(--blue); }
+    .slider-val { font-size: 0.8rem; font-weight: 600; color: var(--text); width: 50px; }
+
+    /* Channel allocation */
+    .channel-alloc { display: flex; flex-direction: column; gap: 0.7rem; }
+    .alloc-row { display: grid; grid-template-columns: 1.5rem 1fr 140px 60px 80px; align-items: center; gap: 10px; }
+    .alloc-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .alloc-name { font-size: 0.82rem; font-weight: 500; }
+    .alloc-slider { width: 100%; cursor: pointer; accent-color: var(--blue); }
+    .alloc-pct { font-size: 0.82rem; font-weight: 600; color: var(--text); width: 40px; text-align: right; }
+    .alloc-amt { font-size: 0.75rem; color: var(--text3); }
+
+    /* AI Tip boxes */
+    .ai-tip {
+      background: var(--surface2); border: 1px solid rgba(59,130,246,0.2);
+      border-left: 3px solid var(--blue); border-radius: 10px;
+      padding: 0.85rem 1rem; margin-top: 1rem; font-size: 0.78rem; color: var(--text3); line-height: 1.6;
+    }
+    .ai-tip-head { color: var(--blue); font-weight: 600; font-size: 0.76rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 5px; }
+
+    /* Radio card grid */
+    .radio-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; }
+    .radio-card {
+      background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px;
+      padding: 0.85rem 1rem; cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .radio-card:hover { border-color: var(--blue); }
+    .radio-card.on { background: var(--blue-dim); border-color: var(--blue); }
+    .radio-card-icon { font-size: 1.3rem; margin-bottom: 0.35rem; }
+    .radio-card-label { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
+    .radio-card-sub { font-size: 0.68rem; color: var(--text3); }
+
+    /* Navigation footer */
+    .section-nav-footer {
+      position: sticky; bottom: 0; background: linear-gradient(to top, var(--bg) 85%, transparent);
+      padding: 1rem 2rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+      margin-top: auto;
+    }
+    .btn-back { background: transparent; border: 1px solid var(--border2); color: var(--text2); padding: 9px 18px; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: all 0.18s; }
+    .btn-back:hover { background: var(--surface2); color: var(--text); }
+    .btn-next { background: var(--blue); border: none; color: #fff; padding: 9px 22px; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
+    .btn-next:hover { background: #2563eb; box-shadow: 0 4px 14px rgba(59,130,246,0.3); }
+    .btn-generate-plan { background: linear-gradient(135deg, var(--blue), var(--purple)); border: none; color: #fff; padding: 9px 22px; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
+    .btn-generate-plan:hover { box-shadow: 0 4px 18px rgba(59,130,246,0.35); filter: brightness(1.07); }
+    .autosave-note { font-size: 0.7rem; color: var(--text3); margin-left: auto; display: flex; align-items: center; gap: 4px; }
+
+    /* CHAT PANEL */
+    .chat-panel { width: var(--chat-w); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; background: var(--surface); }
+    .chat-header { padding: 0.85rem 1rem 0.7rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-header-title { font-size: 0.83rem; font-weight: 600; display: flex; align-items: center; gap: 7px; margin-bottom: 0.15rem; }
+    .ai-badge { width: 19px; height: 19px; background: linear-gradient(135deg,var(--blue),var(--cyan)); border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    .chat-header-sub { font-size: 0.7rem; color: var(--text3); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 0.9rem 0.9rem; display: flex; flex-direction: column; gap: 0.7rem; }
+    .chat-msg { display: flex; gap: 7px; align-items: flex-start; }
+    .chat-msg.user { flex-direction: row-reverse; }
+    .chat-msg-avatar { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+    .chat-msg.ai .chat-msg-avatar { background: linear-gradient(135deg,var(--blue),var(--cyan)); }
+    .chat-msg.user .chat-msg-avatar { background: #6366f1; font-weight: 600; }
+    .chat-bubble { max-width: 92%; padding: 7px 10px; border-radius: 11px; font-size: 0.76rem; line-height: 1.5; }
+    .chat-msg.ai .chat-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-top-left-radius: 3px; }
+    .chat-msg.user .chat-bubble { background: var(--blue); color: #fff; border-top-right-radius: 3px; }
+    .chat-bubble strong { color: var(--text); font-weight: 600; }
+    .chat-msg.user .chat-bubble strong { color: #fff; }
+    .chat-suggestion { display: block; background: var(--surface3); border: 1px solid var(--border2); border-radius: 7px; padding: 5px 8px; font-size: 0.72rem; color: var(--text2); cursor: pointer; transition: all 0.15s; margin-top: 3px; }
+    .chat-suggestion:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+    .chat-input-area { padding: 0.65rem 0.85rem; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .chat-input-row { display: flex; gap: 6px; align-items: flex-end; background: var(--surface2); border: 1px solid var(--border2); border-radius: 9px; padding: 7px 9px; }
+    .chat-input-row:focus-within { border-color: var(--blue); }
+    .chat-textarea { flex: 1; background: transparent; border: none; color: var(--text); font-family: inherit; font-size: 0.76rem; resize: none; outline: none; min-height: 18px; max-height: 70px; line-height: 1.4; }
+    .chat-textarea::placeholder { color: var(--text3); }
+    .chat-send-btn { width: 26px; height: 26px; background: var(--blue); border: none; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .chat-send-btn:hover { background: #2563eb; }
+    .chat-section-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); color: var(--purple); padding: 2px 7px; border-radius: 6px; font-size: 0.68rem; font-weight: 500; margin-bottom: 4px; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.85rem; }
+
+    @media (max-width: 1000px) { :root { --chat-w: 250px; } }
+    @media (max-width: 860px) { .chat-panel { display: none; } }
+    @media (max-width: 700px) { .side-nav { display: none; } .section-view { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo"><div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div></a>
+    <span class="breadcrumb-sep">›</span>
+    <a class="breadcrumb-link" id="navBrandLink" href="#">Brand</a>
+    <span class="breadcrumb-sep">›</span>
+    <a class="breadcrumb-link" id="navCampaignLink" href="#">Campaign</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current">New Plan</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-badge-detail">✎ Detailed Mode</div>
+    <button class="btn-nav" onclick="switchToQuick()">⚡ Switch to Quick</button>
+    <button class="btn-nav" id="saveDraftBtn">💾 Save Draft</button>
+    <button class="btn-nav-primary" onclick="gotoSection(12)">Generate Plan →</button>
+    <button class="btn-nav" onclick="goBack()">✕ Exit</button>
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<div class="workspace">
+
+  <!-- SIDE NAV -->
+  <div class="side-nav">
+    <div class="side-nav-header">
+      <div class="side-nav-label">Campaign Setup</div>
+      <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:8%"></div></div>
+      <div class="progress-txt" id="progressTxt">1 / 13 sections</div>
+    </div>
+    <div class="side-nav-sections" id="sideNav">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- FORM AREA -->
+  <div class="form-area" id="formArea">
+
+    <!-- ─── S1: Campaign Basics ─────────────────── -->
+    <div class="section-view active" id="section-0">
+      <div class="section-heading">
+        <div class="section-heading-row">
+          <span class="section-icon-big">📋</span>
+          <div class="section-title">Campaign Basics</div>
+        </div>
+        <div class="section-sub">Core identity of this campaign. These details appear in platform reports and line items across all channels.</div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="field" style="grid-column:span 2">
+          <label>Campaign Name</label>
+          <input type="text" id="s1_name" value="BrewHaven — Monsoon Collection Launch — May 2026" />
+          <div class="field-note">Convention: BrandName — Campaign — Month Year</div>
+        </div>
+        <div class="field">
+          <label>Campaign Objective</label>
+          <select id="s1_objective">
+            <option>Conversions / Sales</option>
+            <option>Brand Awareness & Reach</option>
+            <option>Traffic / Website Visits</option>
+            <option>Lead Generation</option>
+            <option>App Installs</option>
+            <option>Video Views</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Buying Type</label>
+          <select>
+            <option>Programmatic (Real-time Bidding)</option>
+            <option>Direct Buy (Guaranteed)</option>
+            <option>Programmatic Guaranteed</option>
+            <option>Private Marketplace (PMP)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Campaign Status</label>
+          <select>
+            <option>Draft</option>
+            <option>Pending Approval</option>
+            <option>Active</option>
+            <option>Paused</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Currency</label>
+          <select>
+            <option>INR — Indian Rupee (₹)</option>
+            <option>USD — US Dollar ($)</option>
+            <option>GBP — British Pound (£)</option>
+            <option>EUR — Euro (€)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sub-heading">Brand Linkage</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Linked Brand</label>
+          <select>
+            <option>BrewHaven Coffee</option>
+            <option>Saffron & Co.</option>
+            <option>StyleVerse</option>
+            <option>FitFuel India</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Campaign Label / Tag</label>
+          <input type="text" value="monsoon-2026, product-launch, video" />
+          <div class="field-note">Comma-separated</div>
+        </div>
+        <div class="field">
+          <label>Advertiser / Client</label>
+          <input type="text" value="BrewHaven Coffee Pvt. Ltd." />
+        </div>
+        <div class="field">
+          <label>Agency Booking Reference</label>
+          <input type="text" value="PIN-BH-2026-Q2-014" />
+        </div>
+      </div>
+
+      <div class="ai-tip">
+        <div class="ai-tip-head">✦ AI Insight</div>
+        BrewHaven has 3 previous conversion campaigns in this platform. Average ROAS: 3.6×. This plan is set to target a similar audience profile — your historical benchmark CPA is ₹83.
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-next" onclick="gotoSection(1)">Geography & Targeting →</button>
+        <span class="autosave-note">✓ Auto-saved 1s ago</span>
+      </div>
+    </div>
+
+    <!-- ─── S2: Geography ──────────────────────── -->
+    <div class="section-view" id="section-1">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">📍</span><div class="section-title">Geography & Location</div></div>
+        <div class="section-sub">Where your ads will run. You can target by country, region, city, or postal code, and control how location is determined.</div>
+      </div>
+
+      <div class="sub-heading">Target Locations</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Country</label>
+          <select><option>India</option><option>United States</option><option>United Kingdom</option></select>
+        </div>
+        <div class="field">
+          <label>Location Method</label>
+          <select>
+            <option>People who live here</option>
+            <option>People currently in this location</option>
+            <option>People who recently visited</option>
+            <option>Any — live, currently or recently visited</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Target Cities</label>
+          <div class="tag-row" id="geo_cities">
+            <div class="tag">Mumbai <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Bengaluru <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Pune <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Hyderabad <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('geo_cities')">＋ Add city</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Excluded Locations</label>
+          <div class="tag-row" id="geo_excl">
+            <div class="tag">Rural Maharashtra <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('geo_excl')">＋ Exclude</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Geo-fence Radius (optional)</label>
+          <div class="slider-row">
+            <input type="range" min="1" max="50" value="5" oninput="this.nextElementSibling.textContent=this.value+'km'" />
+            <span class="slider-val">5km</span>
+          </div>
+          <div class="field-note">Used for DOOH sync and hyper-local targeting</div>
+        </div>
+      </div>
+
+      <div class="sub-heading">Budget Weight by Region</div>
+      <div class="channel-alloc">
+        <div class="alloc-row" style="grid-template-columns:1fr 140px 40px 80px">
+          <div class="alloc-name">Mumbai</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="45" oninput="updateAlloc(this)">
+          <div class="alloc-pct">45%</div>
+          <div class="alloc-amt">₹2.25L</div>
+        </div>
+        <div class="alloc-row" style="grid-template-columns:1fr 140px 40px 80px">
+          <div class="alloc-name">Bengaluru</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="35" oninput="updateAlloc(this)">
+          <div class="alloc-pct">35%</div>
+          <div class="alloc-amt">₹1.75L</div>
+        </div>
+        <div class="alloc-row" style="grid-template-columns:1fr 140px 40px 80px">
+          <div class="alloc-name">Pune</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="20" oninput="updateAlloc(this)">
+          <div class="alloc-pct">20%</div>
+          <div class="alloc-amt">₹1L</div>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(0)">← Campaign Basics</button>
+        <button class="btn-next" onclick="gotoSection(2)">Audience →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S3: Audience ──────────────────────── -->
+    <div class="section-view" id="section-2">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">🎯</span><div class="section-title">Audience Targeting</div></div>
+        <div class="section-sub">Define who sees your ads. You can layer demographic, interest, behavioral, and first-party segments.</div>
+      </div>
+
+      <div class="sub-heading">Demographics</div>
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>Age Range — Min</label>
+          <input type="number" value="24" min="13" max="65" />
+        </div>
+        <div class="field">
+          <label>Age Range — Max</label>
+          <input type="number" value="38" min="13" max="65" />
+        </div>
+        <div class="field">
+          <label>Gender</label>
+          <div class="toggle-group" id="genderToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'genderToggle')">All</div>
+            <div class="toggle-pill" onclick="togglePill(this,'genderToggle')">Male</div>
+            <div class="toggle-pill" onclick="togglePill(this,'genderToggle')">Female</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Household Income</label>
+          <select>
+            <option>Upper Middle (Top 25%)</option>
+            <option>Top 10%</option>
+            <option>Middle Income</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Parental Status</label>
+          <select>
+            <option>Not Specified</option>
+            <option>Parent</option>
+            <option>Not a Parent</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Language</label>
+          <select>
+            <option>English</option>
+            <option>Hindi</option>
+            <option>English + Hindi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sub-heading">Interests & Behaviors</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Interest Categories <span class="label-hint">from brand profile</span></label>
+          <div class="tag-row" id="aud_interests">
+            <div class="tag">Coffee & Tea <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Food & Beverage <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Sustainability <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Health & Wellness <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Urban Lifestyle <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('aud_interests')">＋ Add interest</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>In-Market Segments</label>
+          <div class="tag-row" id="aud_inmarket">
+            <div class="tag">Premium Food & Bev <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Coffee Subscriptions <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('aud_inmarket')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Keyword Contextual</label>
+          <div class="tag-row" id="aud_keywords">
+            <div class="tag">artisan coffee <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">single origin <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">home barista <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('aud_keywords')">＋</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-heading">Personas & First-Party</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Brand Personas (from profile)</label>
+          <div class="tag-row">
+            <div class="tag on" style="background:var(--blue-dim);border-color:var(--blue);color:var(--blue)">Urban Coffee Connoisseur</div>
+            <div class="tag on" style="background:var(--blue-dim);border-color:var(--blue);color:var(--blue)">WFH Professional</div>
+            <div class="tag">Sustainability Buyer</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>1P Audience Segment</label>
+          <select>
+            <option>Website visitors (last 30 days)</option>
+            <option>Cart abandoners</option>
+            <option>Past purchasers</option>
+            <option>Newsletter subscribers</option>
+            <option>None</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sub-heading">Frequency & Reach Controls</div>
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>Frequency Cap (per day)</label>
+          <input type="number" value="3" min="1" max="20" />
+        </div>
+        <div class="field">
+          <label>Frequency Cap (total flight)</label>
+          <input type="number" value="12" min="1" />
+        </div>
+        <div class="field">
+          <label>Audience Reach Goal</label>
+          <select>
+            <option>Max unique reach</option>
+            <option>Max frequency on target</option>
+            <option>Balanced</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(1)">← Geography</button>
+        <button class="btn-next" onclick="gotoSection(3)">Budget & Pacing →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S4: Budget & Pacing ───────────────── -->
+    <div class="section-view" id="section-3">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">💰</span><div class="section-title">Budget & Pacing</div></div>
+        <div class="section-sub">Set your total investment, daily controls, flight dates, and how spend should be distributed over the campaign.</div>
+      </div>
+
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>Total Budget</label>
+          <input type="text" value="₹5,00,000" />
+        </div>
+        <div class="field">
+          <label>Daily Budget Cap</label>
+          <input type="text" value="₹40,000" />
+        </div>
+        <div class="field">
+          <label>Media Cost Model</label>
+          <select>
+            <option>CPM — per 1,000 Impressions</option>
+            <option>CPC — per Click</option>
+            <option>CPA — per Acquisition</option>
+            <option>CPV — per View</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Start Date</label>
+          <input type="text" value="May 5, 2026" />
+        </div>
+        <div class="field">
+          <label>End Date</label>
+          <input type="text" value="May 18, 2026" />
+        </div>
+        <div class="field">
+          <label>Flight Duration</label>
+          <input type="text" value="14 days" readonly style="opacity:0.6" />
+        </div>
+      </div>
+
+      <div class="sub-heading">Pacing & Bidding Strategy</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Pacing Type</label>
+          <div class="toggle-group" id="pacingToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'pacingToggle')">Even</div>
+            <div class="toggle-pill" onclick="togglePill(this,'pacingToggle')">Front-loaded</div>
+            <div class="toggle-pill" onclick="togglePill(this,'pacingToggle')">Back-loaded</div>
+            <div class="toggle-pill" onclick="togglePill(this,'pacingToggle')">ASAP</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Bid Strategy</label>
+          <select>
+            <option>Max Conversions (Auto)</option>
+            <option>Target CPA</option>
+            <option>Target ROAS</option>
+            <option>Max Impressions (CPM)</option>
+            <option>Fixed CPM</option>
+            <option>Max Clicks</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Target CPA</label>
+          <input type="text" value="₹90" />
+        </div>
+        <div class="field">
+          <label>Target ROAS</label>
+          <input type="text" value="3.8×" />
+        </div>
+        <div class="field">
+          <label>Max CPM Bid</label>
+          <input type="text" value="₹220" />
+        </div>
+        <div class="field">
+          <label>Max CPC Bid</label>
+          <input type="text" value="₹18" />
+        </div>
+      </div>
+
+      <div class="ai-tip">
+        <div class="ai-tip-head">✦ AI Insight</div>
+        At ₹5L over 14 days with 4 channels, your effective daily average is ₹35.7K. Based on BrewHaven's historical ₹83 CPA and 14-day monsoon-season campaigns, I recommend front-loaded pacing for the first 5 days to capture early-season intent.
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(2)">← Audience</button>
+        <button class="btn-next" onclick="gotoSection(4)">Channel Mix →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S5: Channel Mix ───────────────────── -->
+    <div class="section-view" id="section-4">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">📡</span><div class="section-title">Channel Mix & Allocation</div></div>
+        <div class="section-sub">Choose which channels to activate and set your budget split. Total must add to 100%.</div>
+      </div>
+
+      <div class="sub-heading">Active Channels</div>
+      <div class="radio-cards" style="margin-bottom:1.25rem">
+        <div class="radio-card on" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">📱</div>
+          <div class="radio-card-label">Mobile & Apps</div>
+          <div class="radio-card-sub">Social, in-app, push</div>
+        </div>
+        <div class="radio-card on" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">🌐</div>
+          <div class="radio-card-label">Web Display</div>
+          <div class="radio-card-sub">Open web, native</div>
+        </div>
+        <div class="radio-card on" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">🖥</div>
+          <div class="radio-card-label">DOOH</div>
+          <div class="radio-card-sub">Digital out-of-home</div>
+        </div>
+        <div class="radio-card on" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">📺</div>
+          <div class="radio-card-label">CTV / OTT</div>
+          <div class="radio-card-sub">Streaming, smart TV</div>
+        </div>
+        <div class="radio-card" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">🎵</div>
+          <div class="radio-card-label">Audio</div>
+          <div class="radio-card-sub">Podcast, streaming</div>
+        </div>
+        <div class="radio-card" onclick="this.classList.toggle('on')">
+          <div class="radio-card-icon">📧</div>
+          <div class="radio-card-label">Email / Push</div>
+          <div class="radio-card-sub">Owned + CRM</div>
+        </div>
+      </div>
+
+      <div class="sub-heading">Budget Split (must total 100%)</div>
+      <div class="channel-alloc">
+        <div class="alloc-row">
+          <div class="alloc-dot" style="background:#3b82f6"></div>
+          <div class="alloc-name">Mobile & Apps</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="30" oninput="updateAlloc(this)">
+          <div class="alloc-pct">30%</div>
+          <div class="alloc-amt">₹1.5L</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-dot" style="background:#06b6d4"></div>
+          <div class="alloc-name">Web Display</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="30" oninput="updateAlloc(this)">
+          <div class="alloc-pct">30%</div>
+          <div class="alloc-amt">₹1.5L</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-dot" style="background:#8b5cf6"></div>
+          <div class="alloc-name">DOOH</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="25" oninput="updateAlloc(this)">
+          <div class="alloc-pct">25%</div>
+          <div class="alloc-amt">₹1.25L</div>
+        </div>
+        <div class="alloc-row">
+          <div class="alloc-dot" style="background:#22c55e"></div>
+          <div class="alloc-name">CTV</div>
+          <input type="range" class="alloc-slider" min="0" max="100" value="15" oninput="updateAlloc(this)">
+          <div class="alloc-pct">15%</div>
+          <div class="alloc-amt">₹0.75L</div>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(3)">← Budget & Pacing</button>
+        <button class="btn-next" onclick="gotoSection(5)">DOOH Settings →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S6: DOOH ───────────────────────────── -->
+    <div class="section-view" id="section-5">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">🖥</span><div class="section-title">DOOH Settings</div></div>
+        <div class="section-sub">Configure digital out-of-home placements: screen type, venue, dayparting, and mobile geo-sync.</div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>DOOH Network</label>
+          <select><option>Broadsign + Vistar (Combined)</option><option>Broadsign</option><option>Vistar Media</option><option>Hivestack</option></select>
+        </div>
+        <div class="field">
+          <label>Deal / Inventory Source</label>
+          <select><option>Open Market</option><option>Private Marketplace (PMP)</option><option>Programmatic Guaranteed</option></select>
+        </div>
+      </div>
+
+      <div class="sub-heading">Venue Categories</div>
+      <div class="toggle-group" id="dooh_venues">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">🛍 Malls & Retail</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">🚇 Transit / Metro</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">☕ Cafes & Restaurants</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">🏢 Corporate Buildings</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">🏥 Healthcare</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">⛽ Fuel Station</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">🎓 Education</div>
+      </div>
+
+      <div class="sub-heading">Dayparting</div>
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>Serve Ads Between</label>
+          <input type="text" value="07:00 – 22:00" />
+        </div>
+        <div class="field">
+          <label>Peak Hours (boosted bid)</label>
+          <input type="text" value="08:00 – 10:00, 18:00 – 21:00" />
+        </div>
+        <div class="field">
+          <label>Loop / Spot Duration</label>
+          <select><option>10 seconds</option><option>15 seconds</option><option>30 seconds</option></select>
+        </div>
+      </div>
+
+      <div class="sub-heading">Mobile Geo-sync</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Enable Mobile Retargeting Near Screens</label>
+          <div class="toggle-group" id="geoSyncToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'geoSyncToggle')">Enabled</div>
+            <div class="toggle-pill" onclick="togglePill(this,'geoSyncToggle')">Disabled</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Geo-sync Radius</label>
+          <div class="slider-row">
+            <input type="range" min="100" max="2000" value="500" step="100" oninput="this.nextElementSibling.textContent=this.value+'m'" />
+            <span class="slider-val">500m</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Retargeting Window (post-exposure)</label>
+          <select><option>2 hours</option><option>6 hours</option><option>24 hours</option><option>72 hours</option></select>
+        </div>
+        <div class="field">
+          <label>Mobile Channel for Sync</label>
+          <select><option>All Mobile</option><option>In-App Only</option><option>Mobile Web Only</option></select>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(4)">← Channel Mix</button>
+        <button class="btn-next" onclick="gotoSection(6)">CTV Settings →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S7: CTV ─────────────────────────────── -->
+    <div class="section-view" id="section-6">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">📺</span><div class="section-title">CTV / OTT Settings</div></div>
+        <div class="section-sub">Connected TV and streaming video. Configure targeting, ad format, and publisher selection.</div>
+      </div>
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>Ad Format</label>
+          <select><option>Pre-roll (Non-skippable 15s)</option><option>Pre-roll (Skippable 30s)</option><option>Mid-roll</option><option>Pause Ad</option></select>
+        </div>
+        <div class="field">
+          <label>Video Length</label>
+          <div class="toggle-group" id="videoLen">
+            <div class="toggle-pill on" onclick="togglePill(this,'videoLen')">15s</div>
+            <div class="toggle-pill" onclick="togglePill(this,'videoLen')">30s</div>
+            <div class="toggle-pill" onclick="togglePill(this,'videoLen')">6s Bumper</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Viewability Standard</label>
+          <select><option>MRC — Video Viewable (50% pixels, 2s)</option><option>GroupM — 100% pixels, 50% duration</option></select>
+        </div>
+      </div>
+      <div class="sub-heading">CTV Publishers</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Disney+ Hotstar</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">JioCinema</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">SonyLIV</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">ZEE5</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">YouTube (CTV)</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">MX Player</div>
+      </div>
+      <div class="sub-heading">Targeting</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Device Types</label>
+          <div class="toggle-group">
+            <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Smart TV</div>
+            <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Fire TV / Android TV</div>
+            <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Apple TV</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Daypart</label>
+          <input type="text" value="18:00 – 23:00 (Primetime)" />
+        </div>
+        <div class="field">
+          <label>Content Genre</label>
+          <div class="tag-row" id="ctv_genre">
+            <div class="tag">Lifestyle <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Food & Cooking <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Reality & Drama <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('ctv_genre')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Companion Display Ad</label>
+          <div class="toggle-group" id="companionToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'companionToggle')">Enabled</div>
+            <div class="toggle-pill" onclick="togglePill(this,'companionToggle')">Disabled</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(5)">← DOOH Settings</button>
+        <button class="btn-next" onclick="gotoSection(7)">Web Settings →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S8: Web ────────────────────────────── -->
+    <div class="section-view" id="section-7">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">🌐</span><div class="section-title">Web Display Settings</div></div>
+        <div class="section-sub">Open web programmatic display: inventory quality, ad sizes, publisher controls, and viewability.</div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Ad Sizes</label>
+          <div class="tag-row" id="web_sizes">
+            <div class="tag">300×250 <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">728×90 <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">160×600 <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">970×250 <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('web_sizes')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Viewability Target</label>
+          <div class="toggle-group" id="viewToggle">
+            <div class="toggle-pill" onclick="togglePill(this,'viewToggle')">Standard (50%+)</div>
+            <div class="toggle-pill on" onclick="togglePill(this,'viewToggle')">High (70%+)</div>
+            <div class="toggle-pill" onclick="togglePill(this,'viewToggle')">Premium (90%+)</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Inventory Tier</label>
+          <div class="toggle-group" id="invToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'invToggle')">Premium Publishers</div>
+            <div class="toggle-pill" onclick="togglePill(this,'invToggle')">Long Tail</div>
+            <div class="toggle-pill" onclick="togglePill(this,'invToggle')">All</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Ad Format</label>
+          <div class="toggle-group">
+            <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Banner</div>
+            <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Native</div>
+            <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Rich Media</div>
+            <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Interstitial</div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-heading">Publisher Controls</div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Allowlisted Publishers</label>
+          <div class="tag-row" id="web_allow">
+            <div class="tag">Times of India <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Hindustan Times <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Conde Nast India <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('web_allow')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Blocklisted Domains</label>
+          <div class="tag-row" id="web_block">
+            <div class="tag">clickbait.in <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('web_block')">＋ Block domain</button>
+          </div>
+        </div>
+      </div>
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(6)">← CTV Settings</button>
+        <button class="btn-next" onclick="gotoSection(8)">Mobile & App →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S9: Mobile ────────────────────────── -->
+    <div class="section-view" id="section-8">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">📱</span><div class="section-title">Mobile & App Settings</div></div>
+        <div class="section-sub">Configure in-app advertising, OS targeting, app category, and mobile-specific ad formats.</div>
+      </div>
+      <div class="form-row form-row-3">
+        <div class="field">
+          <label>OS Targeting</label>
+          <div class="toggle-group" id="osToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'osToggle')">Both</div>
+            <div class="toggle-pill" onclick="togglePill(this,'osToggle')">iOS</div>
+            <div class="toggle-pill" onclick="togglePill(this,'osToggle')">Android</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Min OS Version</label>
+          <input type="text" value="iOS 14+ / Android 10+" />
+        </div>
+        <div class="field">
+          <label>Connection Type</label>
+          <div class="toggle-group" id="connToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'connToggle')">All</div>
+            <div class="toggle-pill" onclick="togglePill(this,'connToggle')">WiFi Only</div>
+            <div class="toggle-pill" onclick="togglePill(this,'connToggle')">Cellular</div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-heading">App Categories</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Food Delivery</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Shopping</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Social Media</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">News & Media</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Fitness & Health</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Music & Audio</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Games</div>
+      </div>
+      <div class="sub-heading">Mobile Ad Formats</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Interstitial</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Banner</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">In-Stream Video</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Rewarded Video</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Native</div>
+      </div>
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(7)">← Web Settings</button>
+        <button class="btn-next" onclick="gotoSection(9)">Creative →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S10: Creative ─────────────────────── -->
+    <div class="section-view" id="section-9">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">🎨</span><div class="section-title">Creative & Assets</div></div>
+        <div class="section-sub">Link creatives to this campaign. Upload or connect from your DAM. Set rotation logic and click-through destinations.</div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Primary Creative Format</label>
+          <select><option>Video (15s) — MP4</option><option>Video (30s) — MP4</option><option>Carousel (HTML5)</option><option>Static Banner — PNG/JPG</option><option>GIF</option></select>
+        </div>
+        <div class="field">
+          <label>Click-Through / Landing URL</label>
+          <input type="url" value="https://brewhaven.com/monsoon-collection" />
+        </div>
+        <div class="field">
+          <label>Creative Rotation</label>
+          <select><option>Optimized (AI picks best)</option><option>Even Rotation</option><option>Sequential</option></select>
+        </div>
+        <div class="field">
+          <label>Display URL (Visible)</label>
+          <input type="text" value="brewhaven.com/monsoon" />
+        </div>
+      </div>
+      <div class="sub-heading">Attached Creatives</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem">
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:0.75rem 1rem;display:flex;align-items:center;gap:12px">
+          <div style="width:48px;height:32px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">🎬</div>
+          <div style="flex:1">
+            <div style="font-size:0.8rem;font-weight:500">BH_Monsoon_Video_15s_v2.mp4</div>
+            <div style="font-size:0.7rem;color:var(--text3)">15s · 1920×1080 · 8.4 MB · Approved</div>
+          </div>
+          <div style="font-size:0.72rem;color:#22c55e;font-weight:500">✓ Active</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:0.75rem 1rem;display:flex;align-items:center;gap:12px">
+          <div style="width:48px;height:32px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">🖼</div>
+          <div style="flex:1">
+            <div style="font-size:0.8rem;font-weight:500">BH_Monsoon_Banner_300x250.jpg</div>
+            <div style="font-size:0.7rem;color:var(--text3)">Static · 300×250 · 62 KB · Approved</div>
+          </div>
+          <div style="font-size:0.72rem;color:#22c55e;font-weight:500">✓ Active</div>
+        </div>
+        <button style="background:var(--surface2);border:1px dashed var(--border2);border-radius:9px;padding:0.75rem;font-size:0.8rem;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" onclick="void(0)">＋ Upload or link creative</button>
+      </div>
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(8)">← Mobile & App</button>
+        <button class="btn-next" onclick="gotoSection(10)">Tracking & Measurement →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S11: Tracking ─────────────────────── -->
+    <div class="section-view" id="section-10">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">📊</span><div class="section-title">Tracking & Measurement</div></div>
+        <div class="section-sub">Connect pixels, conversion events, impression trackers, and third-party measurement partners.</div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Conversion Pixel / Tag</label>
+          <input type="text" value="BH-CONV-0412 (BrewHaven Purchase Event)" />
+        </div>
+        <div class="field">
+          <label>Attribution Window</label>
+          <select><option>7-day click, 1-day view</option><option>1-day click, 1-day view</option><option>28-day click, 7-day view</option></select>
+        </div>
+        <div class="field">
+          <label>Impression Tracker URL (optional)</label>
+          <input type="url" value="" placeholder="https://tracker.example.com/imp?…" />
+        </div>
+        <div class="field">
+          <label>Click Tracker URL (optional)</label>
+          <input type="url" value="" placeholder="https://tracker.example.com/clk?…" />
+        </div>
+      </div>
+      <div class="sub-heading">Measurement Partners</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">IAS — Brand Safety</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">DoubleVerify</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Nielsen DAR</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Comscore vCE</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Moat</div>
+      </div>
+      <div class="sub-heading">UTM Tracking</div>
+      <div class="form-row form-row-3">
+        <div class="field"><label>utm_source</label><input type="text" value="360platform" /></div>
+        <div class="field"><label>utm_medium</label><input type="text" value="programmatic" /></div>
+        <div class="field"><label>utm_campaign</label><input type="text" value="monsoon-collection-may26" /></div>
+      </div>
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(9)">← Creative</button>
+        <button class="btn-next" onclick="gotoSection(11)">Brand Safety →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S12: Brand Safety ──────────────────── -->
+    <div class="section-view" id="section-11">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">🛡</span><div class="section-title">Brand Safety & Controls</div></div>
+        <div class="section-sub">Define what content environments are acceptable. These settings are pre-filled from BrewHaven's brand profile.</div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Brand Safety Level</label>
+          <div class="toggle-group" id="safetyToggle">
+            <div class="toggle-pill" onclick="togglePill(this,'safetyToggle')">Standard</div>
+            <div class="toggle-pill on" onclick="togglePill(this,'safetyToggle')">Enhanced</div>
+            <div class="toggle-pill" onclick="togglePill(this,'safetyToggle')">Strict</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Content Rating Allowed</label>
+          <div class="toggle-group" id="contentRating">
+            <div class="toggle-pill on" onclick="togglePill(this,'contentRating')">G — General</div>
+            <div class="toggle-pill on" onclick="togglePill(this,'contentRating')">PG</div>
+            <div class="toggle-pill" onclick="togglePill(this,'contentRating')">PG-13</div>
+            <div class="toggle-pill" onclick="togglePill(this,'contentRating')">R / Adult</div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-heading">Blocked Content Categories (IAS / GARM)</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Adult Content</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Hate Speech</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Violence</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Piracy / MFA</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">Misinformation</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Alcohol</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Gambling</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Drugs</div>
+      </div>
+      <div class="sub-heading">Bot & Fraud Controls</div>
+      <div class="toggle-group">
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">IVT Filtering (Invalid Traffic)</div>
+        <div class="toggle-pill multi on" onclick="this.classList.toggle('on')">SIVT — Sophisticated Bot Filtering</div>
+        <div class="toggle-pill multi" onclick="this.classList.toggle('on')">Domain Verification (ads.txt)</div>
+      </div>
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(10)">← Tracking</button>
+        <button class="btn-next" onclick="gotoSection(12)">Advanced Settings →</button>
+        <span class="autosave-note">✓ Auto-saved</span>
+      </div>
+    </div>
+
+    <!-- ─── S13: Advanced ─────────────────────── -->
+    <div class="section-view" id="section-12">
+      <div class="section-heading">
+        <div class="section-heading-row"><span class="section-icon-big">⚙️</span><div class="section-title">Advanced Settings</div></div>
+        <div class="section-sub">Competitive exclusions, flighting overrides, audience suppression, and approval workflow.</div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="field">
+          <label>Competitive Exclusion</label>
+          <div class="tag-row" id="adv_compexcl">
+            <div class="tag">Nescafé <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Bru Coffee <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Blue Tokai <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('adv_compexcl')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Audience Suppression (do-not-target)</label>
+          <div class="tag-row" id="adv_suppress">
+            <div class="tag">Existing subscribers <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <button class="tag-add" onclick="addTag('adv_suppress')">＋</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Approval Workflow</label>
+          <select><option>Standard (auto-approve)</option><option>Client Approval Required</option><option>Creative Director Review</option></select>
+        </div>
+        <div class="field">
+          <label>Version / Scenario</label>
+          <input type="text" value="v1 — Primary Plan" />
+        </div>
+        <div class="field">
+          <label>A/B Test Mode</label>
+          <div class="toggle-group" id="abToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'abToggle')">Off</div>
+            <div class="toggle-pill" onclick="togglePill(this,'abToggle')">A/B Split</div>
+            <div class="toggle-pill" onclick="togglePill(this,'abToggle')">Multivariate</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Exclude from Forecasting</label>
+          <div class="toggle-group" id="forecastToggle">
+            <div class="toggle-pill on" onclick="togglePill(this,'forecastToggle')">Include</div>
+            <div class="toggle-pill" onclick="togglePill(this,'forecastToggle')">Exclude</div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-heading">Notes</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Internal Notes</label>
+          <textarea style="min-height:80px">Monsoon collection launch. Creative approved. DOOH screens confirmed via Vistar — Mumbai malls and Bengaluru transit. Client brief says push hard in first week.</textarea>
+        </div>
+      </div>
+
+      <div class="section-nav-footer">
+        <button class="btn-back" onclick="gotoSection(11)">← Brand Safety</button>
+        <button class="btn-generate-plan" onclick="openPlanOutput()">✦ Generate Media Plan →</button>
+        <span class="autosave-note">✓ All 13 sections complete</span>
+      </div>
+    </div>
+
+  </div><!-- /form-area -->
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-header-title"><div class="ai-badge">✦</div> Campaign AI</div>
+      <div class="chat-header-sub" id="chatSectionTag">Ask about this section</div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg ai">
+        <div class="chat-msg-avatar">✦</div>
+        <div class="chat-bubble">Welcome to Detailed Mode. I've pre-filled all 13 sections using BrewHaven's brand profile and your previous Quick Mode inputs. Review each section and ask me anything.
+          <button class="chat-suggestion" onclick="useSuggestion(this)">Why these 4 channels?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">What DOOH screens are included?</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">How is budget split calculated?</button>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chatInput" rows="1" placeholder="Ask about this section…" onkeydown="chatKeydown(event)"></textarea>
+        <button class="chat-send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /workspace -->
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const brandId = params.get('brand') || 'brewhaven';
+  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const campaignName = decodeURIComponent(params.get('cname') || 'New Campaign');
+
+  document.getElementById('navBrandLink').textContent = brandName;
+  document.getElementById('navBrandLink').href = `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  const campaignId = params.get('campaign') || '';
+  document.getElementById('navCampaignLink').textContent = campaignName;
+  document.getElementById('navCampaignLink').href = `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`;
+  document.title = `New Plan — ${campaignName} — 360 Platform`;
+
+  // Section definitions
+  const sections = [
+    { icon: '📋', label: 'Campaign Basics' },
+    { icon: '📍', label: 'Geography' },
+    { icon: '🎯', label: 'Audience' },
+    { icon: '💰', label: 'Budget & Pacing' },
+    { icon: '📡', label: 'Channel Mix' },
+    { icon: '🖥', label: 'DOOH Settings' },
+    { icon: '📺', label: 'CTV / OTT' },
+    { icon: '🌐', label: 'Web Display' },
+    { icon: '📱', label: 'Mobile & App' },
+    { icon: '🎨', label: 'Creative' },
+    { icon: '📊', label: 'Tracking' },
+    { icon: '🛡', label: 'Brand Safety' },
+    { icon: '⚙️', label: 'Advanced' },
+  ];
+
+  let currentSection = 0;
+  const completedSections = new Set([0]);
+
+  function buildSideNav() {
+    const nav = document.getElementById('sideNav');
+    nav.innerHTML = sections.map((s, i) => `
+      <div class="side-section-item ${i === currentSection ? 'active' : ''} ${completedSections.has(i) && i !== currentSection ? 'complete' : ''}"
+           onclick="gotoSection(${i})" id="navItem-${i}">
+        <span class="side-section-num">${i + 1}</span>
+        <span class="side-section-icon">${s.icon}</span>
+        <span style="flex:1">${s.label}</span>
+        <span class="section-check">✓</span>
+      </div>
+      ${i === 4 ? '<div class="side-divider"></div>' : ''}
+      ${i === 9 ? '<div class="side-divider"></div>' : ''}
+    `).join('');
+  }
+
+  function gotoSection(idx) {
+    if (idx < 0 || idx >= sections.length) return;
+    completedSections.add(currentSection);
+    document.getElementById(`section-${currentSection}`).classList.remove('active');
+    currentSection = idx;
+    document.getElementById(`section-${idx}`).classList.add('active');
+    buildSideNav();
+    updateProgress();
+    document.getElementById('formArea').scrollTo(0, 0);
+    // Chat context update
+    document.getElementById('chatSectionTag').textContent = `Now: ${sections[idx].label}`;
+    addChatMsg('ai', getSectionHint(idx));
+  }
+
+  function updateProgress() {
+    const pct = Math.round(((completedSections.size) / sections.length) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressTxt').textContent = `${completedSections.size} / ${sections.length} sections`;
+  }
+
+  function getSectionHint(idx) {
+    const hints = [
+      `You're on <strong>Campaign Basics</strong>. I've set objective to <em>Conversions / Sales</em> based on your brief. The booking ref PIN-BH-2026-Q2-014 is auto-generated from your agency account.`,
+      `<strong>Geography</strong> — 3 cities: Mumbai (45%), Bengaluru (35%), Pune (20%). I've added Hyderabad as a reach extension with low weight. Adjust sliders to rebalance.`,
+      `<strong>Audience</strong> — Demographics 24–38, All Genders, Upper Middle income, aligned to BrewHaven's Urban Coffee Connoisseur persona. Retargeting pool (website visitors 30d) layered on top.`,
+      `<strong>Budget & Pacing</strong> — ₹5L over 14 days = ₹35.7K/day avg. I've set Even pacing. Consider Front-loaded to capitalise on monsoon season buzz in week 1.`,
+      `<strong>Channel Mix</strong> — 4 channels activated. Mobile + Web get 30% each (largest reach), DOOH 25% (brand launch recall), CTV 15% (primetime awareness). Toggle channels on/off on the left cards.`,
+      `<strong>DOOH</strong> — Vistar + Broadsign combined. Malls and transit in Mumbai + Bengaluru. Mobile geo-sync enabled with 500m radius so users who see the screens get mobile retargeting.`,
+      `<strong>CTV</strong> — Hotstar and JioCinema are top performers for this demographic. Primetime 18:00–23:00. Non-skippable 15s selected — maximises completion rates and brand recall.`,
+      `<strong>Web Display</strong> — Premium publishers allowlisted: ToI, HT, Condé Nast India. High viewability target (70%+) to ensure quality impressions. Rich media + banner.`,
+      `<strong>Mobile & App</strong> — Both iOS and Android. Food delivery and shopping apps indexed highest for conversions in previous BrewHaven campaigns. Interstitial + in-stream video selected.`,
+      `<strong>Creative</strong> — Video 15s and banner 300×250 pre-linked. Optimized rotation will serve the highest-performing creative more frequently after 48h of data.`,
+      `<strong>Tracking</strong> — Pixel BH-CONV-0412 is live on brewhaven.com. 7-day click / 1-day view attribution. IAS and DoubleVerify enabled for brand safety verification.`,
+      `<strong>Brand Safety</strong> — Enhanced level from BrewHaven brand profile. Adult, hate speech, violence, piracy, misinformation all blocked. SIVT bot filtering active.`,
+      `<strong>Advanced</strong> — Competitive exclusions include Nescafé, Bru, Blue Tokai. All 13 sections complete — click <em>Generate Media Plan</em> to create your campaign plan.`
+    ];
+    return hints[idx] || 'Reviewing this section…';
+  }
+
+  // Tag helpers
+  function rmTag(btn) { btn.parentElement.remove(); }
+  function addTag(id) {
+    const val = prompt('Add:'); if (!val) return;
+    const c = document.getElementById(id);
+    const t = document.createElement('div'); t.className = 'tag';
+    t.innerHTML = `${val} <span class="tag-x" onclick="rmTag(this)">✕</span>`;
+    c.insertBefore(t, c.lastElementChild);
+  }
+
+  // Toggle pill (single-select)
+  function togglePill(el, groupId) {
+    document.getElementById(groupId)?.querySelectorAll('.toggle-pill').forEach(p => p.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  // Alloc slider live update
+  function updateAlloc(slider) {
+    const row = slider.closest('.alloc-row');
+    const pctEl = row.querySelector('.alloc-pct');
+    const amtEl = row.querySelector('.alloc-amt');
+    if (pctEl) pctEl.textContent = slider.value + '%';
+    if (amtEl) {
+      const amt = (parseInt(slider.value) / 100 * 500000);
+      amtEl.textContent = amt >= 100000 ? '₹' + (amt/100000).toFixed(2) + 'L' : '₹' + (amt/1000).toFixed(0) + 'K';
+    }
+  }
+
+  function switchToQuick() {
+    window.location.href = `campaign-quick.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}&campaign=${campaignId}`;
+  }
+  function goBack() {
+    window.location.href = campaignId
+      ? `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`
+      : `brand-detail.html?brand=${brandId}&name=${encodeURIComponent(brandName)}`;
+  }
+  function openPlanOutput() {
+    window.location.href = campaignId
+      ? `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}&tab=executions`
+      : `campaign-quick.html?brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`;
+  }
+
+  // Save draft feedback
+  document.getElementById('saveDraftBtn').addEventListener('click', function() {
+    this.textContent = '✓ Saved';
+    setTimeout(() => this.textContent = '💾 Save Draft', 2000);
+  });
+
+  // Chat
+  const aiReplies = {
+    'channel': `4 channels selected based on BrewHaven's objective (conversions), audience (urban 24–38), and ₹5L budget. Mobile & Web provide the largest addressable inventory. DOOH adds physical brand presence for a product launch. CTV builds primetime awareness.`,
+    'dooh': `DOOH screens include: Phoenix Market City Mumbai, Infiniti Bengaluru, metro station corridors in both cities, and select outdoor retail hoardings via Vistar. These are high-footfall zones for the 24–38 urban demographic.`,
+    'budget': `Budget split is AI-recommended: Mobile 30% (largest reach, best CPA historically), Web 30% (display + retargeting), DOOH 25% (per your instruction in Quick Mode), CTV 15% (awareness booster). Adjust sliders in Section 5.`,
+    'persona': `Urban Coffee Connoisseur (primary) + WFH Professional (secondary). These are BrewHaven's saved personas. Combined, they cover ~68% of the target 24–38 urban demographic with interest overlap in premium food/bev + lifestyle.`,
+    'cpa': `Target CPA ₹90 set based on your brief. BrewHaven historical average is ₹83. Slightly above average for a new product launch (building initial purchase data). You can tighten to ₹80 if you want to be conservative.`,
+    'roas': `Est. ROAS 3.8× based on avg. order ₹340 and ~5,500 conversions at ₹90 CPA. Historical ROAS for BrewHaven seasonal campaigns: 3.2–4.1×. You're in a good range.`,
+    'creative': `Video 15s performs best for this audience on CTV and mobile in-stream. Banner 300×250 and 728×90 for web display. Creative is in optimized rotation — the platform will learn which performs better after 48h.`,
+    'tracking': `Pixel BH-CONV-0412 fires on purchase confirmation page. 7-day click + 1-day view attribution is standard for conversion campaigns. IAS + DoubleVerify verify viewability and brand safety on every impression.`,
+  };
+
+  function addChatMsg(role, html) {
+    const msgs = document.getElementById('chatMessages');
+    const el = document.createElement('div');
+    el.className = `chat-msg ${role}`;
+    const avatar = role === 'ai' ? '✦' : 'JD';
+    el.innerHTML = `<div class="chat-msg-avatar">${avatar}</div><div class="chat-bubble">${html}</div>`;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+    el.querySelectorAll('.chat-suggestion').forEach(btn => btn.onclick = () => useSuggestion(btn));
+  }
+
+  function useSuggestion(btn) {
+    const txt = btn.textContent;
+    addChatMsg('user', txt);
+    setTimeout(() => {
+      const lower = txt.toLowerCase();
+      let reply = 'Great question. I\'ve noted this — you can adjust the relevant section directly, or I can suggest values for you.';
+      for (const [k, v] of Object.entries(aiReplies)) {
+        if (lower.includes(k)) { reply = v; break; }
+      }
+      addChatMsg('ai', reply);
+    }, 700);
+  }
+
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    addChatMsg('user', msg);
+    setTimeout(() => {
+      const lower = msg.toLowerCase();
+      let reply = `Got it. For this section (${sections[currentSection].label}), you can edit any field directly. Ask me for specific recommendations and I'll fill them in.`;
+      for (const [k, v] of Object.entries(aiReplies)) {
+        if (lower.includes(k)) { reply = v; break; }
+      }
+      addChatMsg('ai', reply);
+    }, 700);
+  }
+
+  function chatKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+  }
+
+  // Init
+  buildSideNav();
+  updateProgress();
+
+
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

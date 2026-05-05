@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Onboarding — 360 Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0b0f;
+      --surface: #111318;
+      --surface2: #191c24;
+      --surface3: #1e2230;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --blue: #3b82f6;
+      --blue-dim: rgba(59,130,246,0.12);
+      --blue-glow: rgba(59,130,246,0.25);
+      --cyan: #06b6d4;
+      --text: #f0f2f8;
+      --text2: #8b92a5;
+      --text3: #555d70;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --sidebar-w: 220px;
+    }
+
+    body.light {
+      --bg: #f4f6fb; --surface: #ffffff; --surface2: #eef1f8; --surface3: #e3e8f5;
+      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
+      --blue-dim: rgba(59,130,246,0.08);
+      --text: #0d1117; --text2: #374151; --text3: #6b7a8d;
+    }
+    body.light nav { background: rgba(244,246,251,0.92); }
+    body.light select option { background: #fff; color: #0d1117; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ─── NAV ─────────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+      z-index: 50;
+    }
+
+    .nav-left { display: flex; align-items: center; gap: 10px; font-size: 0.83rem; color: var(--text2); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; color: var(--text); text-decoration: none; }
+    .nav-logo-icon { height: 44px; width: auto; display: flex; align-items: center; }
+    .nav-logo-icon img { height: 100%; width: auto; object-fit: contain; }
+    .breadcrumb-sep { color: var(--text3); }
+    .breadcrumb-current { color: var(--text); font-weight: 500; }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .save-indicator { font-size: 0.75rem; color: var(--text3); display: flex; align-items: center; gap: 5px; }
+    .save-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+
+    .btn-sm {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-sm:hover { background: var(--surface3); color: var(--text); }
+    .btn-theme-toggle { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); width: 32px; height: 32px; border-radius: 7px; font-size: 14px; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .btn-theme-toggle:hover { background: var(--surface3); }
+
+    /* ─── LAYOUT ──────────────────────────────────── */
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ─── LEFT SIDEBAR (STEPS) ────────────────────── */
+    .steps-sidebar {
+      width: var(--sidebar-w);
+      border-right: 1px solid var(--border);
+      padding: 1.2rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .steps-group-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      padding: 0.6rem 0.6rem 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.55rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+    }
+
+    .step-item:hover { background: var(--surface2); }
+    .step-item.active { background: var(--blue-dim); }
+    .step-item.active .step-dot { background: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
+    .step-item.completed .step-dot { background: #22c55e; }
+    .step-item.optional .step-dot { background: var(--surface3); border: 1px solid var(--border2); }
+
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--surface3);
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .step-item-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .step-item-name {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .step-item.active .step-item-name { color: var(--text); }
+    .step-item.completed .step-item-name { color: var(--text2); }
+
+    .step-optional-badge {
+      font-size: 0.62rem;
+      background: var(--surface3);
+      color: var(--text3);
+      padding: 1px 6px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .step-check {
+      font-size: 11px;
+      color: #22c55e;
+    }
+
+    /* ─── FORM PANEL ──────────────────────────────── */
+    .form-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 2.5rem;
+      min-width: 0;
+    }
+
+    .step-page { display: none; }
+    .step-page.active { display: block; }
+
+    .step-header { margin-bottom: 1.75rem; }
+    .step-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .step-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: -0.02em; }
+    .step-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.5; }
+
+    /* AI loading bar */
+    .ai-loading {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+
+    .ai-loading-bar {
+      flex: 1;
+      height: 3px;
+      background: var(--surface3);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .ai-loading-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      border-radius: 10px;
+      width: 100%;
+      animation: fillBar 1.8s ease forwards;
+    }
+
+    @keyframes fillBar {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* ─── FORM FIELDS ─────────────────────────────── */
+    .form-grid { display: grid; gap: 1rem; }
+    .form-grid-2 { grid-template-columns: 1fr 1fr; }
+    .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    .form-section {
+      margin-bottom: 1.75rem;
+    }
+
+    .form-section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+    label {
+      font-size: 0.77rem;
+      font-weight: 500;
+      color: var(--text2);
+      letter-spacing: 0.01em;
+    }
+
+    input[type=text], input[type=url], input[type=email], select, textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-dim);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text3); }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%238b92a5' viewBox='0 0 20 20'%3E%3Cpath d='M7 7l3-3 3 3M7 13l3 3 3-3'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    select option { background: var(--surface2); }
+
+    textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+    /* color swatches */
+    .color-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .color-swatch.active { border-color: #fff; }
+    .color-swatch:hover { transform: scale(1.1); }
+
+    .color-add {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px dashed var(--border2);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text3);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .color-add:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* tag pills */
+    .tags-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tag-pill {
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: default;
+    }
+
+    .tag-pill .remove { cursor: pointer; color: var(--text3); font-size: 10px; }
+    .tag-pill .remove:hover { color: #ef4444; }
+
+    .tag-add {
+      background: transparent;
+      border: 1px dashed var(--border2);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag-add:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* persona cards */
+    .persona-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+
+    .persona-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      position: relative;
+    }
+
+    .persona-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .persona-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .persona-name-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border2);
+      border-radius: 0;
+      padding: 4px 0;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .persona-field { margin-bottom: 0.6rem; }
+    .persona-label { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .persona-val { font-size: 0.8rem; color: var(--text2); }
+
+    /* competitor cards */
+    .competitor-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .competitor-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .competitor-logo {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--surface3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .competitor-info { flex: 1; }
+    .competitor-name { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; }
+    .competitor-domain { font-size: 0.72rem; color: var(--text3); }
+    .competitor-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(59,130,246,0.12);
+      color: var(--blue);
+    }
+
+    /* range input */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--surface3);
+      border-radius: 10px;
+      outline: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--blue);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px var(--blue-dim);
+    }
+
+    /* toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+
+    .toggle-info { display: flex; flex-direction: column; gap: 2px; }
+    .toggle-label-text { font-size: 0.83rem; font-weight: 500; }
+    .toggle-desc { font-size: 0.75rem; color: var(--text3); }
+
+    .toggle {
+      width: 40px; height: 22px;
+      background: var(--surface3);
+      border-radius: 11px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .toggle.on { background: var(--blue); }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px; left: 3px;
+      transition: transform 0.2s;
+    }
+
+    .toggle.on::after { transform: translateX(18px); }
+
+    /* summary card */
+    .summary-section {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .summary-edit-btn {
+      font-size: 0.72rem;
+      color: var(--blue);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1.5rem; }
+    .summary-item { display: flex; flex-direction: column; gap: 2px; }
+    .summary-item-label { font-size: 0.7rem; color: var(--text3); }
+    .summary-item-val { font-size: 0.82rem; color: var(--text2); }
+
+    .optional-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .optional-step-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .optional-step-card:hover {
+      border-color: var(--border2);
+      background: var(--surface3);
+    }
+
+    .optional-step-card.selected {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    .optional-step-icon { font-size: 22px; }
+    .optional-step-name { font-size: 0.85rem; font-weight: 600; }
+    .optional-step-desc { font-size: 0.75rem; color: var(--text3); line-height: 1.4; }
+
+    /* ─── BOTTOM BAR ──────────────────────────────── */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 2.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .step-counter {
+      font-size: 0.78rem;
+      color: var(--text3);
+    }
+
+    .bottom-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-back:hover { background: var(--surface2); color: var(--text); }
+
+    .btn-next {
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-next:hover { background: #2563eb; box-shadow: 0 4px 14px rgba(59,130,246,0.3); }
+    .btn-next:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; box-shadow: none; }
+
+    .btn-finish {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none;
+      color: #fff;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-finish:hover { box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
+
+    /* ─── CHAT PANEL ──────────────────────────────── */
+    .chat-panel {
+      width: 320px;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+
+    .chat-header {
+      padding: 1rem 1.25rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .chat-header-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.2rem;
+    }
+
+    .ai-badge {
+      width: 20px; height: 20px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .chat-header-sub { font-size: 0.73rem; color: var(--text3); }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .chat-msg.user { flex-direction: row-reverse; }
+
+    .chat-msg-avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .chat-msg.ai .chat-msg-avatar { background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+    .chat-msg.user .chat-msg-avatar { background: #6366f1; font-size: 11px; font-weight: 600; }
+
+    .chat-bubble {
+      max-width: 85%;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .chat-msg.ai .chat-bubble {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      border-top-left-radius: 4px;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--blue);
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+
+    .chat-bubble strong { color: var(--text); font-weight: 600; }
+    .chat-msg.user .chat-bubble strong { color: #fff; }
+
+    .chat-suggestion {
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 4px;
+      display: block;
+    }
+    .chat-suggestion:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+    .chat-input-area {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 7px;
+      align-items: flex-end;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 8px 10px;
+      transition: border-color 0.2s;
+    }
+
+    .chat-input-row:focus-within { border-color: var(--blue); }
+
+    .chat-textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.8rem;
+      resize: none;
+      outline: none;
+      min-height: 20px;
+      max-height: 80px;
+      line-height: 1.4;
+    }
+
+    .chat-textarea::placeholder { color: var(--text3); }
+
+    .chat-send-btn {
+      width: 28px; height: 28px;
+      background: var(--blue);
+      border: none;
+      border-radius: 7px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: background 0.18s;
+      flex-shrink: 0;
+    }
+    .chat-send-btn:hover { background: #2563eb; }
+
+    /* new brand entry step */
+    .entry-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .entry-icon { font-size: 3rem; margin-bottom: 1.25rem; }
+    .entry-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .entry-sub { font-size: 0.85rem; color: var(--text3); margin-bottom: 2rem; line-height: 1.6; }
+
+    .entry-fields { width: 100%; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; text-align: left; }
+
+    .entry-input {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .entry-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    .entry-input::placeholder { color: var(--text3); }
+
+    .entry-cta {
+      width: 100%;
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      padding: 13px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .entry-cta:hover { background: #2563eb; box-shadow: 0 6px 20px rgba(59,130,246,0.35); }
+
+    .entry-hint {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      justify-content: center;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+
+    @media (max-width: 900px) {
+      .chat-panel { display: none; }
+      .steps-sidebar { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="agency.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+    <span class="breadcrumb-sep">›</span>
+    <a href="agency.html" style="color:var(--text2);text-decoration:none;font-size:0.83rem;">Pinnacle Media</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-current" id="navBrandName">New Brand</span>
+  </div>
+  <div class="nav-right">
+    <div class="save-indicator"><div class="save-dot"></div> Auto-saved</div>
+    <button class="btn-sm" onclick="window.location.href='agency.html'">✕ Exit</button>
+    <button class="btn-theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+  </div>
+</nav>
+
+<div class="workspace">
+
+  <!-- STEPS SIDEBAR -->
+  <div class="steps-sidebar">
+    <div class="steps-group-label">Core</div>
+    <div class="step-item active" id="nav-0" onclick="gotoStep(0)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Brand Entry</div></div>
+    </div>
+    <div class="step-item" id="nav-1" onclick="gotoStep(1)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Brand Basics</div></div>
+    </div>
+    <div class="step-item" id="nav-2" onclick="gotoStep(2)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Competitive Context</div></div>
+    </div>
+    <div class="step-item" id="nav-3" onclick="gotoStep(3)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Audience Personas</div></div>
+    </div>
+    <div class="step-item" id="nav-4">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Review & Finalize</div></div>
+    </div>
+
+    <div class="steps-group-label" style="margin-top:0.5rem;">Optional</div>
+    <div class="step-item optional" id="nav-5" onclick="gotoStep(5)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Channels & Vendors</div></div>
+      <span class="step-optional-badge">opt</span>
+    </div>
+    <div class="step-item optional" id="nav-6" onclick="gotoStep(6)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Budget & Pacing</div></div>
+      <span class="step-optional-badge">opt</span>
+    </div>
+    <div class="step-item optional" id="nav-7" onclick="gotoStep(7)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Exclusions</div></div>
+      <span class="step-optional-badge">opt</span>
+    </div>
+    <div class="step-item optional" id="nav-8" onclick="gotoStep(8)">
+      <div class="step-dot"></div>
+      <div class="step-item-text"><div class="step-item-name">Audience Seeds</div></div>
+      <span class="step-optional-badge">opt</span>
+    </div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="form-panel" id="formPanel">
+
+    <!-- STEP 0: Entry -->
+    <div class="step-page active" id="step-0">
+      <div class="entry-step">
+        <div class="entry-icon">✦</div>
+        <div class="entry-title">Add a new brand</div>
+        <div class="entry-sub">Enter your brand name and website — we'll research and auto-fill your brand profile, competitive context, and audience personas.</div>
+        <div class="entry-fields">
+          <input class="entry-input" id="entryBrandName" type="text" placeholder="Brand Name (e.g. BrewHaven Coffee)" />
+          <input class="entry-input" id="entryWebsite" type="url" placeholder="Website URL (e.g. https://brewhaven.com)" />
+        </div>
+        <button class="entry-cta" onclick="runAutofill()">
+          <span>✦</span> Research & Auto-fill Profile →
+        </button>
+        <div class="entry-hint">✨ AI will analyze your website and auto-generate a complete brand profile</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Brand Basics -->
+    <div class="step-page" id="step-1">
+      <div class="step-header">
+        <div class="step-tag">Step 1 of 4 · Mandatory</div>
+        <div class="step-title">Brand Basics & Creative Guidelines</div>
+        <div class="step-desc">Auto-filled from your website. Review and edit as needed.</div>
+      </div>
+
+      <div class="ai-loading" id="aiLoader1">
+        <span>✦</span>
+        <span style="flex:1">Analyzing website and building brand profile…</span>
+        <div class="ai-loading-bar"><div class="ai-loading-fill"></div></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🏷 Brand Identity</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Brand Name</label>
+            <input type="text" id="f_brandName" value="BrewHaven Coffee" />
+          </div>
+          <div class="field">
+            <label>Website</label>
+            <input type="url" id="f_website" value="https://brewhaven.com" />
+          </div>
+          <div class="field">
+            <label>Industry</label>
+            <select id="f_industry">
+              <option selected>Food & Beverage</option>
+              <option>Beauty & Personal Care</option>
+              <option>Fashion & Apparel</option>
+              <option>Automotive</option>
+              <option>Technology</option>
+              <option>Health & Fitness</option>
+              <option>Finance</option>
+              <option>Real Estate</option>
+              <option>Travel & Hospitality</option>
+              <option>Education</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Sub-category</label>
+            <input type="text" id="f_subcat" value="Specialty Coffee · D2C" />
+          </div>
+          <div class="field" style="grid-column:span 2">
+            <label>Brand Description</label>
+            <textarea id="f_desc">BrewHaven Coffee is a premium D2C specialty coffee brand delivering artisanal single-origin blends sourced from small farms in Coorg, Chikmagalur, and Araku Valley. Known for transparent sourcing and sustainable packaging.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🎨 Creative Guidelines</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Tone of Voice</label>
+            <select id="f_tone">
+              <option selected>Warm & Authentic</option>
+              <option>Bold & Energetic</option>
+              <option>Minimal & Sophisticated</option>
+              <option>Playful & Fun</option>
+              <option>Professional & Trustworthy</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>CTA Style</label>
+            <select id="f_cta">
+              <option selected>Inviting (Shop Now, Discover)</option>
+              <option>Urgent (Limited, Last chance)</option>
+              <option>Soft (Learn More, Explore)</option>
+              <option>Direct (Buy, Order)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Do's</label>
+            <textarea id="f_dos" style="min-height:56px">Use earthy visuals, steam & aroma imagery, morning rituals, farm stories</textarea>
+          </div>
+          <div class="field">
+            <label>Don'ts</label>
+            <textarea id="f_donts" style="min-height:56px">Avoid fast food imagery, aggressive discounts, neon colours</textarea>
+          </div>
+          <div class="field">
+            <label>Preferred Ad Formats</label>
+            <div class="tags-row" id="formatTags">
+              <div class="tag-pill">Video 15s <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Carousel <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Stories <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Display <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('formatTags')">＋</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Primary Brand Colors</label>
+            <div class="color-row">
+              <div class="color-swatch active" style="background:#6B3F1A"></div>
+              <div class="color-swatch" style="background:#D4A96A"></div>
+              <div class="color-swatch" style="background:#F5F0E8"></div>
+              <div class="color-swatch" style="background:#2C1A0E"></div>
+              <button class="color-add">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🌍 Market Context</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Market Scope</label>
+            <select id="f_scope">
+              <option selected>National — India</option>
+              <option>Pan-Asia</option>
+              <option>Global</option>
+              <option>Regional</option>
+              <option>City-level</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Home Markets</label>
+            <div class="tags-row" id="marketTags">
+              <div class="tag-pill">Bengaluru <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Mumbai <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Delhi NCR <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Hyderabad <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('marketTags')">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Competitive Context -->
+    <div class="step-page" id="step-2">
+      <div class="step-header">
+        <div class="step-tag">Step 2 of 4 · Mandatory</div>
+        <div class="step-title">Competitive Context</div>
+        <div class="step-desc">Auto-detected competitors and market positioning.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🥊 Primary Competitors</div>
+        <div class="competitor-list">
+          <div class="competitor-item">
+            <div class="competitor-logo">☕</div>
+            <div class="competitor-info">
+              <div class="competitor-name">Blue Tokai Coffee</div>
+              <div class="competitor-domain">bluetokaicoffee.com</div>
+            </div>
+            <div class="competitor-badge">Direct</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-logo">🌿</div>
+            <div class="competitor-info">
+              <div class="competitor-name">Third Wave Coffee</div>
+              <div class="competitor-domain">thirdwavecoffee.in</div>
+            </div>
+            <div class="competitor-badge">Direct</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-logo">☕</div>
+            <div class="competitor-info">
+              <div class="competitor-name">Starbucks India</div>
+              <div class="competitor-domain">starbucks.in</div>
+            </div>
+            <div class="competitor-badge">Indirect</div>
+          </div>
+          <div class="competitor-item">
+            <div class="competitor-logo">🍵</div>
+            <div class="competitor-info">
+              <div class="competitor-name">Rage Coffee</div>
+              <div class="competitor-domain">ragecoffee.com</div>
+            </div>
+            <div class="competitor-badge">Direct</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">📍 Market Position</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>What makes this brand different?</label>
+            <textarea>Farm-direct sourcing with full traceability. Only brand in segment offering micro-lot coffee with farmer stories on every bag. Sustainable packaging with carbon-neutral delivery.</textarea>
+          </div>
+          <div class="field">
+            <label>Positioning Statement</label>
+            <select>
+              <option selected>Premium · Specialty Segment</option>
+              <option>Mass Market · Value</option>
+              <option>Mid-Range · Lifestyle</option>
+              <option>Ultra-Premium · Luxury</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Competitive Advantage Tags</label>
+            <div class="tags-row" id="advTags">
+              <div class="tag-pill">Farm-to-cup <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Traceable sourcing <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Sustainable <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">D2C model <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('advTags')">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Audience Personas -->
+    <div class="step-page" id="step-3">
+      <div class="step-header">
+        <div class="step-tag">Step 3 of 4 · Mandatory</div>
+        <div class="step-title">Audience Personas</div>
+        <div class="step-desc">AI-generated personas. Edit or add more as needed.</div>
+      </div>
+
+      <div class="persona-cards" id="personaCards">
+
+        <div class="persona-card">
+          <div class="persona-card-header">
+            <div class="persona-avatar" style="background:rgba(59,130,246,0.15);color:var(--blue)">👩</div>
+            <input type="text" class="persona-name-input" value="The Urban Coffee Connoisseur" style="font-size:0.82rem;" />
+          </div>
+          <div class="persona-field"><div class="persona-label">Age</div><div class="persona-val">26–35</div></div>
+          <div class="persona-field"><div class="persona-label">Location</div><div class="persona-val">Metro cities</div></div>
+          <div class="persona-field"><div class="persona-label">Income</div><div class="persona-val">₹8L–20L / yr</div></div>
+          <div class="persona-field"><div class="persona-label">Platforms</div><div class="persona-val">Instagram, YouTube</div></div>
+          <div class="persona-field"><div class="persona-label">Pain Points</div><div class="persona-val">Can't find good specialty coffee locally</div></div>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-card-header">
+            <div class="persona-avatar" style="background:rgba(6,182,212,0.15);color:var(--cyan)">👨</div>
+            <input type="text" class="persona-name-input" value="Work-From-Home Professional" style="font-size:0.82rem;" />
+          </div>
+          <div class="persona-field"><div class="persona-label">Age</div><div class="persona-val">28–42</div></div>
+          <div class="persona-field"><div class="persona-label">Location</div><div class="persona-val">Tier-1 & Tier-2 cities</div></div>
+          <div class="persona-field"><div class="persona-label">Income</div><div class="persona-val">₹12L–30L / yr</div></div>
+          <div class="persona-field"><div class="persona-label">Platforms</div><div class="persona-val">LinkedIn, Twitter/X</div></div>
+          <div class="persona-field"><div class="persona-label">Pain Points</div><div class="persona-val">Wants a ritual, not just caffeine</div></div>
+        </div>
+
+        <div class="persona-card">
+          <div class="persona-card-header">
+            <div class="persona-avatar" style="background:rgba(34,197,94,0.15);color:#22c55e">🧑</div>
+            <input type="text" class="persona-name-input" value="Sustainability-Conscious Buyer" style="font-size:0.82rem;" />
+          </div>
+          <div class="persona-field"><div class="persona-label">Age</div><div class="persona-val">22–32</div></div>
+          <div class="persona-field"><div class="persona-label">Location</div><div class="persona-val">Bengaluru, Mumbai, Pune</div></div>
+          <div class="persona-field"><div class="persona-label">Income</div><div class="persona-val">₹6L–15L / yr</div></div>
+          <div class="persona-field"><div class="persona-label">Platforms</div><div class="persona-val">Instagram, Reddit</div></div>
+          <div class="persona-field"><div class="persona-label">Pain Points</div><div class="persona-val">Wants ethical sourcing proof</div></div>
+        </div>
+
+      </div>
+
+      <button class="tag-add" style="margin-top:1rem;padding:8px 14px;border-radius:8px" onclick="addPersona()">＋ Add Persona</button>
+    </div>
+
+    <!-- STEP 4: Summary -->
+    <div class="step-page" id="step-4">
+      <div class="step-header">
+        <div class="step-tag">Review · Mandatory Complete</div>
+        <div class="step-title">Brand Profile Summary</div>
+        <div class="step-desc">Your core brand profile is ready. Optionally configure strategy preferences below.</div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-section-title">
+          Brand Basics
+          <button class="summary-edit-btn" onclick="gotoStep(1)">Edit →</button>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="summary-item-label">Brand Name</div><div class="summary-item-val">BrewHaven Coffee</div></div>
+          <div class="summary-item"><div class="summary-item-label">Industry</div><div class="summary-item-val">Food & Beverage</div></div>
+          <div class="summary-item"><div class="summary-item-label">Sub-category</div><div class="summary-item-val">Specialty Coffee · D2C</div></div>
+          <div class="summary-item"><div class="summary-item-label">Market Scope</div><div class="summary-item-val">National — India</div></div>
+          <div class="summary-item"><div class="summary-item-label">Tone</div><div class="summary-item-val">Warm & Authentic</div></div>
+          <div class="summary-item"><div class="summary-item-label">CTA Style</div><div class="summary-item-val">Inviting</div></div>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-section-title">
+          Competitive Context
+          <button class="summary-edit-btn" onclick="gotoStep(2)">Edit →</button>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="summary-item-label">Competitors</div><div class="summary-item-val">Blue Tokai, Third Wave, Starbucks</div></div>
+          <div class="summary-item"><div class="summary-item-label">Position</div><div class="summary-item-val">Premium · Specialty</div></div>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-section-title">
+          Audience Personas
+          <button class="summary-edit-btn" onclick="gotoStep(3)">Edit →</button>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="summary-item-label">Persona 1</div><div class="summary-item-val">Urban Coffee Connoisseur (26–35)</div></div>
+          <div class="summary-item"><div class="summary-item-label">Persona 2</div><div class="summary-item-val">WFH Professional (28–42)</div></div>
+          <div class="summary-item"><div class="summary-item-label">Persona 3</div><div class="summary-item-val">Sustainability Buyer (22–32)</div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.75rem;">
+        <div class="form-section-title" style="font-size:0.78rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem;display:flex;align-items:center;gap:6px;">
+          ✦ Strategy Preferences <span style="color:var(--text3);font-size:0.7rem;font-weight:400;margin-left:4px;">(optional — select to configure)</span>
+        </div>
+        <div class="optional-steps-grid">
+          <div class="optional-step-card" onclick="selectOptional(this, 5)">
+            <div class="optional-step-icon">📡</div>
+            <div class="optional-step-name">Channels & Vendors</div>
+            <div class="optional-step-desc">Set preferred channels, blocked publishers, inventory type</div>
+          </div>
+          <div class="optional-step-card" onclick="selectOptional(this, 6)">
+            <div class="optional-step-icon">💰</div>
+            <div class="optional-step-name">Budget & Pacing</div>
+            <div class="optional-step-desc">Budget range, pacing preference, campaign durations</div>
+          </div>
+          <div class="optional-step-card" onclick="selectOptional(this, 7)">
+            <div class="optional-step-icon">🚫</div>
+            <div class="optional-step-name">Exclusions</div>
+            <div class="optional-step-desc">Domain blocklists, content exclusions, competitor blocks</div>
+          </div>
+          <div class="optional-step-card" onclick="selectOptional(this, 8)">
+            <div class="optional-step-icon">🧬</div>
+            <div class="optional-step-name">Audience Seeds</div>
+            <div class="optional-step-desc">Upload customer list, website visitors, CRM data</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Channels & Vendors -->
+    <div class="step-page" id="step-5">
+      <div class="step-header">
+        <div class="step-tag">Strategy · Optional</div>
+        <div class="step-title">Channels & Vendor Preferences</div>
+        <div class="step-desc">Define where and how you want to reach your audience.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">📡 Channel Ranking</div>
+        <div class="form-grid" style="gap:0.75rem">
+          <div style="display:flex;flex-direction:column;gap:0.6rem">
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;">
+              <span style="font-size:15px">📸</span>
+              <span style="flex:1;font-size:0.82rem;font-weight:500">Instagram</span>
+              <input type="range" min="0" max="100" value="35" style="width:120px" />
+              <span style="font-size:0.8rem;color:var(--text2);width:36px;text-align:right">35%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;">
+              <span style="font-size:15px">▶️</span>
+              <span style="flex:1;font-size:0.82rem;font-weight:500">YouTube</span>
+              <input type="range" min="0" max="100" value="25" style="width:120px" />
+              <span style="font-size:0.8rem;color:var(--text2);width:36px;text-align:right">25%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;">
+              <span style="font-size:15px">🔵</span>
+              <span style="flex:1;font-size:0.82rem;font-weight:500">Meta (Facebook)</span>
+              <input type="range" min="0" max="100" value="20" style="width:120px" />
+              <span style="font-size:0.8rem;color:var(--text2);width:36px;text-align:right">20%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;">
+              <span style="font-size:15px">🌐</span>
+              <span style="flex:1;font-size:0.82rem;font-weight:500">Programmatic Display</span>
+              <input type="range" min="0" max="100" value="20" style="width:120px" />
+              <span style="font-size:0.8rem;color:var(--text2);width:36px;text-align:right">20%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🏪 Vendor Preferences</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Preferred Publishers</label>
+            <div class="tags-row" id="pubTags">
+              <div class="tag-pill">Condé Nast India <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Times of India <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('pubTags')">＋</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Blocked Publishers</label>
+            <div class="tags-row" id="blockPubTags">
+              <div class="tag-pill">Clickbait networks <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('blockPubTags')">＋</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">Premium Inventory Only</div>
+              <div class="toggle-desc">Restrict to premium publisher placements</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">Private Marketplace Deals</div>
+              <div class="toggle-desc">Prefer curated PMP deals over open auction</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: Budget & Pacing -->
+    <div class="step-page" id="step-6">
+      <div class="step-header">
+        <div class="step-tag">Strategy · Optional</div>
+        <div class="step-title">Budget & Spending Habits</div>
+        <div class="step-desc">Default budget parameters applied to all campaigns for this brand.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">💰 Budget Parameters</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Typical Monthly Budget</label>
+            <select>
+              <option>Under ₹1L</option>
+              <option selected>₹1L – ₹5L</option>
+              <option>₹5L – ₹20L</option>
+              <option>₹20L – ₹1Cr</option>
+              <option>Above ₹1Cr</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Budget Type</label>
+            <select>
+              <option selected>Monthly recurring</option>
+              <option>Campaign-based</option>
+              <option>Quarterly</option>
+              <option>Annual</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Typical Campaign Duration</label>
+            <select>
+              <option>1–2 weeks</option>
+              <option selected>3–4 weeks</option>
+              <option>1–3 months</option>
+              <option>Evergreen (Always-on)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Pacing Preference</label>
+            <select>
+              <option selected>Even pacing</option>
+              <option>Front-loaded</option>
+              <option>Back-loaded</option>
+              <option>ASAP (spend as fast as possible)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7: Exclusions -->
+    <div class="step-page" id="step-7">
+      <div class="step-header">
+        <div class="step-tag">Strategy · Optional</div>
+        <div class="step-title">Default Exclusions</div>
+        <div class="step-desc">These will be applied as defaults to all campaigns for this brand.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🚫 Exclusion Lists</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <label>Domain Blocklist</label>
+            <textarea style="min-height:88px" placeholder="Enter domains, one per line&#10;e.g. lowquality-site.com">fake-news.com
+spam-network.in</textarea>
+          </div>
+          <div class="field">
+            <label>App Blocklist</label>
+            <textarea style="min-height:88px" placeholder="Enter app bundle IDs, one per line">com.spam.app</textarea>
+          </div>
+          <div class="field">
+            <label>Content Category Exclusions</label>
+            <div class="tags-row" id="catExcludeTags">
+              <div class="tag-pill">Adult content <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Gambling <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">Political <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('catExcludeTags')">＋</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Competitor Domains to Block</label>
+            <div class="tags-row" id="competitorBlockTags">
+              <div class="tag-pill">bluetokaicoffee.com <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <div class="tag-pill">ragecoffee.com <span class="remove" onclick="removeTag(this)">✕</span></div>
+              <button class="tag-add" onclick="addTag('competitorBlockTags')">＋</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8: Audience Seeds -->
+    <div class="step-page" id="step-8">
+      <div class="step-header">
+        <div class="step-tag">Strategy · Optional</div>
+        <div class="step-title">Customer Data & Audience Seeds</div>
+        <div class="step-desc">Upload first-party data to build lookalike audiences and retargeting pools.</div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🧬 Data Sources</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">📁 Customer List (CSV)</div>
+              <div class="toggle-desc">Upload emails / phone numbers for customer match</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">🌐 Website Visitor Tracking</div>
+              <div class="toggle-desc">Enable pixel to retarget site visitors</div>
+            </div>
+            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">📱 App Users</div>
+              <div class="toggle-desc">Sync mobile app audience (coming soon)</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-text">🗂 CRM / Offline Data</div>
+              <div class="toggle-desc">Upload offline purchase data or CRM export</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">📍 Store Locations / Service Areas</div>
+        <div class="field">
+          <textarea placeholder="Enter locations or upload CSV of store addresses…" style="min-height:64px">Bengaluru (5 stores), Mumbai (3 stores), Delhi (2 stores)</textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-header-title">
+        <div class="ai-badge">✦</div>
+        Brand Assistant
+      </div>
+      <div class="chat-header-sub">Refine anything with a prompt</div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg ai">
+        <div class="chat-msg-avatar">✦</div>
+        <div class="chat-bubble">
+          Hi! I've auto-filled your brand profile for <strong>BrewHaven Coffee</strong> based on the website. Review the form and let me know if you want any changes.
+        </div>
+      </div>
+      <div class="chat-msg ai">
+        <div class="chat-msg-avatar">✦</div>
+        <div>
+          <div class="chat-bubble">Try a quick prompt:</div>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">Make tone more premium and sophisticated</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">Add Tier-2 city audience persona</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">Target younger audience, age 18–24</button>
+          <button class="chat-suggestion" onclick="useSuggestion(this)">Add more sustainability messaging</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chatInput" rows="1" placeholder="Refine brand, persona, tone…" onkeydown="chatKeydown(event)"></textarea>
+        <button class="chat-send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /workspace -->
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="step-counter" id="stepCounter">Step 1 of 9</div>
+  <div class="bottom-actions">
+    <button class="btn-back" id="btnBack" onclick="prevStep()">← Back</button>
+    <button class="btn-next" id="btnNext" onclick="nextStep()">Continue →</button>
+    <button class="btn-finish" id="btnFinish" style="display:none" onclick="finishOnboarding()">✓ Save Brand Profile</button>
+  </div>
+</div>
+
+<script>
+  // ─── State ─────────────────────────────────────────────
+  const TOTAL_STEPS = 9; // 0-8
+  let currentStep = 0;
+  let maxReached = 0;
+
+  // URL params
+  const params = new URLSearchParams(location.search);
+  const isNew = params.get('new') === '1';
+  const brandName = params.get('name') || 'BrewHaven Coffee';
+  const brandUrl = params.get('url') || 'https://brewhaven.com';
+
+  // ─── Init ───────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('navBrandName').textContent = brandName;
+
+    if (!isNew) {
+      // existing brand — skip step 0
+      gotoStep(1);
+    } else {
+      document.getElementById('entryBrandName').value = brandName;
+      document.getElementById('entryWebsite').value = brandUrl;
+      updateNav();
+    }
+  });
+
+  // ─── Navigation ─────────────────────────────────────────
+  function gotoStep(n) {
+    document.getElementById(`step-${currentStep}`)?.classList.remove('active');
+    document.getElementById(`nav-${currentStep}`)?.classList.remove('active');
+
+    currentStep = n;
+    if (n > maxReached) maxReached = n;
+
+    document.getElementById(`step-${currentStep}`)?.classList.add('active');
+    document.getElementById(`nav-${currentStep}`)?.classList.add('active');
+
+    // Mark previous as completed
+    for (let i = 0; i < currentStep; i++) {
+      const el = document.getElementById(`nav-${i}`);
+      if (el) { el.classList.remove('active'); el.classList.add('completed'); }
+    }
+
+    document.getElementById('formPanel').scrollTop = 0;
+    updateNav();
+  }
+
+  function nextStep() {
+    if (currentStep === 0) return; // handled by runAutofill
+    const next = currentStep + 1;
+    if (next <= 8) gotoStep(next);
+  }
+
+  function prevStep() {
+    if (currentStep > 0) gotoStep(currentStep - 1);
+  }
+
+  function updateNav() {
+    const isLast = currentStep === 8;
+    document.getElementById('btnNext').style.display = isLast ? 'none' : 'flex';
+    document.getElementById('btnFinish').style.display = isLast ? 'inline-flex' : 'none';
+    document.getElementById('btnBack').style.display = currentStep === 0 ? 'none' : '';
+
+    // step counter
+    const labels = ['Entry','Brand Basics','Competitive Context','Audience Personas','Summary','Channels','Budget','Exclusions','Audience Seeds'];
+    document.getElementById('stepCounter').textContent = `${labels[currentStep]} · Step ${currentStep + 1} of ${TOTAL_STEPS}`;
+
+    // next button label
+    if (currentStep === 0) {
+      document.getElementById('btnNext').style.display = 'none';
+    } else if (currentStep === 4) {
+      document.getElementById('btnNext').textContent = 'Continue to Strategy →';
+    } else {
+      document.getElementById('btnNext').textContent = 'Continue →';
+    }
+  }
+
+  // ─── Auto-fill simulation ────────────────────────────────
+  function runAutofill() {
+    const name = document.getElementById('entryBrandName').value.trim();
+    if (!name) {
+      document.getElementById('entryBrandName').style.outline = '2px solid #ef4444';
+      return;
+    }
+
+    // Update brand name in form
+    const f = document.getElementById('f_brandName');
+    if (f) f.value = name;
+    const u = document.getElementById('f_website');
+    if (u) u.value = document.getElementById('entryWebsite').value || brandUrl;
+    document.getElementById('navBrandName').textContent = name;
+
+    gotoStep(1);
+
+    // Hide loader after animation
+    setTimeout(() => {
+      const loader = document.getElementById('aiLoader1');
+      if (loader) loader.style.display = 'none';
+    }, 2000);
+  }
+
+  // ─── Tag helpers ─────────────────────────────────────────
+  function removeTag(btn) {
+    btn.parentElement.remove();
+  }
+
+  function addTag(containerId) {
+    const val = prompt('Add tag:');
+    if (!val) return;
+    const container = document.getElementById(containerId);
+    const pill = document.createElement('div');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${val} <span class="remove" onclick="removeTag(this)">✕</span>`;
+    container.insertBefore(pill, container.lastElementChild);
+  }
+
+  // ─── Color swatches ──────────────────────────────────────
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('color-swatch')) {
+      e.target.closest('.color-row')?.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+  });
+
+  // ─── Persona add ─────────────────────────────────────────
+  function addPersona() {
+    const colors = [
+      {bg:'rgba(245,158,11,0.15)',color:'#f59e0b',emoji:'👤'},
+      {bg:'rgba(239,68,68,0.15)',color:'#ef4444',emoji:'🧑'},
+    ];
+    const c = colors[document.querySelectorAll('.persona-card').length % colors.length];
+    const card = document.createElement('div');
+    card.className = 'persona-card';
+    card.innerHTML = `
+      <div class="persona-card-header">
+        <div class="persona-avatar" style="background:${c.bg};color:${c.color}">${c.emoji}</div>
+        <input type="text" class="persona-name-input" value="New Persona" style="font-size:0.82rem;" />
+      </div>
+      <div class="persona-field"><div class="persona-label">Age</div><div class="persona-val">25–35</div></div>
+      <div class="persona-field"><div class="persona-label">Location</div><div class="persona-val">Metro cities</div></div>
+      <div class="persona-field"><div class="persona-label">Income</div><div class="persona-val">₹8L–15L / yr</div></div>
+      <div class="persona-field"><div class="persona-label">Platforms</div><div class="persona-val">Instagram</div></div>
+      <div class="persona-field"><div class="persona-label">Pain Points</div><div class="persona-val">Edit this…</div></div>`;
+    document.getElementById('personaCards').appendChild(card);
+  }
+
+  // ─── Optional step selection ─────────────────────────────
+  function selectOptional(card, step) {
+    card.classList.toggle('selected');
+    if (card.classList.contains('selected')) {
+      gotoStep(step);
+    }
+  }
+
+  // ─── Chat ─────────────────────────────────────────────────
+  function useSuggestion(btn) {
+    document.getElementById('chatInput').value = btn.textContent;
+    sendChat();
+  }
+
+  function chatKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+  }
+
+  const aiReplies = {
+    'premium': "Got it! I've updated the tone to **Sophisticated & Premium**. Changed CTA style to **Aspirational** and adjusted the brand description to emphasize craftsmanship and heritage.",
+    'younger': "Done! Added a new persona **The Gen-Z Coffee Explorer** (18–24, college towns, ₹3L–8L, TikTok/Instagram Reels). Would you like me to adjust the creative guidelines for this audience?",
+    'tier': "Added **Tier-2 city** persona — The Aspiring Professional (24–34, Pune/Jaipur/Indore, ₹5L–12L). Markets updated to include Pune, Jaipur, Ahmedabad.",
+    'sustain': "Updated brand description and Do's list to emphasize **carbon-neutral delivery**, farmer stories, and ethical sourcing certifications. Added 'sustainability' as a key creative theme.",
+  };
+
+  function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+
+    const msgs = document.getElementById('chatMessages');
+
+    // user msg
+    const userEl = document.createElement('div');
+    userEl.className = 'chat-msg user';
+    userEl.innerHTML = `<div class="chat-msg-avatar">JD</div><div class="chat-bubble">${msg}</div>`;
+    msgs.appendChild(userEl);
+
+    // ai typing
+    const aiEl = document.createElement('div');
+    aiEl.className = 'chat-msg ai';
+    aiEl.innerHTML = `<div class="chat-msg-avatar">✦</div><div class="chat-bubble" style="color:var(--text3)">Thinking…</div>`;
+    msgs.appendChild(aiEl);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    setTimeout(() => {
+      const lower = msg.toLowerCase();
+      let reply = "I've applied that change to your brand profile. Feel free to review the form on the left and refine further.";
+      for (const [k, v] of Object.entries(aiReplies)) {
+        if (lower.includes(k)) { reply = v; break; }
+      }
+      aiEl.querySelector('.chat-bubble').style.color = '';
+      aiEl.querySelector('.chat-bubble').innerHTML = reply;
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 900);
+  }
+
+  // ─── Finish ───────────────────────────────────────────────
+  function finishOnboarding() {
+    alert('Brand profile saved! Redirecting to agency dashboard…');
+    window.location.href = 'agency.html';
+  }
+</script>
+<script src="shared-nav.js"></script>
+</body>
+</html>

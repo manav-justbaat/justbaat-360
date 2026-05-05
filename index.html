@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>360° Platform — Media Planning Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .hero-logo { height: 80px; width: auto; margin-bottom: 2rem; }
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--text) 40%, var(--text2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text2);
+      margin-bottom: 3rem;
+      max-width: 500px;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cta-btn {
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .cta-primary {
+      background: var(--blue);
+      border: none;
+      color: #fff;
+    }
+    .cta-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,0.3); }
+    .cta-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+    .cta-secondary:hover { background: var(--surface3); color: var(--text); border-color: var(--border2); }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+    .feature-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .feature-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .feature-desc { font-size: 0.95rem; color: var(--text3); line-height: 1.6; }
+
+    .modules {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+    .modules-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 2rem; color: var(--text); }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .module-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.22s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .module-card:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .module-icon { font-size: 2.5rem; }
+    .module-name { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .module-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.5; }
+
+    footer {
+      max-width: 1200px;
+      margin: 4rem auto 2rem;
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><img id="navLogo" src="logo-dark.png" alt="360 Platform"></div>
+    </a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-theme-toggle" id="themeBtn" title="Toggle theme">🌙</button>
+    <div class="avatar">PM</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1 class="hero-title">360° Media Planning Platform</h1>
+  <p class="hero-sub">Unified advertising campaigns across all channels. Plan, execute, and optimize with intelligence.</p>
+  <div class="hero-cta">
+    <a href="agency.html" class="cta-btn cta-primary">🏢 Go to Agency Dashboard →</a>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">🎯</div>
+    <div class="feature-title">Multi-Channel Planning</div>
+    <div class="feature-desc">Plan campaigns across Google Ads, Meta, DV360, and The Trade Desk from one dashboard.</div>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">📊</div>
+    <div class="feature-title">Intelligent Insights</div>
+    <div class="feature-desc">Real-time performance monitoring, forecasting, and optimization recommendations.</div>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🚀</div>
+    <div class="feature-title">Fast Execution</div>
+    <div class="feature-desc">Quick-mode templates get campaigns live in minutes. Detailed mode for complex strategies.</div>
+  </div>
+</div>
+
+<!-- PLATFORM MODULES -->
+<div class="modules">
+  <h2 class="modules-title">Platform Modules</h2>
+  <div class="module-grid">
+
+    <a href="agency.html" class="module-card">
+      <div class="module-icon">🏢</div>
+      <div class="module-name">Agency Dashboard</div>
+      <div class="module-desc">View all brands, campaigns, and budgets. Manage team and permissions.</div>
+    </a>
+
+    <a href="brand-detail.html?brand=brewhaven&name=BrewHaven%20Coffee" class="module-card">
+      <div class="module-icon">🎨</div>
+      <div class="module-name">Brand Details</div>
+      <div class="module-desc">Brand profiles, audience personas, and campaign history.</div>
+    </a>
+
+    <a href="campaign-detail.html?campaign=monsoon-launch&brand=brewhaven&name=BrewHaven%20Coffee&cname=Monsoon%20Launch" class="module-card">
+      <div class="module-icon">📊</div>
+      <div class="module-name">Campaign Center</div>
+      <div class="module-desc">Campaign setup, budgets, objectives, and execution status.</div>
+    </a>
+
+    <a href="campaign-quick.html" class="module-card">
+      <div class="module-icon">⚡</div>
+      <div class="module-name">Quick Campaign</div>
+      <div class="module-desc">Fast template-based campaign creation for rapid deployment.</div>
+    </a>
+
+    <a href="campaign-detailed.html" class="module-card">
+      <div class="module-icon">📋</div>
+      <div class="module-name">Detailed Campaign</div>
+      <div class="module-desc">Advanced campaign builder with full channel customization.</div>
+    </a>
+
+    <a href="plan-output.html?brand=brewhaven&name=BrewHaven%20Coffee&campaign=monsoon-launch&cname=Monsoon%20Launch&v=1" class="module-card">
+      <div class="module-icon">📈</div>
+      <div class="module-name">Plan Output</div>
+      <div class="module-desc">Forecasts, channel mix, creative assets, and execution details.</div>
+    </a>
+
+    <a href="brand-onboarding.html" class="module-card">
+      <div class="module-icon">✨</div>
+      <div class="module-name">Brand Onboarding</div>
+      <div class="module-desc">Step-by-step brand setup with profile enrichment.</div>
+    </a>
+
+    <a href="brand-onboarding-flow.html" class="module-card">
+      <div class="module-icon">🔄</div>
+      <div class="module-name">Onboarding Flow</div>
+      <div class="module-desc">Multi-step guided onboarding experience for new brands.</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>360° Platform v1.0 | © 2024 Mission Phoenix. All rights reserved.</p>
+</footer>
+
+<script src="shared-nav.js"></script>
+</body>
+</html>
