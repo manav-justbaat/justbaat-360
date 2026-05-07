@@ -4,27 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quick Campaign — 360 Platform</title>
+  <script>(function(){if(localStorage.getItem('360theme')==='dark'){document.documentElement.classList.add('dark');}})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared-styles.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0b0f; --surface: #111318; --surface2: #191c24; --surface3: #1e2230;
-      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
-      --blue: #3b82f6; --blue-dim: rgba(59,130,246,0.12); --blue-glow: rgba(59,130,246,0.25);
-      --cyan: #06b6d4; --green: #22c55e;
-      --text: #f0f2f8; --text2: #8b92a5; --text3: #555d70;
-      --radius: 12px; --radius-sm: 8px;
-    }
-    body.light {
-      --bg: #f4f6fb; --surface: #ffffff; --surface2: #eef1f8; --surface3: #e3e8f5;
-      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.13);
-      --blue-dim: rgba(59,130,246,0.08);
-      --text: #0d1117; --text2: #374151; --text3: #6b7a8d;
-    }
-    body.light nav { background: rgba(244,246,251,0.92); }
-    body.light select option { background: #fff; color: #0d1117; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
     /* NAV */
@@ -898,6 +883,7 @@
 
 
 </script>
+<script src="auth.js"></script>
 <script src="shared-nav.js"></script>
 </body>
 </html>

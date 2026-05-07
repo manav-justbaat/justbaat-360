@@ -9,26 +9,48 @@
 
 /* ─── VARIABLES (dark mode default) ─────────────────────────────────────────── */
 :root {
-  --bg:       #0a0b0f;
-  --surface:  #111318;
-  --surface2: #191c24;
-  --surface3: #1e2230;
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(255,255,255,0.12);
+  --bg:       #f4f6fb;
+  --surface:  #ffffff;
+  --surface2: #eef1f8;
+  --surface3: #e3e8f5;
+  --border:   rgba(0,0,0,0.07);
+  --border2:  rgba(0,0,0,0.13);
   --blue:     #3b82f6;
-  --blue-dim: rgba(59,130,246,0.15);
-  --blue-glow:rgba(59,130,246,0.3);
+  --blue-dim: rgba(59,130,246,0.08);
+  --blue-glow:rgba(59,130,246,0.18);
   --cyan:     #06b6d4;
   --green:    #22c55e;
   --purple:   #818cf8;
   --red:      #ef4444;
   --amber:    #f59e0b;
-  --text:     #f0f2f8;
-  --text2:    #8b92a5;
-  --text3:    #555d70;
+  --text:     #0d1117;
+  --text2:    #374151;
+  --text3:    #6b7a8d;
   --radius:   14px;
   --radius-sm:8px;
+  --nav-bg:     rgba(244,246,251,0.95);
+  --nav-border: rgba(0,0,0,0.08);
 }
+
+/* ─── DARK MODE OVERRIDES (body.dark and :root.dark for anti-flash) ─────────── */
+:root.dark,
+body.dark {
+  --bg:         #0a0b0f;
+  --surface:    #111318;
+  --surface2:   #191c24;
+  --surface3:   #1e2230;
+  --border:     rgba(255,255,255,0.07);
+  --border2:    rgba(255,255,255,0.12);
+  --blue-dim:   rgba(59,130,246,0.15);
+  --blue-glow:  rgba(59,130,246,0.3);
+  --text:       #f0f2f8;
+  --text2:      #8b92a5;
+  --text3:      #555d70;
+  --nav-bg:     rgba(10,11,15,0.85);
+  --nav-border: rgba(255,255,255,0.07);
+}
+body.dark nav { background: var(--nav-bg); border-bottom-color: var(--nav-border); }
+body.dark select option { background: #111318; color: #f0f2f8; }
 
 /* ─── LIGHT MODE OVERRIDES ───────────────────────────────────────────────────── */
 body.light {
@@ -63,8 +85,8 @@ nav {
   justify-content: space-between;
   padding: 0 2rem;
   height: 60px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(10,11,15,0.85);
+  border-bottom: 1px solid var(--nav-border);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
@@ -511,10 +533,9 @@ label {
 }
 .loading { animation: pulse 1.2s ease-in-out infinite; }
 
-/* ─── SCROLLBAR ──────────────────────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+/* ─── SCROLLBAR (hidden) ────────────────────────────────────────────────────── */
+html, body { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {

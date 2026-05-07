@@ -64,14 +64,26 @@ class PlatformNav {
 
   /* ── Theme toggle (body.light / body = dark) ────────────────────────────────── */
   initThemeToggle() {
-    // Restore saved theme first
+    // Kill all transitions during initial theme apply — prevents flash animation on load
+    const noTrans = document.createElement('style');
+    noTrans.textContent = '*,*::before,*::after{transition:none!important}';
+    document.head.appendChild(noTrans);
+
+    // Default is light. Only go dark if user explicitly saved 'dark'.
     const saved = localStorage.getItem(this.themeKey);
-    if (saved === 'light') {
-      document.body.classList.add('light');
-    } else {
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
       document.body.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
     }
     this._updateThemeUI();
+
+    // Re-enable transitions after the first paint — double rAF ensures browser has painted
+    requestAnimationFrame(() => requestAnimationFrame(() => noTrans.remove()));
 
     // Attach handler to any theme-toggle button
     const btn = document.querySelector('#themeBtn, #themeToggle, .btn-theme-toggle');
@@ -79,21 +91,38 @@ class PlatformNav {
       // Remove any existing onclick to avoid duplicate calls
       btn.removeAttribute('onclick');
       btn.addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light');
-        localStorage.setItem(this.themeKey, isLight ? 'light' : 'dark');
+        const isDark = document.body.classList.toggle('dark');
+        document.body.classList.toggle('light', !isDark);
+        document.documentElement.classList.toggle('dark', isDark);
+        localStorage.setItem(this.themeKey, isDark ? 'dark' : 'light');
         this._updateThemeUI();
       });
     }
   }
 
   _updateThemeUI() {
-    const isLight = document.body.classList.contains('light');
+    const isDark = document.body.classList.contains('dark');
     // Update button emoji
     const btn = document.querySelector('#themeBtn, #themeToggle, .btn-theme-toggle');
-    if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
     // Update nav logo image
     const logo = document.querySelector('#navLogo');
-    if (logo) logo.src = isLight ? 'logo-light.png' : 'logo-dark.png';
+    if (logo) logo.src = isDark ? 'logo-dark.png' : 'logo-light.png';
+    // Update avatar tooltip with logged-in email
+    const avatar = document.querySelector('.avatar');
+    if (avatar && typeof Auth !== 'undefined') {
+      const email = Auth.getEmail();
+      if (email) {
+        avatar.title = email + ' · Click to sign out';
+        avatar.style.cursor = 'pointer';
+        if (!avatar.dataset.logoutBound) {
+          avatar.dataset.logoutBound = '1';
+          avatar.addEventListener('click', () => {
+            if (confirm('Sign out of 360° Platform?')) Auth.logout();
+          });
+        }
+      }
+    }
   }
 
   /* ── Exit / back button ─────────────────────────────────────────────────────── */
@@ -143,6 +172,11 @@ class PlatformNav {
 
 // Auto-init
 window.addEventListener('DOMContentLoaded', () => {
+  /* ── Auth guard: redirect to login if no valid session ────────────────────── */
+  if (typeof Auth !== 'undefined') {
+    Auth.guard();
+  }
+
   window.platformNav = new PlatformNav();
   window.platformNav.init();
 });
@@ -150,8 +184,10 @@ window.addEventListener('DOMContentLoaded', () => {
 // Expose toggleTheme globally so any remaining inline onclicks still work
 window.toggleTheme = function() {
   if (window.platformNav) {
-    const isLight = document.body.classList.toggle('light');
-    localStorage.setItem('360theme', isLight ? 'light' : 'dark');
+    const isDark = document.body.classList.toggle('dark');
+    document.body.classList.toggle('light', !isDark);
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('360theme', isDark ? 'dark' : 'light');
     window.platformNav._updateThemeUI();
   }
 };
