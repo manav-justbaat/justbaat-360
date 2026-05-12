@@ -109,6 +109,32 @@
 
     /* Section divider */
     .sub-heading { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin: 1.25rem 0 0.75rem; display: flex; align-items: center; gap: 8px; }
+
+    /* Per-channel creatives */
+    .ch-creative-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
+    @media(max-width:700px) { .ch-creative-grid { grid-template-columns: 1fr; } }
+    .ch-creative-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .ch-creative-block.ch-creative-empty { border-style: dashed; }
+    .ch-creative-hdr { display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .ch-spec-chip { font-size: 0.65rem; background: var(--surface3); border: 1px solid var(--border2); border-radius: 5px; padding: 2px 7px; color: var(--text3); font-weight: 500; }
+    .ch-creative-item { display: flex; align-items: center; gap: 10px; }
+    .ch-creative-thumb { width: 40px; height: 28px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .ch-creative-fname { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+    .ch-creative-meta { font-size: 0.68rem; color: var(--text3); margin-top: 2px; }
+    .ch-creative-live { font-size: 0.7rem; color: #22c55e; font-weight: 600; flex-shrink: 0; }
+    .ch-creative-empty-state { text-align: center; padding: 0.75rem 0; font-size: 0.8rem; color: var(--text3); }
+    .ch-creative-empty-icon { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .ch-creative-empty-sub { font-size: 0.72rem; color: #ef4444; margin-top: 3px; }
+    .ch-creative-add { background: transparent; border: 1px dashed var(--border2); border-radius: 7px; padding: 0.45rem; font-size: 0.75rem; color: var(--text3); cursor: pointer; text-align: center; transition: all 0.15s; }
+    .ch-creative-add:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* CSV Import */
+    .csv-import-block { display: flex; align-items: center; gap: 1rem; background: var(--surface2); border: 1px dashed var(--border2); border-radius: 10px; padding: 1rem 1.2rem; margin-top: 1.25rem; }
+    .csv-import-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .csv-import-content { flex: 1; }
+    .csv-import-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+    .csv-import-desc { font-size: 0.75rem; color: var(--text3); line-height: 1.5; }
+    .csv-coming-badge { background: rgba(139,92,246,0.12); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.25); border-radius: 6px; padding: 3px 10px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
     .sub-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* Range slider */
@@ -1003,7 +1029,7 @@
         </div>
         <div class="field">
           <label>Click-Through / Landing URL</label>
-          <input type="url" value="https://brewhaven.com/monsoon-collection" />
+          <input type="url" id="landingUrl" value="https://www.nescafe.com/in/gold" />
         </div>
         <div class="field">
           <label>Creative Rotation</label>
@@ -1011,28 +1037,63 @@
         </div>
         <div class="field">
           <label>Display URL (Visible)</label>
-          <input type="text" value="brewhaven.com/monsoon" />
+          <input type="text" id="displayUrl" value="nescafe.com/in/gold" />
         </div>
       </div>
-      <div class="sub-heading">Attached Creatives</div>
-      <div style="display:flex;flex-direction:column;gap:0.6rem">
-        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:0.75rem 1rem;display:flex;align-items:center;gap:12px">
-          <div style="width:48px;height:32px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">🎬</div>
-          <div style="flex:1">
-            <div style="font-size:0.8rem;font-weight:500">BH_Monsoon_Video_15s_v2.mp4</div>
-            <div style="font-size:0.7rem;color:var(--text3)">15s · 1920×1080 · 8.4 MB · Approved</div>
+      <div class="sub-heading">Creative Assets by Channel</div>
+      <div class="ch-creative-grid">
+        <!-- Mobile -->
+        <div class="ch-creative-block">
+          <div class="ch-creative-hdr">
+            <span><span class="ch-dot" style="background:#3b82f6;margin-right:6px;display:inline-block;width:8px;height:8px;border-radius:50%"></span>Mobile</span>
+            <span class="ch-spec-chip">9:16 · max 10 MB</span>
           </div>
-          <div style="font-size:0.72rem;color:#22c55e;font-weight:500">✓ Active</div>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:0.75rem 1rem;display:flex;align-items:center;gap:12px">
-          <div style="width:48px;height:32px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px">🖼</div>
-          <div style="flex:1">
-            <div style="font-size:0.8rem;font-weight:500">BH_Monsoon_Banner_300x250.jpg</div>
-            <div style="font-size:0.7rem;color:var(--text3)">Static · 300×250 · 62 KB · Approved</div>
+          <div class="ch-creative-item">
+            <div class="ch-creative-thumb" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">🎬</div>
+            <div style="flex:1"><div class="ch-creative-fname" id="creative1Name">NCF_Gold_Video_15s_v2.mp4</div><div class="ch-creative-meta">Video · 15s · 1920×1080 · 8.4 MB · Approved</div></div>
+            <span class="ch-creative-live">✓ Active</span>
           </div>
-          <div style="font-size:0.72rem;color:#22c55e;font-weight:500">✓ Active</div>
+          <button class="ch-creative-add">＋ Add mobile creative</button>
         </div>
-        <button style="background:var(--surface2);border:1px dashed var(--border2);border-radius:9px;padding:0.75rem;font-size:0.8rem;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" onclick="void(0)">＋ Upload or link creative</button>
+        <!-- Web -->
+        <div class="ch-creative-block">
+          <div class="ch-creative-hdr">
+            <span><span class="ch-dot" style="background:#06b6d4;margin-right:6px;display:inline-block;width:8px;height:8px;border-radius:50%"></span>Web</span>
+            <span class="ch-spec-chip">300×250 · 728×90 · max 150 KB</span>
+          </div>
+          <div class="ch-creative-item">
+            <div class="ch-creative-thumb" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">🖼</div>
+            <div style="flex:1"><div class="ch-creative-fname" id="creative2Name">NCF_Gold_Banner_300x250.jpg</div><div class="ch-creative-meta">Static · 300×250 · 62 KB · Approved</div></div>
+            <span class="ch-creative-live">✓ Active</span>
+          </div>
+          <button class="ch-creative-add">＋ Add web creative</button>
+        </div>
+        <!-- DOOH -->
+        <div class="ch-creative-block ch-creative-empty">
+          <div class="ch-creative-hdr">
+            <span><span class="ch-dot" style="background:#8b5cf6;margin-right:6px;display:inline-block;width:8px;height:8px;border-radius:50%"></span>DOOH</span>
+            <span class="ch-spec-chip">1080×1920 · max 5 MB</span>
+          </div>
+          <div class="ch-creative-empty-state">
+            <div class="ch-creative-empty-icon">📄</div>
+            <div>No DOOH creative uploaded</div>
+            <div class="ch-creative-empty-sub">Required before launch</div>
+          </div>
+          <button class="ch-creative-add">＋ Upload DOOH creative</button>
+        </div>
+        <!-- CTV -->
+        <div class="ch-creative-block">
+          <div class="ch-creative-hdr">
+            <span><span class="ch-dot" style="background:#f59e0b;margin-right:6px;display:inline-block;width:8px;height:8px;border-radius:50%"></span>CTV</span>
+            <span class="ch-spec-chip">16:9 · 1080p · max 50 MB</span>
+          </div>
+          <div class="ch-creative-item">
+            <div class="ch-creative-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">📺</div>
+            <div style="flex:1"><div class="ch-creative-fname">NCF_Gold_CTV_30s_HD.mp4</div><div class="ch-creative-meta">Video · 30s · 1920×1080 · 22.5 MB · Approved</div></div>
+            <span class="ch-creative-live">✓ Active</span>
+          </div>
+          <button class="ch-creative-add">＋ Add CTV creative</button>
+        </div>
       </div>
       <div class="section-nav-footer">
         <button class="btn-back" onclick="gotoSection(8)">← Mobile & App</button>
@@ -1050,7 +1111,7 @@
       <div class="form-row form-row-2">
         <div class="field">
           <label>Conversion Pixel / Tag</label>
-          <input type="text" value="BH-CONV-0412 (BrewHaven Purchase Event)" />
+          <input type="text" id="pixelInput" value="NCF-CONV-0192 (Nescafé Purchase Event)" />
         </div>
         <div class="field">
           <label>Attribution Window</label>
@@ -1145,9 +1206,8 @@
         <div class="field">
           <label>Competitive Exclusion</label>
           <div class="tag-row" id="adv_compexcl">
-            <div class="tag">Nescafé <span class="tag-x" onclick="rmTag(this)">✕</span></div>
-            <div class="tag">Bru Coffee <span class="tag-x" onclick="rmTag(this)">✕</span></div>
-            <div class="tag">Blue Tokai <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Competitor Brand A <span class="tag-x" onclick="rmTag(this)">✕</span></div>
+            <div class="tag">Competitor Brand B <span class="tag-x" onclick="rmTag(this)">✕</span></div>
             <button class="tag-add" onclick="addTag('adv_compexcl')">＋</button>
           </div>
         </div>
@@ -1186,8 +1246,18 @@
       <div class="form-row">
         <div class="field">
           <label>Internal Notes</label>
-          <textarea style="min-height:80px">Monsoon collection launch. Creative approved. DOOH screens confirmed via Vistar — Mumbai malls and Bengaluru transit. Client brief says push hard in first week.</textarea>
+          <textarea id="notes" style="min-height:80px">Campaign notes will appear here. Add context for your team — creative directions, client constraints, approved partners.</textarea>
         </div>
+      </div>
+
+      <!-- Enhancement 3: CSV Import Coming Soon -->
+      <div class="csv-import-block">
+        <div class="csv-import-icon">📥</div>
+        <div class="csv-import-content">
+          <div class="csv-import-title">Import Past Campaign Data</div>
+          <div class="csv-import-desc">Upload historical performance CSV so AI can reference past benchmarks and set smarter KPI targets.</div>
+        </div>
+        <div class="csv-coming-badge">Coming Soon</div>
       </div>
 
       <div class="section-nav-footer">
@@ -1208,7 +1278,7 @@
     <div class="chat-messages" id="chatMessages">
       <div class="chat-msg ai">
         <div class="chat-msg-avatar">✦</div>
-        <div class="chat-bubble">Welcome to Detailed Mode. I've pre-filled all 13 sections using BrewHaven's brand profile and your previous Quick Mode inputs. Review each section and ask me anything.
+        <div class="chat-bubble" id="detailedWelcomeMsg">Welcome to Detailed Mode. I've pre-filled all 13 sections using the brand profile and your campaign brief. Review each section and ask me anything.
           <button class="chat-suggestion" onclick="useSuggestion(this)">Why these 4 channels?</button>
           <button class="chat-suggestion" onclick="useSuggestion(this)">What DOOH screens are included?</button>
           <button class="chat-suggestion" onclick="useSuggestion(this)">How is budget split calculated?</button>
@@ -1227,8 +1297,8 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-  const brandId = params.get('brand') || 'brewhaven';
-  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const brandId = params.get('brand') || 'nescafe';
+  const brandName = decodeURIComponent(params.get('name') || 'Nescafé India');
   const campaignName = decodeURIComponent(params.get('cname') || 'New Campaign');
 
   document.getElementById('navBrandLink').textContent = brandName;
@@ -1237,6 +1307,85 @@
   document.getElementById('navCampaignLink').textContent = campaignName;
   document.getElementById('navCampaignLink').href = `campaign-detail.html?campaign=${campaignId}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(campaignName)}`;
   document.title = `New Plan — ${campaignName} — 360 Platform`;
+
+  // ─── Initialise all brand-dynamic fields ─────────────────
+  (function initDynamicFields() {
+    // Derive short brand code (first 3 chars uppercased)
+    const brandCode = brandId.toUpperCase().slice(0, 3);
+    const slug = (campaignId || brandId + '-campaign').replace(/[^a-z0-9-]/gi, '-').toLowerCase();
+
+    // S1 — Campaign Basics
+    const nameInput = document.getElementById('s1_name');
+    if (nameInput && (nameInput.value.includes('BrewHaven') || !nameInput.value.trim())) {
+      nameInput.value = campaignName && campaignName !== 'New Campaign'
+        ? campaignName
+        : `${brandName} — New Campaign — May 2026`;
+    }
+
+    // Linked Brand dropdown — replace dummy options with real agency brands
+    const linkedBrandSel = document.querySelector('select option:first-child');
+    if (linkedBrandSel && (linkedBrandSel.textContent.includes('BrewHaven') || linkedBrandSel.textContent.includes('Saffron'))) {
+      const sel = linkedBrandSel.closest('select');
+      sel.innerHTML = [
+        { id: 'nescafe', name: 'Nescafé India' },
+        { id: 'swiggy',  name: 'Swiggy' },
+        { id: 'tanishq', name: 'Tanishq' },
+        { id: 'boat',    name: 'boAt' },
+      ].map(b => `<option${b.id === brandId ? ' selected' : ''}>${b.name}</option>`).join('');
+    }
+
+    // Advertiser / Client
+    document.querySelectorAll('input[type=text]').forEach(inp => {
+      if (inp.value.includes('BrewHaven Coffee Pvt. Ltd.')) inp.value = `${brandName} (Client)`;
+    });
+
+    // Agency Booking Reference
+    document.querySelectorAll('input[type=text]').forEach(inp => {
+      if (inp.value.startsWith('PIN-BH-')) inp.value = `PIN-${brandCode}-2026-Q2-001`;
+    });
+
+    // Campaign Label / Tag
+    document.querySelectorAll('input[type=text]').forEach(inp => {
+      if (inp.value.includes('monsoon-2026') || inp.value.includes('product-launch, video')) {
+        inp.value = `${brandId}-campaign, brand-awareness, video`;
+      }
+    });
+
+    // AI tips that mention BrewHaven
+    document.querySelectorAll('.ai-tip').forEach(tip => {
+      tip.innerHTML = tip.innerHTML
+        .replace(/BrewHaven('s)?/g, brandName)
+        .replace(/monsoon-season/g, 'seasonal');
+    });
+
+    // Brand Safety section sub
+    document.querySelectorAll('.section-sub').forEach(el => {
+      if (el.textContent.includes("BrewHaven's brand profile")) {
+        el.textContent = `Define what content environments are acceptable. These settings are pre-filled from ${brandName}'s brand profile.`;
+      }
+    });
+
+    // UTM campaign tag
+    document.querySelectorAll('input[type=text]').forEach(inp => {
+      if (inp.value === 'monsoon-collection-may26') inp.value = slug;
+    });
+
+    // Landing + display URLs — only reset if they have a brand mismatch
+    const landingUrl = document.getElementById('landingUrl');
+    if (landingUrl && !landingUrl.value.includes(brandId)) {
+      landingUrl.value = `https://www.${brandId}.com`;
+    }
+    const displayUrl = document.getElementById('displayUrl');
+    if (displayUrl && !displayUrl.value.includes(brandId)) {
+      displayUrl.value = `${brandId}.com`;
+    }
+
+    // Conversion pixel
+    const pixel = document.getElementById('pixelInput');
+    if (pixel && (pixel.value.includes('BH-CONV') || pixel.value.includes('NCF-CONV'))) {
+      pixel.value = `${brandCode}-CONV-0001 (${brandName} Purchase Event)`;
+    }
+  })();
 
   // Section definitions
   const sections = [
@@ -1295,19 +1444,19 @@
 
   function getSectionHint(idx) {
     const hints = [
-      `You're on <strong>Campaign Basics</strong>. I've set objective to <em>Conversions / Sales</em> based on your brief. The booking ref PIN-BH-2026-Q2-014 is auto-generated from your agency account.`,
-      `<strong>Geography</strong> — 3 cities: Mumbai (45%), Bengaluru (35%), Pune (20%). I've added Hyderabad as a reach extension with low weight. Adjust sliders to rebalance.`,
-      `<strong>Audience</strong> — Demographics 24–38, All Genders, Upper Middle income, aligned to BrewHaven's Urban Coffee Connoisseur persona. Retargeting pool (website visitors 30d) layered on top.`,
-      `<strong>Budget & Pacing</strong> — ₹5L over 14 days = ₹35.7K/day avg. I've set Even pacing. Consider Front-loaded to capitalise on monsoon season buzz in week 1.`,
-      `<strong>Channel Mix</strong> — 4 channels activated. Mobile + Web get 30% each (largest reach), DOOH 25% (brand launch recall), CTV 15% (primetime awareness). Toggle channels on/off on the left cards.`,
-      `<strong>DOOH</strong> — Vistar + Broadsign combined. Malls and transit in Mumbai + Bengaluru. Mobile geo-sync enabled with 500m radius so users who see the screens get mobile retargeting.`,
-      `<strong>CTV</strong> — Hotstar and JioCinema are top performers for this demographic. Primetime 18:00–23:00. Non-skippable 15s selected — maximises completion rates and brand recall.`,
-      `<strong>Web Display</strong> — Premium publishers allowlisted: ToI, HT, Condé Nast India. High viewability target (70%+) to ensure quality impressions. Rich media + banner.`,
-      `<strong>Mobile & App</strong> — Both iOS and Android. Food delivery and shopping apps indexed highest for conversions in previous BrewHaven campaigns. Interstitial + in-stream video selected.`,
-      `<strong>Creative</strong> — Video 15s and banner 300×250 pre-linked. Optimized rotation will serve the highest-performing creative more frequently after 48h of data.`,
-      `<strong>Tracking</strong> — Pixel BH-CONV-0412 is live on brewhaven.com. 7-day click / 1-day view attribution. IAS and DoubleVerify enabled for brand safety verification.`,
-      `<strong>Brand Safety</strong> — Enhanced level from BrewHaven brand profile. Adult, hate speech, violence, piracy, misinformation all blocked. SIVT bot filtering active.`,
-      `<strong>Advanced</strong> — Competitive exclusions include Nescafé, Bru, Blue Tokai. All 13 sections complete — click <em>Generate Media Plan</em> to create your campaign plan.`
+      `You're on <strong>Campaign Basics</strong>. Objective and name are pulled from your campaign brief. The booking ref is auto-generated from your agency account.`,
+      `<strong>Geography</strong> — Target cities based on ${brandName}'s key markets. Adjust the sliders to shift budget weight between cities, or add a reach-extension city at lower weight.`,
+      `<strong>Audience</strong> — Demographics aligned to ${brandName}'s primary personas. Retargeting pool (website visitors 30d) is layered on top for higher intent users.`,
+      `<strong>Budget & Pacing</strong> — Daily cap is auto-calculated from total budget ÷ flight days. I've set Even pacing — switch to Front-loaded if you want to maximise early campaign buzz.`,
+      `<strong>Channel Mix</strong> — 4 channels activated. Mobile + Web get 30% each (largest reach), DOOH 25% (brand recall), CTV 15% (primetime awareness). Toggle channels on/off using the left cards.`,
+      `<strong>DOOH</strong> — Malls and transit screens in target cities. Mobile geo-sync enabled with 500m radius — users who see outdoor screens get mobile retargeting within the same area.`,
+      `<strong>CTV</strong> — Hotstar and JioCinema are top performers for this demographic. Primetime 18:00–23:00. Non-skippable 15s maximises completion rates and brand recall.`,
+      `<strong>Web Display</strong> — Premium publishers allowlisted: ToI, HT, Condé Nast India. High viewability target (70%+) ensures quality impressions. Rich media + standard banner.`,
+      `<strong>Mobile & App</strong> — Both iOS and Android. App category targeting aligned to ${brandName}'s audience interests. Interstitial + in-stream video selected.`,
+      `<strong>Creative</strong> — Video 15s and banner 300×250 pre-linked from the asset library. Optimized rotation will favour the highest-performing creative after 48h of data.`,
+      `<strong>Tracking</strong> — Conversion pixel is live on the brand website. 7-day click / 1-day view attribution window. IAS and DoubleVerify enabled for brand safety verification.`,
+      `<strong>Brand Safety</strong> — Enhanced safety level from ${brandName} brand profile. Adult, hate speech, violence, piracy and misinformation categories blocked. SIVT bot filtering active.`,
+      `<strong>Advanced</strong> — Competitive exclusions and audience suppression lists applied. All 13 sections complete — click <em>Generate Media Plan</em> to create your campaign plan.`
     ];
     return hints[idx] || 'Reviewing this section…';
   }
@@ -1362,14 +1511,14 @@
 
   // Chat
   const aiReplies = {
-    'channel': `4 channels selected based on BrewHaven's objective (conversions), audience (urban 24–38), and ₹5L budget. Mobile & Web provide the largest addressable inventory. DOOH adds physical brand presence for a product launch. CTV builds primetime awareness.`,
+    'channel': `4 channels selected based on ${brandName}'s objective (conversions), audience (urban 24–38), and budget. Mobile & Web provide the largest addressable inventory. DOOH adds physical brand presence for a product launch. CTV builds primetime awareness.`,
     'dooh': `DOOH screens include: Phoenix Market City Mumbai, Infiniti Bengaluru, metro station corridors in both cities, and select outdoor retail hoardings via Vistar. These are high-footfall zones for the 24–38 urban demographic.`,
     'budget': `Budget split is AI-recommended: Mobile 30% (largest reach, best CPA historically), Web 30% (display + retargeting), DOOH 25% (per your instruction in Quick Mode), CTV 15% (awareness booster). Adjust sliders in Section 5.`,
-    'persona': `Urban Coffee Connoisseur (primary) + WFH Professional (secondary). These are BrewHaven's saved personas. Combined, they cover ~68% of the target 24–38 urban demographic with interest overlap in premium food/bev + lifestyle.`,
-    'cpa': `Target CPA ₹90 set based on your brief. BrewHaven historical average is ₹83. Slightly above average for a new product launch (building initial purchase data). You can tighten to ₹80 if you want to be conservative.`,
-    'roas': `Est. ROAS 3.8× based on avg. order ₹340 and ~5,500 conversions at ₹90 CPA. Historical ROAS for BrewHaven seasonal campaigns: 3.2–4.1×. You're in a good range.`,
+    'persona': `${brandName}'s saved personas cover the primary audience profile. Combined, they capture the core 24–38 urban demographic with relevant interest overlap.`,
+    'cpa': `Target CPA is set based on your brief and ${brandName}'s historical benchmarks. Slightly above average for a new campaign while building initial purchase data — tighten once you have conversion volume.`,
+    'roas': `Estimated ROAS is based on projected conversions at the target CPA. Historical ROAS for ${brandName} campaigns typically runs 3–4×. You're in a good range.`,
     'creative': `Video 15s performs best for this audience on CTV and mobile in-stream. Banner 300×250 and 728×90 for web display. Creative is in optimized rotation — the platform will learn which performs better after 48h.`,
-    'tracking': `Pixel BH-CONV-0412 fires on purchase confirmation page. 7-day click + 1-day view attribution is standard for conversion campaigns. IAS + DoubleVerify verify viewability and brand safety on every impression.`,
+    'tracking': `Conversion pixel fires on the purchase confirmation page. 7-day click + 1-day view attribution is standard for conversion campaigns. IAS + DoubleVerify verify viewability and brand safety on every impression.`,
   };
 
   function addChatMsg(role, html) {

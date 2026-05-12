@@ -924,8 +924,8 @@
         <div class="entry-title">Add a new brand</div>
         <div class="entry-sub">Enter your brand name and website — we'll research and auto-fill your brand profile, competitive context, and audience personas.</div>
         <div class="entry-fields">
-          <input class="entry-input" id="entryBrandName" type="text" placeholder="Brand Name (e.g. BrewHaven Coffee)" />
-          <input class="entry-input" id="entryWebsite" type="url" placeholder="Website URL (e.g. https://brewhaven.com)" />
+          <input class="entry-input" id="entryBrandName" type="text" placeholder="Brand Name (e.g. Nescafé India)" />
+          <input class="entry-input" id="entryWebsite" type="url" placeholder="Website URL (e.g. https://www.nescafe.com/in)" />
         </div>
         <button class="entry-cta" onclick="runAutofill()">
           <span>✦</span> Research & Auto-fill Profile →
@@ -953,11 +953,11 @@
         <div class="form-grid form-grid-2">
           <div class="field">
             <label>Brand Name</label>
-            <input type="text" id="f_brandName" value="BrewHaven Coffee" />
+            <input type="text" id="f_brandName" value="" />
           </div>
           <div class="field">
             <label>Website</label>
-            <input type="url" id="f_website" value="https://brewhaven.com" />
+            <input type="url" id="f_website" value="" />
           </div>
           <div class="field">
             <label>Industry</label>
@@ -980,7 +980,7 @@
           </div>
           <div class="field" style="grid-column:span 2">
             <label>Brand Description</label>
-            <textarea id="f_desc">BrewHaven Coffee is a premium D2C specialty coffee brand delivering artisanal single-origin blends sourced from small farms in Coorg, Chikmagalur, and Araku Valley. Known for transparent sourcing and sustainable packaging.</textarea>
+            <textarea id="f_desc" placeholder="Describe your brand in 2-3 sentences — what you sell, who you serve, and what makes you different."></textarea>
           </div>
         </div>
       </div>
@@ -1206,7 +1206,7 @@
           <button class="summary-edit-btn" onclick="gotoStep(1)">Edit →</button>
         </div>
         <div class="summary-grid">
-          <div class="summary-item"><div class="summary-item-label">Brand Name</div><div class="summary-item-val">BrewHaven Coffee</div></div>
+          <div class="summary-item"><div class="summary-item-label">Brand Name</div><div class="summary-item-val" id="summaryBrandName">—</div></div>
           <div class="summary-item"><div class="summary-item-label">Industry</div><div class="summary-item-val">Food & Beverage</div></div>
           <div class="summary-item"><div class="summary-item-label">Sub-category</div><div class="summary-item-val">Specialty Coffee · D2C</div></div>
           <div class="summary-item"><div class="summary-item-label">Market Scope</div><div class="summary-item-val">National — India</div></div>
@@ -1504,7 +1504,7 @@ spam-network.in</textarea>
       <div class="chat-msg ai">
         <div class="chat-msg-avatar">✦</div>
         <div class="chat-bubble">
-          Hi! I've auto-filled your brand profile for <strong>BrewHaven Coffee</strong> based on the website. Review the form and let me know if you want any changes.
+          Hi! I'm your brand setup assistant. Tell me about your brand and I'll help fill in the profile, suggest competitors, define audience personas, and recommend channels. What brand are we working on today?
         </div>
       </div>
       <div class="chat-msg ai">
@@ -1548,15 +1548,14 @@ spam-network.in</textarea>
   // URL params
   const params = new URLSearchParams(location.search);
   const isNew = params.get('new') === '1';
-  const brandName = params.get('name') || 'BrewHaven Coffee';
-  const brandUrl = params.get('url') || 'https://brewhaven.com';
+  const brandName = params.get('name') || 'New Brand';
+  const brandUrl = params.get('url') || '';
 
   // ─── Init ───────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('navBrandName').textContent = brandName;
 
     if (!isNew) {
-      // existing brand — skip step 0
       gotoStep(1);
     } else {
       document.getElementById('entryBrandName').value = brandName;

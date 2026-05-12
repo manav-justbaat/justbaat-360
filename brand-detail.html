@@ -66,6 +66,8 @@
     .campaigns-list { display: flex; flex-direction: column; gap: 0.9rem; }
     .campaign-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 1.5rem; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem 1.4rem; text-decoration: none; color: inherit; transition: all 0.22s; cursor: pointer; }
     .campaign-row:hover { border-color: var(--border2); background: var(--surface2); }
+    .add-campaign-row { background: var(--surface); border: 1px dashed var(--border2); border-radius: var(--radius); padding: 1rem 1.4rem; text-align: center; color: var(--text3); font-size: 0.85rem; cursor: pointer; transition: all 0.18s; }
+    .add-campaign-row:hover { border-color: var(--blue); color: var(--blue); }
     .campaign-main { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
     .campaign-name { font-size: 0.95rem; font-weight: 600; color: var(--text); }
     .campaign-meta { font-size: 0.75rem; color: var(--text3); display: flex; gap: 0.8rem; flex-wrap: wrap; }
@@ -130,9 +132,9 @@
       </div>
       <div class="brand-header-meta">
         <span id="brandCategoryEl">Food & Beverage · D2C</span>
-        <span>🌐 brewhaven.com</span>
+        <span id="brandWebEl">🌐 nescafe.com/in</span>
         <span>📍 National — India</span>
-        <span>Tone: Warm & Authentic</span>
+        <span id="brandToneEl">Tone: Energetic & Bold</span>
       </div>
     </div>
     <div class="brand-header-actions">
@@ -173,36 +175,36 @@
     <div class="bp-card">
       <div class="bp-card-label">Brand Basics</div>
       <div class="bp-row"><span class="bp-key">Category</span><span class="bp-val" id="bpCategory">Food & Beverage · D2C</span></div>
-      <div class="bp-row"><span class="bp-key">Website</span><span class="bp-val" id="bpWebsite">brewhaven.com</span></div>
-      <div class="bp-row"><span class="bp-key">Tone</span><span class="bp-val" id="bpTone">Warm & Authentic</span></div>
-      <div class="bp-row"><span class="bp-key">Markets</span><span class="bp-val" id="bpMarkets">National — India</span></div>
-      <div class="bp-row"><span class="bp-key">USP</span><span class="bp-val" id="bpUsp">Single-origin specialty coffee, direct from farms</span></div>
+      <div class="bp-row"><span class="bp-key">Website</span><span class="bp-val" id="bpWebsite">nescafe.com/in</span></div>
+      <div class="bp-row"><span class="bp-key">Tone</span><span class="bp-val" id="bpTone">Energetic & Bold</span></div>
+      <div class="bp-row"><span class="bp-key">Markets</span><span class="bp-val" id="bpMarkets">Pan India — 500k+ retail touchpoints</span></div>
+      <div class="bp-row"><span class="bp-key">USP</span><span class="bp-val" id="bpUsp">India's #1 instant coffee brand</span></div>
     </div>
     <div class="bp-card">
       <div class="bp-card-label">Audience Personas</div>
       <div id="bpPersonas">
-        <span class="persona-pill">☕ Urban Coffee Enthusiast · 28–40</span>
-        <span class="persona-pill">💼 WFH Professional · 25–35</span>
-        <span class="persona-pill">🌿 Health-Conscious Millennial</span>
+        <span class="persona-pill">The Morning Rusher · 24–35</span>
+        <span class="persona-pill">The College Student · 18–23</span>
+        <span class="persona-pill">The Household Anchor · 35–55</span>
       </div>
       <div style="margin-top:0.75rem;">
-        <div class="bp-row"><span class="bp-key">Age Range</span><span class="bp-val">25–44</span></div>
-        <div class="bp-row"><span class="bp-key">HH Income</span><span class="bp-val">₹8L+ per annum</span></div>
-        <div class="bp-row"><span class="bp-key">Cities</span><span class="bp-val">Mumbai, Bengaluru, Delhi, Pune</span></div>
+        <div class="bp-row"><span class="bp-key">Age Range</span><span class="bp-val" data-bp="ages">18–45</span></div>
+        <div class="bp-row"><span class="bp-key">HH Income</span><span class="bp-val" data-bp="income">₹4L+ per annum</span></div>
+        <div class="bp-row"><span class="bp-key">Cities</span><span class="bp-val" data-bp="cities">Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad</span></div>
       </div>
     </div>
     <div class="bp-card">
       <div class="bp-card-label">Channel & Budget Preferences</div>
       <div class="bp-row"><span class="bp-key">Preferred</span>
         <span class="bp-val" id="bpChannels">
-          <span class="channel-badge">Meta</span>
-          <span class="channel-badge">Google Search</span>
+          <span class="channel-badge">Hotstar</span>
           <span class="channel-badge">YouTube</span>
+          <span class="channel-badge">Spotify</span>
         </span>
       </div>
-      <div class="bp-row"><span class="bp-key">Budget Range</span><span class="bp-val" id="bpBudget">₹5L – ₹15L per campaign</span></div>
-      <div class="bp-row"><span class="bp-key">Competitors</span><span class="bp-val" id="bpCompetitors">Blue Tokai, Third Wave Coffee, Sleepy Owl</span></div>
-      <div class="bp-row"><span class="bp-key">Exclusions</span><span class="bp-val" id="bpExclusions">Alcohol, Tobacco, Competitor keywords</span></div>
+      <div class="bp-row"><span class="bp-key">Budget Range</span><span class="bp-val" id="bpBudget">₹25L–₹75L per campaign</span></div>
+      <div class="bp-row"><span class="bp-key">Competitors</span><span class="bp-val" id="bpCompetitors">Bru, Davidoff, Blue Tokai</span></div>
+      <div class="bp-row"><span class="bp-key">Exclusions</span><span class="bp-val" id="bpExclusions">Competitor coffee brands, Alcohol, Gambling</span></div>
     </div>
   </div>
 
@@ -212,80 +214,8 @@
     <button class="nav-btn" onclick="openModal()">＋ New Campaign</button>
   </div>
 
-  <div class="campaigns-list">
-
-    <a href="campaign-detail.html?campaign=monsoon-launch&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Monsoon%20Collection%20Launch" class="campaign-row">
-      <div class="campaign-icon" style="background:rgba(59,130,246,0.12);color:var(--blue);">🚀</div>
-      <div class="campaign-main">
-        <div class="campaign-name">BrewHaven — Monsoon Collection Launch</div>
-        <div class="campaign-meta">
-          <span>📅 Apr 26 – May 10, 2026</span>
-          <span>🎯 Conversions</span>
-          <span>📍 Mumbai, Bengaluru, Pune</span>
-        </div>
-      </div>
-      <div class="campaign-badge s-live">● Live</div>
-      <div class="campaign-stats">
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">₹5L</div>
-          <div class="campaign-stat-label">Budget</div>
-        </div>
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">1.4M</div>
-          <div class="campaign-stat-label">Impressions</div>
-        </div>
-      </div>
-      <div class="campaign-arrow">›</div>
-    </a>
-
-    <a href="campaign-detail.html?campaign=awareness-q2&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Brand%20Awareness%20Q2" class="campaign-row">
-      <div class="campaign-icon" style="background:rgba(6,182,212,0.12);color:var(--cyan);">📣</div>
-      <div class="campaign-main">
-        <div class="campaign-name">BrewHaven — Brand Awareness Q2</div>
-        <div class="campaign-meta">
-          <span>📅 Mar 1 – Mar 31, 2026</span>
-          <span>🎯 Awareness</span>
-          <span>📍 Pan India</span>
-        </div>
-      </div>
-      <div class="campaign-badge s-completed">✓ Completed</div>
-      <div class="campaign-stats">
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">₹6.5L</div>
-          <div class="campaign-stat-label">Budget</div>
-        </div>
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">2.8M</div>
-          <div class="campaign-stat-label">Impressions</div>
-        </div>
-      </div>
-      <div class="campaign-arrow">›</div>
-    </a>
-
-    <a href="campaign-detail.html?campaign=retargeting&brand=brewhaven&name=BrewHaven%20Coffee&cname=BrewHaven%20%E2%80%94%20Cart%20Retargeting" class="campaign-row">
-      <div class="campaign-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">🎯</div>
-      <div class="campaign-main">
-        <div class="campaign-name">BrewHaven — Cart Retargeting</div>
-        <div class="campaign-meta">
-          <span>📅 Ongoing · Always-on</span>
-          <span>🎯 Conversions</span>
-          <span>📍 All geo</span>
-        </div>
-      </div>
-      <div class="campaign-badge s-paused">⏸ Paused</div>
-      <div class="campaign-stats">
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">₹3.2L</div>
-          <div class="campaign-stat-label">Budget</div>
-        </div>
-        <div class="campaign-stat">
-          <div class="campaign-stat-val">420K</div>
-          <div class="campaign-stat-label">Impressions</div>
-        </div>
-      </div>
-      <div class="campaign-arrow">›</div>
-    </a>
-
+  <div class="campaigns-list" id="campaignsList">
+    <!-- Populated by JS based on brandId -->
   </div>
 
 </main>
@@ -299,7 +229,7 @@
 
     <div class="name-field">
       <label class="name-label">Campaign Name <span style="color:#ef4444">*</span></label>
-      <input class="name-input" id="campaignNameInput" type="text" placeholder="e.g. BrewHaven — Monsoon Launch May 2026" />
+      <input class="name-input" id="campaignNameInput" type="text" placeholder="e.g. Nescafé Gold — Festive Moments 2026" />
     </div>
 
     <div class="field-block">
@@ -355,18 +285,91 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-  const brandId = params.get('brand') || 'brewhaven';
-  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const brandId = params.get('brand') || 'nescafe';
+  const brandName = decodeURIComponent(params.get('name') || 'Nescafé India');
 
-  // Brand configs
   const brandConfigs = {
-    brewhaven: { icon: '☕', bg: 'linear-gradient(135deg,#f59e0b22,#f59e0b44)', color: '#f59e0b', category: 'Food & Beverage · D2C', web: 'brewhaven.com' },
-    zenlux:    { icon: '💎', bg: 'linear-gradient(135deg,#6366f122,#6366f144)', color: '#818cf8', category: 'Beauty & Personal Care', web: 'zenlux.in' },
-    velocit:   { icon: '⚡', bg: 'linear-gradient(135deg,#06b6d422,#06b6d444)', color: '#06b6d4', category: 'Automotive · EV', web: 'velocit.in' },
-    novafit:   { icon: '🏋', bg: 'linear-gradient(135deg,#22c55e22,#22c55e44)', color: '#22c55e', category: 'Health & Fitness · App', web: 'novafit.app' },
+    nescafe: {
+      icon: '☕', bg: 'linear-gradient(135deg,#c8102e22,#c8102e44)', color: '#c8102e',
+      category: 'Food & Beverage · FMCG', web: 'nescafe.com/in', tone: 'Energetic & Bold',
+      usp: "India's #1 instant coffee brand", markets: 'Pan India — 500k+ retail touchpoints',
+      competitors: 'Bru, Davidoff, Blue Tokai, Continental Coffee',
+      budget: '₹25L–₹75L per campaign', ages: '18–45', income: '₹4L+ per annum',
+      cities: 'Mumbai, Delhi NCR, Bengaluru, Chennai, Hyderabad',
+      channels: ['Hotstar', 'YouTube', 'Spotify', 'Times of India'],
+      personas: ['The Morning Rusher · 24–35', 'The College Student · 18–23', 'The Household Anchor · 35–55'],
+      exclusions: 'Competitor coffee brands, Alcohol, Gambling',
+      stats: { campaigns: 4, budget: '₹42L', impressions: '12.4M', cpa: '₹94' },
+    },
+    swiggy: {
+      icon: '🛵', bg: 'linear-gradient(135deg,#fc801922,#fc801944)', color: '#fc8019',
+      category: 'Food Tech · Super App', web: 'swiggy.com', tone: 'Witty & Humorous',
+      usp: "India's fastest food delivery & quick commerce platform", markets: 'Metro Cities',
+      competitors: 'Zomato, Blinkit, Zepto, BigBasket',
+      budget: '₹50L–₹2Cr per campaign', ages: '18–40', income: '₹5L+ per annum',
+      cities: 'Mumbai, Delhi, Bengaluru, Hyderabad, Chennai, Pune',
+      channels: ['Instagram', 'YouTube', 'Hotstar', 'Cricbuzz'],
+      personas: ['The Hungry Office Worker · 22–35', 'The Weekend Family Planner · 30–45', 'The Late Night Snacker · 18–28'],
+      exclusions: 'Alcohol (dry states), Direct competitor comparisons',
+      stats: { campaigns: 6, budget: '₹85L', impressions: '28.1M', cpa: '₹142' },
+    },
+    tanishq: {
+      icon: '💍', bg: 'linear-gradient(135deg,#b8860b22,#b8860b44)', color: '#b8860b',
+      category: 'Jewellery · Retail + D2C', web: 'tanishq.co.in', tone: 'Sophisticated & Premium',
+      usp: "India's most trusted jewellery brand — Tata Group", markets: 'Pan India',
+      competitors: 'Kalyan Jewellers, Malabar Gold, Senco Gold',
+      budget: '₹30L–₹1Cr per campaign', ages: '24–55', income: '₹12L+ per annum',
+      cities: 'Mumbai, Delhi, Chennai, Bengaluru, Jaipur, Kolkata',
+      channels: ['Hotstar', 'SonyLIV', 'Pinterest', 'Femina'],
+      personas: ['The Bridal Shopper · 24–32', 'The Festival Gifter · 30–55', 'The Modern Self-Buyer · 26–40'],
+      exclusions: 'Discount platforms, Gambling, Adult content',
+      stats: { campaigns: 3, budget: '₹55L', impressions: '8.7M', cpa: '₹1,840' },
+    },
+    boat: {
+      icon: '🎧', bg: 'linear-gradient(135deg,#e3183722,#e3183744)', color: '#e31837',
+      category: 'Consumer Electronics · D2C', web: 'boat-lifestyle.com', tone: 'Energetic & Bold',
+      usp: "India's #1 audio brand by volume", markets: 'Pan India',
+      competitors: 'JBL, Sony, Noise, Realme Buds, OnePlus Audio',
+      budget: '₹20L–₹75L per campaign', ages: '16–38', income: '₹3L+ per annum',
+      cities: 'Mumbai, Delhi, Bengaluru, Hyderabad, Jaipur, Lucknow',
+      channels: ['YouTube', 'Instagram', 'Amazon DSP', 'Cricbuzz'],
+      personas: ['The College Boathead · 17–24', 'The Value-Seeking Professional · 25–35', 'The Gifter · 25–45'],
+      exclusions: 'Adult content, Gambling, Competitor audio brands',
+      stats: { campaigns: 5, budget: '₹38L', impressions: '15.2M', cpa: '₹380' },
+    },
   };
 
-  const cfg = brandConfigs[brandId] || brandConfigs.brewhaven;
+  const brandCampaigns = {
+    nescafe: [
+      { id: 'gold-festive-2026', name: 'Nescafé Gold — Festive Moments 2026', icon: '🚀', ic: 'rgba(59,130,246,0.12)', icol: 'var(--blue)', dates: 'Oct 1 – Oct 31, 2026', obj: 'Awareness', geo: 'Pan India', status: 'live', budget: '₹18L', impr: '8.2M' },
+      { id: 'classic-morning-q2', name: 'Nescafé Classic — Good Morning India Q2', icon: '📣', ic: 'rgba(6,182,212,0.12)', icol: 'var(--cyan)', dates: 'Mar 1 – Mar 31, 2026', obj: 'Awareness', geo: 'Pan India', status: 'completed', budget: '₹15L', impr: '6.8M' },
+      { id: 'strong-youth', name: 'Nescafé Strong — Campus Energy Drive', icon: '⚡', ic: 'rgba(245,158,11,0.12)', icol: '#f59e0b', dates: 'Ongoing · Always-on', obj: 'Conversions', geo: 'Tier 1 Cities', status: 'paused', budget: '₹9L', impr: '3.4M' },
+      { id: 'cold-summer', name: 'Nescafé Cold — Summer Refresh 2026', icon: '❄️', ic: 'rgba(139,92,246,0.12)', icol: '#8b5cf6', dates: 'Apr 15 – May 31, 2026', obj: 'Conversions', geo: 'Metro Cities', status: 'live', budget: '₹12L', impr: '5.6M' },
+    ],
+    swiggy: [
+      { id: 'ipl-2026', name: 'Swiggy × IPL 2026 — Match Night Offers', icon: '🏏', ic: 'rgba(252,128,25,0.12)', icol: '#fc8019', dates: 'Mar 22 – May 25, 2026', obj: 'Conversions', geo: 'Metro Cities', status: 'live', budget: '₹35L', impr: '14.8M' },
+      { id: 'instamart-awareness', name: 'Instamart 10-Min Grocery — Awareness', icon: '📣', ic: 'rgba(6,182,212,0.12)', icol: 'var(--cyan)', dates: 'Feb 1 – Feb 28, 2026', obj: 'Awareness', geo: 'Mumbai, Delhi, Bengaluru', status: 'completed', budget: '₹20L', impr: '9.2M' },
+      { id: 'swiggy-one-q1', name: 'Swiggy One Subscription — Q1 Push', icon: '🎯', ic: 'rgba(34,197,94,0.12)', icol: '#22c55e', dates: 'Jan 1 – Mar 31, 2026', obj: 'Conversions', geo: 'Pan India', status: 'completed', budget: '₹18L', impr: '7.6M' },
+      { id: 'late-night-menu', name: 'Late Night Hunger — Midnight Menu', icon: '🌙', ic: 'rgba(139,92,246,0.12)', icol: '#8b5cf6', dates: 'Ongoing', obj: 'Conversions', geo: 'Metro Cities', status: 'live', budget: '₹8L', impr: '4.2M' },
+      { id: 'dineout-launch', name: 'Dineout — Book Your Table Campaign', icon: '🍽️', ic: 'rgba(245,158,11,0.12)', icol: '#f59e0b', dates: 'Apr 1 – Apr 30, 2026', obj: 'Awareness', geo: 'Top 10 Cities', status: 'paused', budget: '₹12L', impr: '5.8M' },
+      { id: 'festive-fiesta', name: 'Festive Fiesta — Diwali Orders 2025', icon: '🎆', ic: 'rgba(59,130,246,0.12)', icol: 'var(--blue)', dates: 'Oct 20 – Nov 5, 2025', obj: 'Conversions', geo: 'Pan India', status: 'completed', budget: '₹22L', impr: '11.1M' },
+    ],
+    tanishq: [
+      { id: 'akshaya-tritiya-2026', name: 'Akshaya Tritiya 2026 — Gold Buying Season', icon: '✨', ic: 'rgba(184,134,11,0.12)', icol: '#b8860b', dates: 'Apr 25 – May 5, 2026', obj: 'Awareness', geo: 'Pan India', status: 'live', budget: '₹25L', impr: '7.8M' },
+      { id: 'rivaah-bridal', name: 'Rivaah — Wedding Season 2025–26', icon: '💍', ic: 'rgba(239,68,68,0.12)', icol: '#ef4444', dates: 'Nov 1, 2025 – Feb 28, 2026', obj: 'Awareness', geo: 'Mumbai, Delhi, Chennai, Jaipur', status: 'completed', budget: '₹22L', impr: '6.2M' },
+      { id: 'mia-working-women', name: 'Mia by Tanishq — Everyday Brilliance', icon: '💎', ic: 'rgba(139,92,246,0.12)', icol: '#8b5cf6', dates: 'Ongoing · Always-on', obj: 'Conversions', geo: 'Metro Cities', status: 'live', budget: '₹14L', impr: '4.8M' },
+    ],
+    boat: [
+      { id: 'airdopes-900-launch', name: 'boAt Airdopes 900 ANC — Launch', icon: '🎧', ic: 'rgba(227,24,55,0.12)', icol: '#e31837', dates: 'Apr 10 – Apr 30, 2026', obj: 'Conversions', geo: 'Pan India', status: 'live', budget: '₹12L', impr: '6.4M' },
+      { id: 'big-billion-2025', name: 'Big Billion Day 2025 — Mega Sale Push', icon: '🛒', ic: 'rgba(245,158,11,0.12)', icol: '#f59e0b', dates: 'Oct 7–14, 2025', obj: 'Conversions', geo: 'Pan India', status: 'completed', budget: '₹18L', impr: '9.8M' },
+      { id: 'smartwatch-lunar', name: 'boAt Lunar Series — Smartwatch Launch', icon: '⌚', ic: 'rgba(34,197,94,0.12)', icol: '#22c55e', dates: 'Mar 1 – Apr 15, 2026', obj: 'Awareness', geo: 'Tier 1 Cities', status: 'completed', budget: '₹10L', impr: '5.2M' },
+      { id: 'ipl-boatheads', name: 'boAt × IPL — Boatheads Activation', icon: '🏏', ic: 'rgba(59,130,246,0.12)', icol: 'var(--blue)', dates: 'Mar 22 – May 25, 2026', obj: 'Awareness', geo: 'Pan India', status: 'live', budget: '₹15L', impr: '8.1M' },
+      { id: 'gifting-diwali', name: 'Diwali Gifting — boAt for Everyone', icon: '🎁', ic: 'rgba(139,92,246,0.12)', icol: '#8b5cf6', dates: 'Oct 15 – Nov 5, 2025', obj: 'Conversions', geo: 'Pan India', status: 'completed', budget: '₹14L', impr: '7.3M' },
+    ],
+  };
+
+  const cfg = brandConfigs[brandId] || brandConfigs.nescafe;
+  const campaigns = brandCampaigns[brandId] || brandCampaigns.nescafe;
 
   document.getElementById('navBrandName').textContent = brandName;
   document.getElementById('brandNameEl').textContent = brandName;
@@ -374,6 +377,55 @@
   document.getElementById('brandLogoEl').style.background = cfg.bg;
   document.getElementById('brandLogoEl').style.color = cfg.color;
   document.getElementById('brandCategoryEl').textContent = cfg.category;
+  document.getElementById('brandWebEl').textContent = '🌐 ' + cfg.web;
+  document.getElementById('brandToneEl').textContent = 'Tone: ' + cfg.tone;
+
+  // Populate brand profile
+  document.getElementById('bpCategory').textContent = cfg.category;
+  document.getElementById('bpWebsite').textContent = cfg.web;
+  document.getElementById('bpTone').textContent = cfg.tone;
+  document.getElementById('bpMarkets').textContent = cfg.markets;
+  document.getElementById('bpUsp').textContent = cfg.usp;
+  document.getElementById('bpPersonas').innerHTML = cfg.personas.map(p => `<span class="persona-pill">${p}</span>`).join('');
+  document.querySelector('[data-bp="ages"]') && (document.querySelector('[data-bp="ages"]').textContent = cfg.ages);
+  document.querySelector('[data-bp="income"]') && (document.querySelector('[data-bp="income"]').textContent = cfg.income);
+  document.querySelector('[data-bp="cities"]') && (document.querySelector('[data-bp="cities"]').textContent = cfg.cities);
+  document.getElementById('bpChannels').innerHTML = cfg.channels.map(c => `<span class="channel-badge">${c}</span>`).join('');
+  document.getElementById('bpBudget').textContent = cfg.budget;
+  document.getElementById('bpCompetitors').textContent = cfg.competitors;
+  document.getElementById('bpExclusions').textContent = cfg.exclusions;
+
+  // Stats
+  const s = cfg.stats;
+  document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = s.campaigns;
+  document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = s.budget;
+  document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = s.cpa;
+
+  // Campaigns header count
+  document.querySelector('.section-header .section-title').textContent = `Campaigns (${campaigns.length})`;
+
+  // Render campaigns list
+  const statusCls = { live: 's-live', completed: 's-completed', paused: 's-paused', draft: 's-draft' };
+  const statusLabel = { live: '● Live', completed: '✓ Completed', paused: '⏸ Paused', draft: '◎ Draft' };
+  const list = document.querySelector('.campaigns-list');
+  list.innerHTML = campaigns.map(c => `
+    <a href="campaign-detail.html?campaign=${c.id}&brand=${brandId}&name=${encodeURIComponent(brandName)}&cname=${encodeURIComponent(c.name)}" class="campaign-row">
+      <div class="campaign-icon" style="background:${c.ic};color:${c.icol};">${c.icon}</div>
+      <div class="campaign-main">
+        <div class="campaign-name">${c.name}</div>
+        <div class="campaign-meta">
+          <span>📅 ${c.dates}</span>
+          <span>🎯 ${c.obj}</span>
+          <span>📍 ${c.geo}</span>
+        </div>
+      </div>
+      <div class="campaign-badge ${statusCls[c.status]}">${statusLabel[c.status]}</div>
+      <div class="campaign-stats">
+        <div class="campaign-stat"><div class="campaign-stat-val">${c.budget}</div><div class="campaign-stat-label">Budget</div></div>
+        <div class="campaign-stat"><div class="campaign-stat-val">${c.impr}</div><div class="campaign-stat-label">Impressions</div></div>
+      </div>
+      <div class="campaign-arrow">›</div>
+    </a>`).join('') + `<div class="add-campaign-row" onclick="openModal()"><span>＋ New Campaign</span></div>`;
 
   // Objective selection
   let selectedObjective = 'conversions';

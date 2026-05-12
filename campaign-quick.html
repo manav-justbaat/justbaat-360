@@ -300,7 +300,7 @@
       </div>
       <div class="prompt-box">
         <div class="prompt-textarea-wrap">
-          <textarea class="prompt-textarea" id="promptInput" placeholder="e.g. I want a video campaign for BrewHaven Coffee targeting urban coffee lovers in Mumbai and Bengaluru, age 24–38. Budget ₹5 lakh. Duration 2 weeks. Goal is conversions — drive purchases for our monsoon collection launch." rows="4"></textarea>
+          <textarea class="prompt-textarea" id="promptInput" placeholder="e.g. I want an awareness campaign for Nescafé Gold targeting urban professionals in Mumbai and Bengaluru, age 24–45. Budget ₹20 lakh. Duration 1 month. Goal is brand awareness ahead of the festive season." rows="4"></textarea>
           <div class="prompt-actions">
             <span class="prompt-hint">Press Shift+Enter for new line</span>
             <button class="prompt-send" onclick="runExtract()">✦ Extract & Fill →</button>
@@ -336,7 +336,7 @@
           <div class="form-grid form-grid-2" style="margin-bottom:1rem">
             <div class="field" style="grid-column:span 2">
               <label><span class="conf-dot conf-green"></span> Campaign Name</label>
-              <input type="text" id="f_name" value="BrewHaven — Monsoon Collection Launch — May 2026" />
+              <input type="text" id="f_name" value="" placeholder="e.g. Nescafé Gold — Festive Moments 2026" />
             </div>
             <div class="field">
               <label><span class="conf-dot conf-green"></span> Objective</label>
@@ -471,7 +471,7 @@
           <div class="form-grid form-grid-2" style="margin-bottom:1rem">
             <div class="field">
               <label><span class="conf-dot conf-yellow"></span> Landing Page URL</label>
-              <input type="url" id="f_url" value="https://brewhaven.com/monsoon-collection" />
+              <input type="url" id="f_url" value="" placeholder="https://yourbrand.com/campaign-landing" />
             </div>
             <div class="field">
               <label><span class="conf-dot conf-green"></span> Primary Creative Format</label>
@@ -488,7 +488,7 @@
           <!-- AI Clarification block -->
           <div class="ai-clarify">
             <span class="ai-clarify-icon">✦ AI has a quick question:</span>
-            <div class="ai-clarify-question">1. Should I include DOOH (outdoor screens) in this plan? BrewHaven's brand profile suggests it works well for product launches in Mumbai's retail corridors.</div>
+            <div class="ai-clarify-question" id="clarifyQ1">1. Should I include DOOH (outdoor screens) in this plan? The brand profile suggests it works well for awareness campaigns in metro retail corridors.</div>
             <input class="ai-clarify-input" type="text" placeholder="Yes, include DOOH / No, skip DOOH / Up to you…" value="Yes, include DOOH with ~20% budget" />
             <div class="ai-clarify-question" style="margin-top:0.75rem">2. Do you want to retarget existing site visitors as part of this campaign?</div>
             <input class="ai-clarify-input" type="text" placeholder="Yes / No / Include as a sub-segment…" value="Yes, layer retargeting on top" />
@@ -680,11 +680,11 @@
         <div class="plan-card">
           <div class="plan-card-title">⚠ Assumption Log</div>
           <div class="assumption-list">
-            <div class="assumption-item"><div class="assumption-dot"></div>Landing page URL set to brewhaven.com/monsoon-collection — assumed from brand profile (update if different)</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Landing page URL assumed from brand profile — update if different</div>
             <div class="assumption-item"><div class="assumption-dot"></div>Even pacing applied — change to front-loaded if stock is limited at launch</div>
             <div class="assumption-item"><div class="assumption-dot"></div>Frequency cap defaulted to 3 impressions/day per user (brand profile default)</div>
-            <div class="assumption-item"><div class="assumption-dot"></div>Brand safety level set to Enhanced — inherited from BrewHaven brand profile</div>
-            <div class="assumption-item"><div class="assumption-dot"></div>Average order value assumed ₹340 based on BrewHaven's typical AOV — used for ROAS estimate</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Brand safety level set to Enhanced — inherited from brand profile settings</div>
+            <div class="assumption-item"><div class="assumption-dot"></div>Average order value estimated from brand category benchmarks — used for ROAS projection</div>
             <div class="assumption-item"><div class="assumption-dot"></div>No first-party audience uploaded — retargeting pool will build as campaign runs (seed audience from website pixel)</div>
           </div>
         </div>
@@ -717,8 +717,8 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-  const brandId = params.get('brand') || 'brewhaven';
-  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const brandId = params.get('brand') || 'nescafe';
+  const brandName = decodeURIComponent(params.get('name') || 'Nescafé India');
   const campaignName = decodeURIComponent(params.get('cname') || 'New Campaign');
   const isNew = params.get('new') === '1';
 

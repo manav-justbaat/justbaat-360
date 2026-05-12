@@ -840,10 +840,10 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-  const brandId = params.get('brand') || 'brewhaven';
-  const brandName = decodeURIComponent(params.get('name') || 'BrewHaven Coffee');
+  const brandId = params.get('brand') || 'nescafe';
+  const brandName = decodeURIComponent(params.get('name') || 'Nescafé India');
   const campaignId = params.get('campaign') || '';
-  const campaignName = decodeURIComponent(params.get('cname') || 'Monsoon Collection Launch');
+  const campaignName = decodeURIComponent(params.get('cname') || 'Nescafé Gold — Festive Moments 2026');
   const planVersion = params.get('v') || '1';
   const planName = decodeURIComponent(params.get('plan') || brandName + ' — Campaign Plan v' + planVersion);
 
@@ -856,6 +856,47 @@
   document.getElementById('metaBrand').textContent = brandName;
   document.getElementById('metaCampaign').textContent = campaignName;
   document.title = `Plan v${planVersion} — ${campaignName} — 360 Platform`;
+
+  // ─── Content patch: replace all hardcoded brand references ─
+  (function patchBrandContent() {
+    const utmSlug = (campaignId || brandId + '-campaign').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+    const domain = brandId + '.com';
+
+    // Walk all text nodes and replace "BrewHaven" / "brewhaven" / domain references
+    function walkTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const orig = node.nodeValue;
+        const updated = orig
+          .replace(/BrewHaven('s)?/g, (_, s) => brandName + (s || ''))
+          .replace(/brewhaven/g, brandId)
+          .replace(/brewhaven\.com\/[^\s<"']*/g, domain)
+          .replace(/Monsoon Collection Launch/g, campaignName)
+          .replace(/monsoon-collection/g, utmSlug)
+          .replace(/brewhaven-monsoon-launch-q2/g, utmSlug)
+          .replace(/BrewHaven Customers/g, brandName + ' Customers');
+        if (updated !== orig) node.nodeValue = updated;
+      }
+    }
+
+    // Also patch attribute values (href, value) for input elements
+    function patchAttrs(root) {
+      root.querySelectorAll('[value], [href]').forEach(el => {
+        if (el.value && el.value.includes('brewhaven')) {
+          el.value = el.value
+            .replace(/brewhaven\.com\/[^\s"']*/g, domain)
+            .replace(/brewhaven/g, brandId);
+        }
+        if (el.href && el.href.includes('brewhaven')) {
+          el.href = el.href.replace(/brewhaven\.com/g, domain).replace(/brewhaven/g, brandId);
+        }
+      });
+    }
+
+    walkTextNodes(document.body);
+    patchAttrs(document.body);
+  })();
 
   // Channel accordion
   function toggleChannel(id) {
